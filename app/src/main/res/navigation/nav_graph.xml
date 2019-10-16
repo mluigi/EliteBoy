@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/profileFragment">
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="m.luigi.eliteboy.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_creditsFragment"
+            app:destination="@id/creditsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_systemFragment"
+            app:destination="@id/systemFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_stationFragment"
+            app:destination="@id/stationFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_shipsFragment"
+            app:destination="@id/shipsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/creditsFragment"
+        android:name="m.luigi.eliteboy.CreditsFragment"
+        android:label="fragment_credits"
+        tools:layout="@layout/fragment_credits" />
+    <fragment
+        android:id="@+id/systemFragment"
+        android:name="m.luigi.eliteboy.SystemFragment"
+        android:label="fragment_system"
+        tools:layout="@layout/fragment_system" >
+        <action
+            android:id="@+id/action_systemFragment_to_stationFragment"
+            app:destination="@id/stationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/stationFragment"
+        android:name="m.luigi.eliteboy.StationFragment"
+        android:label="fragment_station"
+        tools:layout="@layout/fragment_station" >
+        <action
+            android:id="@+id/action_stationFragment_to_shipsFragment"
+            app:destination="@id/shipsFragment" />
+        <action
+            android:id="@+id/action_stationFragment_to_systemFragment"
+            app:destination="@id/systemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shipsFragment"
+        android:name="m.luigi.eliteboy.ShipsFragment"
+        android:label="fragment_ships"
+        tools:layout="@layout/fragment_ships" />
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="m.luigi.eliteboy.NewsFragment"
+        android:label="fragment_news"
+        tools:layout="@layout/fragment_news" />
+    <fragment
+        android:id="@+id/systemsFragment"
+        android:name="m.luigi.eliteboy.SystemsFragment"
+        android:label="fragment_systems"
+        tools:layout="@layout/fragment_systems" >
+        <action
+            android:id="@+id/action_systemsFragment_to_systemFragment"
+            app:destination="@id/systemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/stationsFragment"
+        android:name="m.luigi.eliteboy.StationsFragment"
+        android:label="fragment_stations"
+        tools:layout="@layout/fragment_stations" >
+        <action
+            android:id="@+id/action_stationsFragment_to_stationFragment"
+            app:destination="@id/stationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nearestFragment"
+        android:name="m.luigi.eliteboy.NearestFragment"
+        android:label="fragment_nearest"
+        tools:layout="@layout/fragment_nearest" >
+        <action
+            android:id="@+id/action_nearestFragment_to_stationFragment"
+            app:destination="@id/stationFragment" />
+    </fragment>
+</navigation>
