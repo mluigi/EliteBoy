@@ -1,5 +1,8 @@
 package m.luigi.eliteboy.util
 
+import android.app.Activity
+import android.app.ActivityOptions
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -10,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.reflect.KClass
 
 fun Fragment.snackBarMessage(message: () -> String) {
     Snackbar.make(this.view!!, message(), Snackbar.LENGTH_LONG).show()
@@ -110,4 +114,11 @@ suspend fun <T> onMain(block: suspend CoroutineScope.() -> T): T {
     return withContext(Dispatchers.Main) {
         block()
     }
+}
+
+fun <T : Activity> Activity.openActivity(activity: KClass<T>): (View?) -> Boolean = {
+    if (this::class.java != activity.java) {
+        startActivity(Intent(this, activity.java), ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+    }
+    false
 }

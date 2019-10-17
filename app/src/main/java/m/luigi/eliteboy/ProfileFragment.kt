@@ -2,6 +2,7 @@ package m.luigi.eliteboy
 
 
 import android.annotation.TargetApi
+import android.content.Intent
 import android.icu.text.NumberFormat
 import android.os.Build
 import android.os.Bundle
@@ -9,28 +10,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import com.nostra13.universalimageloader.core.ImageLoader
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
-import m.luigi.eliteboy.elitedangerous.companionapi.data.Profile
-import m.luigi.eliteboy.util.onIO
-import m.luigi.eliteboy.util.onMain
-import m.luigi.eliteboy.util.snackBarMessage
+import m.luigi.eliteboy.util.*
 
 class ProfileFragment : Fragment() {
-    lateinit var profileDeferred: Deferred<Profile?>
-    private var profile: Profile? = null
+
+    lateinit var imageLoader: ImageLoader
+    private var initJob: Job = Job()
+
+    private var isRanksOpened = false
+    private var isReputationOpened = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        GlobalScope.launch {
-            profileDeferred = async {
-                (activity as MainActivity).waitForInitApi!!.await()
-                onIO { EDCompanionApi.getProfile() }
-            }
+        initJob = GlobalScope.launch {
+            imageLoader = (activity as MainActivity).imageLoaderDeferred.await()
         }
     }
 
@@ -40,9 +41,42 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         GlobalScope.launch {
-            profile = profileDeferred.await()
+            initJob.join()
+            (activity as MainActivity).waitForInitApi!!.await()
+            val profile = if (EDCompanionApi.currentState == EDCompanionApi.State.AUTHORIZED) {
+                onMain { profileSpinKit.visibility = View.VISIBLE }
+                EDCompanionApi.getProfile()
+
+            } else {
+                Snackbar.make(
+                    this@ProfileFragment.activity!!
+                        .findViewById(android.R.id.content),
+                    "Login to EDApi or EDSM",
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction("Login") {
+                    startActivity(
+                        Intent(
+                            this@ProfileFragment.activity,
+                            SettingsActivity::class.java
+                        )
+                    )
+                }.show()
+                null
+            }
 
             onMain {
+                (activity as MainActivity).mainToolbar.title="Profile"
+                profileSpinKit.visibility = View.GONE
+                rankLayout.setAnimateOnClickListener(
+                    rankBars,
+                    rankView,
+                    { isRanksOpened }) { isRanksOpened = !isRanksOpened }
+                repLayout.setAnimateOnClickListener(
+                    reputationBars,
+                    reputationView,
+                    { isReputationOpened }) {
+                    isReputationOpened = !isReputationOpened
+                }
                 profile?.let {
                     with(it) {
                         cmdrName.text = commander!!.name
@@ -53,50 +87,31 @@ class ProfileFragment : Fragment() {
                         this@ProfileFragment.lastSystem.text = this.lastSystem!!.name
                         lastStation.text = lastStarport!!.name
                         combatRank.text = commander!!.rank!!.combat!!.name
-
-                        val combatrank = commander!!.rank!!.combat!!.ordinal
-                        combatRankProgressBar.progress = combatrank
-                        combatRankPercentage.text =
-                            String.format(resources.getString(R.string.rank), combatrank)
+                        val combatRank = commander!!.rank!!.combat!!.ordinal
+                        imageLoader.displayImage(combatRankImages[combatRank],combatImg)
 
                         tradeRank.text = commander!!.rank!!.trade!!.name
                         val tradeRank = commander!!.rank!!.trade!!.ordinal
-                        tradeRankProgressBar.progress = tradeRank
-                        tradeRankPercentage.text =
-                            String.format(resources.getString(R.string.rank), tradeRank)
+                        imageLoader.displayImage(tradingRankImages[tradeRank],tradeImg)
 
                         explorRank.text = commander!!.rank!!.explore!!.name
                         val expRank = commander!!.rank!!.explore!!.ordinal
-                        expRankBar.progress = expRank
-                        explorRankPercentage.text =
-                            String.format(resources.getString(R.string.rank), expRank)
+                        imageLoader.displayImage(explorationRankImages[expRank],expImg)
 
                         cqcRank.text = commander!!.rank!!.cqc!!.name
-                        val cqcrank = commander!!.rank!!.cqc!!.ordinal
-                        cqcProgressBar.progress = cqcrank
-                        cqcRankPercentage.text =
-                            String.format(resources.getString(R.string.rank), cqcrank)
+                        val cqcRank = commander!!.rank!!.cqc!!.ordinal
+                        imageLoader.displayImage(cqcRankImages[cqcRank],cqcImg)
 
                         impNavyRank.text = commander!!.rank!!.empire!!.name
-                        val impRank = commander!!.rank!!.empire!!.ordinal
-                        impProgressBar.progress = impRank
-                        impNavyRankPercentage.text =
-                            String.format(resources.getString(R.string.rank), impRank)
+                        imageLoader.displayImage(empireIcon,impNavyImg)
 
                         fedNavyRank.text = commander!!.rank!!.federation!!.name
-                        val fedRank = commander!!.rank!!.federation!!.ordinal
-                        fedProgressBar.progress = fedRank
-                        fedNavyRankPercentage.text =
-                            String.format(resources.getString(R.string.rank), fedRank)
+                        imageLoader.displayImage(federationIcon,fedNavyImg)
                     }
-                } ?: kotlin.run {
-                    snackBarMessage { "Not Logged In" }
                 }
             }
         }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
-
-
 }

@@ -6,16 +6,14 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
 import android.os.Build
 import android.util.Base64.*
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import m.luigi.eliteboy.BuildConfig
 import m.luigi.eliteboy.elitedangerous.companionapi.data.*
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.StarportDeserializer
-import m.luigi.eliteboy.util.info
+
 import java.io.DataOutputStream
-import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
@@ -68,7 +66,6 @@ object EDCompanionApi {
         setAuthCallback(authcallback)
         sharedPrefs = sharedPreferences
         val credentialsJson = sharedPrefs.getString("creds", null)
-        info { credentialsJson }
         credentialsJson?.let {
             credentials = Credentials.fromJson(credentialsJson)
             try {
@@ -82,8 +79,6 @@ object EDCompanionApi {
     @TargetApi(Build.VERSION_CODES.O)
     fun saveCreds() {
         sharedPrefs.edit().putString("creds", credentials.toJson()).apply()
-
-        info { sharedPrefs.getString("creds","")!!}
     }
 
     private val gson = GsonBuilder()
@@ -93,7 +88,6 @@ object EDCompanionApi {
         .create()!!
 
     fun login() {
-        info { "logging in" }
         if (currentState != State.LOGGED_OUT) {
             throw Exception("Wrong state")
         }
@@ -117,7 +111,6 @@ object EDCompanionApi {
         sr.nextBytes(code)
         verifier =
             base64UrlEncode(code)
-        info { verifier }
         val bytes = verifier.toByteArray(charset("US-ASCII"))
 
         val rawAuthSessionId = ByteArray(8)

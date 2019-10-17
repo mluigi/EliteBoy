@@ -8,9 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import co.zsmb.materialdrawerkt.builders.accountHeader
 import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.profile.profile
 import co.zsmb.materialdrawerkt.draweritems.sectionHeader
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache
+import com.nostra13.universalimageloader.core.DisplayImageOptions
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
+import com.nostra13.universalimageloader.utils.StorageUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -23,12 +30,9 @@ import m.luigi.eliteboy.util.onMain
 class MainActivity : AppCompatActivity() {
 
     var waitForInitApi: Deferred<Any>? = null
+    lateinit var imageLoaderDeferred:Deferred<ImageLoader>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
+    init {
         GlobalScope.launch {
             onIO {
                 waitForInitApi = async {
@@ -39,8 +43,34 @@ class MainActivity : AppCompatActivity() {
                         )
                     ) { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it))) }
                 }
-
+                imageLoaderDeferred=async {
+                    ImageLoader.getInstance().apply {
+                        init(
+                            ImageLoaderConfiguration.Builder(this@MainActivity)
+                                .memoryCache(LruMemoryCache(2 * 1024 * 1024))
+                                .diskCache(UnlimitedDiskCache(StorageUtils.getCacheDirectory(this@MainActivity)))
+                                .defaultDisplayImageOptions(
+                                    DisplayImageOptions.Builder()
+                                        .showImageOnFail(R.drawable.ic_error_black_24dp)
+                                        .showImageForEmptyUri(R.drawable.ic_error_black_24dp)
+                                        .cacheInMemory(true)
+                                        .cacheOnDisk(true)
+                                        .build()
+                                )
+                                .build()
+                        )
+                    }
+                }
             }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+
+        GlobalScope.launch {
             onMain {
                 drawer {
                     toolbar = mainToolbar
@@ -64,13 +94,7 @@ class MainActivity : AppCompatActivity() {
                             false
                         }
                     }
-                    primaryItem("Settings") {
-                        onClick { _ ->
-                            Navigation.findNavController(this@MainActivity, R.id.navHost)
-                                .navigate(R.id.newsFragment)
-                            false
-                        }
-                    }
+
                     sectionHeader("Search")
                     primaryItem("System") {
                         onClick { _ ->
@@ -93,11 +117,25 @@ class MainActivity : AppCompatActivity() {
                             false
                         }
                     }
+
+                    footer {
+                        primaryItem("") {
+                            this.icon = R.drawable.ic_settings_black_24dp
+                            onClick { _ ->
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        SettingsActivity::class.java
+                                    )
+                                )
+                                false
+                            }
+                        }
+                    }
+
+
                 }
             }
-
         }
     }
-
-
 }
