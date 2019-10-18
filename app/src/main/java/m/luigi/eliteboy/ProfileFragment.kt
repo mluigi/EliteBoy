@@ -9,7 +9,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.nostra13.universalimageloader.core.ImageLoader
 import kotlinx.android.synthetic.main.activity_main.*
@@ -65,18 +67,14 @@ class ProfileFragment : Fragment() {
             }
 
             onMain {
-                (activity as MainActivity).mainToolbar.title="Profile"
+                (activity as MainActivity).mainToolbar.title = "Profile"
                 profileSpinKit.visibility = View.GONE
+
                 rankLayout.setAnimateOnClickListener(
                     rankBars,
                     rankView,
                     { isRanksOpened }) { isRanksOpened = !isRanksOpened }
-                repLayout.setAnimateOnClickListener(
-                    reputationBars,
-                    reputationView,
-                    { isReputationOpened }) {
-                    isReputationOpened = !isReputationOpened
-                }
+
                 profile?.let {
                     with(it) {
                         cmdrName.text = commander!!.name
@@ -88,25 +86,31 @@ class ProfileFragment : Fragment() {
                         lastStation.text = lastStarport!!.name
                         combatRank.text = commander!!.rank!!.combat!!.name
                         val combatRank = commander!!.rank!!.combat!!.ordinal
-                        imageLoader.displayImage(combatRankImages[combatRank],combatImg)
+                        imageLoader.displayImage(combatRankImages[combatRank], combatImg)
 
                         tradeRank.text = commander!!.rank!!.trade!!.name
                         val tradeRank = commander!!.rank!!.trade!!.ordinal
-                        imageLoader.displayImage(tradingRankImages[tradeRank],tradeImg)
+                        imageLoader.displayImage(tradingRankImages[tradeRank], tradeImg)
 
                         explorRank.text = commander!!.rank!!.explore!!.name
                         val expRank = commander!!.rank!!.explore!!.ordinal
-                        imageLoader.displayImage(explorationRankImages[expRank],expImg)
+                        imageLoader.displayImage(explorationRankImages[expRank], expImg)
 
                         cqcRank.text = commander!!.rank!!.cqc!!.name
                         val cqcRank = commander!!.rank!!.cqc!!.ordinal
-                        imageLoader.displayImage(cqcRankImages[cqcRank],cqcImg)
+                        imageLoader.displayImage(cqcRankImages[cqcRank], cqcImg)
 
                         impNavyRank.text = commander!!.rank!!.empire!!.name
-                        imageLoader.displayImage(empireIcon,impNavyImg)
+                        imageLoader.displayImage(empireIcon, impNavyImg)
 
                         fedNavyRank.text = commander!!.rank!!.federation!!.name
-                        imageLoader.displayImage(federationIcon,fedNavyImg)
+                        imageLoader.displayImage(federationIcon, fedNavyImg)
+
+
+                        creditsView.setOnClickListener {
+                            Navigation.findNavController(it).navigate(R.id.action_profileFragment_to_creditsFragment,
+                                bundleOf(Pair("creds",commander!!.credits!!)))
+                        }
                     }
                 }
             }

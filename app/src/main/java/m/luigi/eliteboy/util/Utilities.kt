@@ -40,8 +40,8 @@ fun View.expand() {
         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
     )
     val targetHeight = this.measuredHeight
-    this.layoutParams.height = 1
     this.visibility = View.VISIBLE
+    this.layoutParams.height = 0
 
     val a = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation) {

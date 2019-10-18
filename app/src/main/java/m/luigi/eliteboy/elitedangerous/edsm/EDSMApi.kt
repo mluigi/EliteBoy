@@ -1,7 +1,13 @@
 package m.luigi.eliteboy.elitedangerous.edsm
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
+import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
+import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
+import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.ModuleDeserializer
+import m.luigi.eliteboy.elitedangerous.edsm.data.Station
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import java.net.URL
 import java.net.URLEncoder
@@ -19,10 +25,14 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         const val BODIES = "/api-system-v1/bodies"
         const val STATIONS = "/api-system-v1/stations"
         const val FACTIONS = "/api-system-v1/factions"
+        const val MARKET = "/market"
+        const val SHIPYARD = "/shipyard"
+        const val OUTFITTING = "/outfitting"
 
         const val GET_LOGS = "/api-logs-v1/get-logs"
-        const val GET_RANKS = "/api-commander-v1/get-ranks"
-        const val GET_MATS = "api-commander-v1/get-materials"
+        const val RANKS = "/api-commander-v1/get-ranks"
+        const val MATS = "api-commander-v1/get-materials"
+        const val CREDS = "/api-commander-v1/get-credits"
         const val UPDATE_SHIP = "/api-commander-v1/update-ship"
         const val SELL_SHIP = "/api-commander-v1/sell-ship"
 
@@ -41,18 +51,26 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         val system = URLEncoder.encode(name, "UTF-8")
         val connection = URL(
             BASE_URL + SYSTEM +
-                "/?systemName=$system" +
-                "&showId=1" +
-                "&showCoordinates=1" +
-                "&showPermit=1" +
-                "&showInformation=1" +
-                "&showPrimaryStar=1").openConnection()
+                    "/?systemName=$system" +
+                    "&showId=1" +
+                    "&showCoordinates=1" +
+                    "&showPermit=1" +
+                    "&showInformation=1" +
+                    "&showPrimaryStar=1"
+        ).openConnection()
         connection.doInput = true
         val json = connection.getInputStream().bufferedReader().readText()
         return Gson().fromJson<System>(json, System::class.java)
     }
 
-    private fun findSystems(type: SearchType, system: String = "", x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, size: Int = 0): ArrayList<System> {
+    private fun findSystems(
+        type: SearchType,
+        system: String = "",
+        x: Double = 0.0,
+        y: Double = 0.0,
+        z: Double = 0.0,
+        size: Int = 0
+    ): ArrayList<System> {
         var url = BASE_URL
         val systemEncoded = URLEncoder.encode(system, "UTF-8")
         when (type) {
@@ -135,11 +153,23 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         return findSystems(SearchType.NAME, name)
     }
 
-    fun findSystemsInSphere(initialSystem: String = "", x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, radius: Int = 0): ArrayList<System> {
+    fun findSystemsInSphere(
+        initialSystem: String = "",
+        x: Double = 0.0,
+        y: Double = 0.0,
+        z: Double = 0.0,
+        radius: Int = 0
+    ): ArrayList<System> {
         return findSystems(SearchType.SPHERE, initialSystem, x, y, z, radius)
     }
 
-    fun findSystemsInCube(initialSystem: String = "", x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, size: Int = 0): ArrayList<System> {
+    fun findSystemsInCube(
+        initialSystem: String = "",
+        x: Double = 0.0,
+        y: Double = 0.0,
+        z: Double = 0.0,
+        size: Int = 0
+    ): ArrayList<System> {
         return findSystems(SearchType.CUBE, initialSystem, x, y, z, size)
     }
 
@@ -147,7 +177,8 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         val name = URLEncoder.encode(system, "UTF-8")
         val connection = URL(
             BASE_URL + BODIES +
-                "/?systemName=$name").openConnection()
+                    "/?systemName=$name"
+        ).openConnection()
         connection.doInput = true
         val json = connection.inputStream.bufferedReader().readText()
         return Gson().fromJson<System>(json, System::class.java)
@@ -161,7 +192,8 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         val name = URLEncoder.encode(system, "UTF-8")
         val connection = URL(
             BASE_URL + FACTIONS +
-                "/?systemName=$name").openConnection()
+                    "/?systemName=$name"
+        ).openConnection()
         connection.doInput = true
         val json = connection.inputStream.bufferedReader().readText()
         return Gson().fromJson<System>(json, System::class.java)
@@ -175,7 +207,8 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         val name = URLEncoder.encode(system, "UTF-8")
         val connection = URL(
             BASE_URL + STATIONS +
-                "/?systemName=$name").openConnection()
+                    "/?systemName=$name"
+        ).openConnection()
         connection.doInput = true
         val json = connection.inputStream.bufferedReader().readText()
         return Gson().fromJson<System>(json, System::class.java)
@@ -185,14 +218,78 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         System.updateSystem(system, getStations(system.name!!))
     }
 
+    fun getSystemComplete(name: String): System {
+        val system = getSystem(name)
+        getBodies(system)
+        getFactions(system)
+        getStations(system)
+        return system
+    }
+
+    fun getShipyard(marketId: Long): Station {
+        val connection = URL(
+            BASE_URL + STATIONS + SHIPYARD +
+                    "?marketId=$marketId"
+        ).openConnection()
+        connection.doInput = true
+        val json = connection.inputStream.bufferedReader().readText()
+
+        return Gson().fromJson<Station>(json, Station::class.java)
+    }
+
+    fun getShipyard(station: Station) {
+        Station.updateStation(station, getShipyard(station.marketId))
+    }
+
+    fun getMarket(marketId: Long): Station {
+        val connection = URL(
+            BASE_URL + STATIONS + MARKET +
+                    "?marketId=$marketId"
+        ).openConnection()
+        connection.doInput = true
+        val json = connection.inputStream.bufferedReader().readText()
+
+        return GsonBuilder().registerTypeAdapter(Commodity::class.java, CommodityDeserializer())
+            .create().fromJson<Station>(json, Station::class.java)
+    }
+
+    private fun getMarket(station: Station) {
+        Station.updateStation(station, getMarket(station.marketId))
+    }
+
+    private fun getOutfitting(marketId: Long): Station {
+        val connection = URL(
+            BASE_URL + STATIONS + OUTFITTING +
+                    "?marketId=$marketId"
+        ).openConnection()
+        connection.doInput = true
+        val json = connection.inputStream.bufferedReader().readText()
+
+        return GsonBuilder().registerTypeAdapter(Module::class.java, ModuleDeserializer())
+            .create().fromJson<Station>(json, Station::class.java)
+    }
+
+    fun getOutfitting(station: Station) {
+        Station.updateStation(station, getOutfitting(station.marketId))
+    }
+
+    fun getCompleteStation(station: Station) {
+        getShipyard(station)
+        getMarket(station)
+        getOutfitting(station)
+    }
+
+
+
     fun checkApiKey(): Boolean {
         val connection = URL(
-            BASE_URL + GET_RANKS +
-                "/?commanderName=${URLEncoder.encode(commander, "UTF-8")}" +
-                "&apiKey=$apiKey").openConnection()
+            BASE_URL + RANKS +
+                    "/?commanderName=${URLEncoder.encode(commander, "UTF-8")}" +
+                    "&apiKey=$apiKey"
+        ).openConnection()
         connection.doInput = true
         val json = connection.getInputStream().bufferedReader().readText()
-        val msgnum = JsonParser().parse(json).asJsonObject["msgnum"].asInt
+        val msgnum = JsonParser.parseString(json).asJsonObject["msgnum"].asInt
         return msgnum == 100
     }
 }

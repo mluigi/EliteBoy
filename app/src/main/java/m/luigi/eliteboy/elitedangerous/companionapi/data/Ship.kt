@@ -15,8 +15,6 @@ class Ship {
     var station: Station? = null
     var value: Value? = null
     var modules: Map<String, ShipModule>? = null
-
     var basevalue: Long? = null
     var sku: String? = null
-
 }
