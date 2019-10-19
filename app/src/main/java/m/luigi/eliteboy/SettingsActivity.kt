@@ -5,13 +5,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
-import m.luigi.eliteboy.util.info
+import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
+import m.luigi.eliteboy.util.snackBarMessage
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -51,17 +53,56 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-            val login = findPreference<Preference>("loginEDApi")
-            info { login!!.title.toString() }
-            if (EDCompanionApi.currentState==EDCompanionApi.State.LOGGED_OUT) {
-                login!!.setOnPreferenceClickListener {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this.context)
+            val loginEDAPI = findPreference<Preference>("loginEDApi")
+            val loginEDSM = findPreference<Preference>("loginEDSM")
+            if (EDCompanionApi.currentState == EDCompanionApi.State.LOGGED_OUT) {
+                loginEDAPI!!.setOnPreferenceClickListener {
                     EDCompanionApi.login()
 
                     true
                 }
-            } else{
-                login!!.title = "Logged in"
-                login.summary = ""
+            } else {
+                loginEDAPI!!.title = "Logged in"
+                loginEDAPI.summary = ""
+            }
+
+            GlobalScope.launch {
+                val loggedin = onIO { EDSMApi.checkApiKey() }
+                if (loggedin) {
+                    onMain { loginEDSM!!.title = "Logged in" }
+                } else {
+                    loginEDSM!!.setOnPreferenceClickListener {
+                        GlobalScope.launch {
+                            val cmdrEDSM = prefs.getString("pref_edsm_cmdr", "")
+                            val apikey = prefs.getString("pref_edsm_api_key", "")
+                            when {
+                                cmdrEDSM == "" -> onMain {
+                                    snackBarMessage { "Insert CMDR name" }
+                                }
+                                apikey == "" -> onMain {
+                                    snackBarMessage { "Insert API Key" }
+                                }
+                                else -> {
+                                    EDSMApi.commander = cmdrEDSM!!
+                                    EDSMApi.apiKey = apikey!!
+                                    if (onIO { EDSMApi.checkApiKey() }) {
+                                        onMain {
+                                            snackBarMessage { "Successfully logged in" }
+                                            loginEDSM.title = "Logged in"
+                                        }
+                                    } else {
+                                        onMain {
+                                            snackBarMessage { "Error logging in." }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        true
+                    }
+                }
             }
         }
     }

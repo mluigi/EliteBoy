@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import co.zsmb.materialdrawerkt.builders.accountHeader
@@ -24,17 +25,21 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
+import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
 
 class MainActivity : AppCompatActivity() {
 
     var waitForInitApi: Deferred<Any>? = null
-    lateinit var imageLoaderDeferred:Deferred<ImageLoader>
+    lateinit var imageLoaderDeferred: Deferred<ImageLoader>
 
     init {
         GlobalScope.launch {
             onIO {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+                EDSMApi.commander = prefs.getString("pref_edsm_cmdr", "")!!
+                EDSMApi.apiKey = prefs.getString("pref_edsm_api_key", "")!!
                 waitForInitApi = async {
                     EDCompanionApi.initApi(
                         getSharedPreferences(
@@ -43,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     ) { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it))) }
                 }
-                imageLoaderDeferred=async {
+                imageLoaderDeferred = async {
                     ImageLoader.getInstance().apply {
                         init(
                             ImageLoaderConfiguration.Builder(this@MainActivity)

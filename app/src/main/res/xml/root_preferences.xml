@@ -18,20 +18,17 @@
     <PreferenceCategory android:title="ED Companion">
 
         <PreferenceScreen
-            android:id="@+id/pref_ed_api"
             android:clickable="true"
             android:defaultValue="Default value"
             android:enabled="true"
             android:key="loginEDApi"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:summary="Needed for Profile"
             android:title="Login with your Elite account" />
     </PreferenceCategory>
     <PreferenceCategory android:title="EDSM">
 
         <EditTextPreference
-            android:id="@+id/pref_edsm_cmdr"
             android:key="pref_edsm_cmdr"
             android:selectAllOnFocus="true"
             android:singleLine="true"
@@ -40,7 +37,15 @@
             android:key="pref_edsm_api_key"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:summary="Needed for Engineers"
             android:title="API Key" />
+        <PreferenceScreen
+            android:clickable="true"
+            android:defaultValue="Default value"
+            android:enabled="true"
+            android:key="loginEDSM"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Login"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -2,7 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
     app:startDestination="@id/profileFragment">
 
     <fragment
@@ -17,11 +16,11 @@
             android:id="@+id/action_profileFragment_to_systemFragment"
             app:destination="@id/systemFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_stationFragment"
-            app:destination="@id/stationFragment" />
-        <action
             android:id="@+id/action_profileFragment_to_shipsFragment"
             app:destination="@id/shipsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_stationFragment"
+            app:destination="@id/stationFragment" />
     </fragment>
     <fragment
         android:id="@+id/creditsFragment"
@@ -42,9 +41,6 @@
         android:name="m.luigi.eliteboy.StationFragment"
         android:label="fragment_station"
         tools:layout="@layout/fragment_station" >
-        <action
-            android:id="@+id/action_stationFragment_to_shipsFragment"
-            app:destination="@id/shipsFragment" />
         <action
             android:id="@+id/action_stationFragment_to_systemFragment"
             app:destination="@id/systemFragment" />

@@ -12,38 +12,39 @@ import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import java.net.URL
 import java.net.URLEncoder
 
-class EDSMApi(var commander: String = "", var apiKey: String = "") {
-    companion object {
-        const val BASE_URL = "https://www.edsm.net"
-        const val STATUS = "/api-status-v1/elite-server"
+object EDSMApi {
+    var commander: String = ""
+    var apiKey: String = ""
 
-        const val SYSTEM = "/api-v1/system"
-        const val SYSTEMS = "/api-v1/systems"
-        const val SPHERE_SYSTEMS = "/api-v1/sphere-systems"
-        const val CUBE_SYSTEMS = "/api-v1/cube-systems"
+    private const val BASE_URL = "https://www.edsm.net"
+    private const val STATUS = "/api-status-v1/elite-server"
 
-        const val BODIES = "/api-system-v1/bodies"
-        const val STATIONS = "/api-system-v1/stations"
-        const val FACTIONS = "/api-system-v1/factions"
-        const val MARKET = "/market"
-        const val SHIPYARD = "/shipyard"
-        const val OUTFITTING = "/outfitting"
+    private const val SYSTEM = "/api-v1/system"
+    private const val SYSTEMS = "/api-v1/systems"
+    private const val SPHERE_SYSTEMS = "/api-v1/sphere-systems"
+    private const val CUBE_SYSTEMS = "/api-v1/cube-systems"
 
-        const val GET_LOGS = "/api-logs-v1/get-logs"
-        const val RANKS = "/api-commander-v1/get-ranks"
-        const val MATS = "api-commander-v1/get-materials"
-        const val CREDS = "/api-commander-v1/get-credits"
-        const val UPDATE_SHIP = "/api-commander-v1/update-ship"
-        const val SELL_SHIP = "/api-commander-v1/sell-ship"
+    private const val BODIES = "/api-system-v1/bodies"
+    private const val STATIONS = "/api-system-v1/stations"
+    private const val FACTIONS = "/api-system-v1/factions"
+    private const val MARKET = "/market"
+    private const val SHIPYARD = "/shipyard"
+    private const val OUTFITTING = "/outfitting"
 
-        const val FROM_SOFTWARE = "EliteBoy"
-        const val FROM_SOFTWARE_VERSION = "1.0"
+    private const val GET_LOGS = "/api-logs-v1/get-logs"
+    private const val RANKS = "/api-commander-v1/get-ranks"
+    private const val MATS = "api-commander-v1/get-materials"
+    private const val CREDS = "/api-commander-v1/get-credits"
+    private const val UPDATE_SHIP = "/api-commander-v1/update-ship"
+    private const val SELL_SHIP = "/api-commander-v1/sell-ship"
 
-        enum class SearchType {
-            NAME,
-            SPHERE,
-            CUBE
-        }
+    private const val FROM_SOFTWARE = "EliteBoy"
+    private const val FROM_SOFTWARE_VERSION = "1.0"
+
+    enum class SearchType {
+        NAME,
+        SPHERE,
+        CUBE
     }
 
 
@@ -141,7 +142,7 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
         val connection = URL(url).openConnection()
         connection.doInput = true
         val json = "{systems:" + connection.getInputStream().bufferedReader().readText() + "}"
-        val jsonArray = JsonParser().parse(json).asJsonObject.getAsJsonArray("systems")
+        val jsonArray = JsonParser.parseString(json).asJsonObject.getAsJsonArray("systems")
         val systems = ArrayList<System>()
         jsonArray.forEach {
             systems.add(Gson().fromJson<System>(it.asJsonObject, System::class.java))
@@ -280,12 +281,11 @@ class EDSMApi(var commander: String = "", var apiKey: String = "") {
     }
 
 
-
     fun checkApiKey(): Boolean {
         val connection = URL(
             BASE_URL + RANKS +
                     "/?commanderName=${URLEncoder.encode(commander, "UTF-8")}" +
-                    "&apiKey=$apiKey"
+                    "&apiKey=${if (apiKey == "") "s" else apiKey}"
         ).openConnection()
         connection.doInput = true
         val json = connection.getInputStream().bufferedReader().readText()

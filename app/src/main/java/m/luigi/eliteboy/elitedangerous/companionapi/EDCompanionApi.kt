@@ -36,11 +36,11 @@ object EDCompanionApi {
     const val MARKET_URL = "/market"
     const val SHIPYARD_URL = "/shipyard"
 
-    lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     var currentState = State.LOGGED_OUT
-    var credentials = Credentials()
-    private val clientID = BuildConfig.FrontierClientId
+    private var credentials = Credentials()
+    private const val clientID = BuildConfig.FrontierClientId
     private var authSessionId = ""
     private var verifier = ""
 

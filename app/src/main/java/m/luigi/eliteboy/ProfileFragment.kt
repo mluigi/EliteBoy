@@ -24,7 +24,7 @@ import m.luigi.eliteboy.util.*
 
 class ProfileFragment : Fragment() {
 
-    lateinit var imageLoader: ImageLoader
+    private lateinit var imageLoader: ImageLoader
     private var initJob: Job = Job()
 
     private var isRanksOpened = false

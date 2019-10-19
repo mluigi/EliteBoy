@@ -1,8 +1,8 @@
 package m.luigi.eliteboy.util
 
-val federationIcon = "https://edassets.org/static/img/factions/Federation.png"
-val empireIcon = "https://edassets.org/static/img/factions/Empire.png"
-val allianceIcon = "https://edassets.org/static/img/factions/Alliance.png"
+const val federationIcon = "https://edassets.org/static/img/factions/Federation.png"
+const val empireIcon = "https://edassets.org/static/img/factions/Empire.png"
+const val allianceIcon = "https://edassets.org/static/img/factions/Alliance.png"
 val explorationRankImages = arrayOf(
     "https://edassets.org/static/img/pilots-federation/explorer/rank-1.png",
     "https://edassets.org/static/img/pilots-federation/explorer/rank-2.png",
