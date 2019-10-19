@@ -29,7 +29,6 @@ class CreditsFragment : Fragment() {
                 "0" to creds.toFloat()/2,
                 "1" to creds.toFloat()
             ))
-
         }
     }
 }
