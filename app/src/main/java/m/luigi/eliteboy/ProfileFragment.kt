@@ -106,10 +106,19 @@ class ProfileFragment : Fragment() {
                         fedNavyRank.text = commander!!.rank!!.federation!!.name
                         imageLoader.displayImage(federationIcon, fedNavyImg)
 
+                        lastSystemLayout.setOnClickListener {
+                            Navigation.findNavController(it).navigate(
+                                R.id.action_profileFragment_to_systemFragment,
+                                bundleOf(Pair("system", this.lastSystem!!.name))
+                            )
+                        }
+
 
                         creditsView.setOnClickListener {
-                            Navigation.findNavController(it).navigate(R.id.action_profileFragment_to_creditsFragment,
-                                bundleOf(Pair("creds",commander!!.credits!!)))
+                            Navigation.findNavController(it).navigate(
+                                R.id.action_profileFragment_to_creditsFragment,
+                                bundleOf(Pair("creds", commander!!.credits!!))
+                            )
                         }
                     }
                 }

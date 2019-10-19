@@ -13,7 +13,7 @@ class Body {
     var age: Int? = null
     var luminosity: String? = null
     var absoluteMagnitude: Double? = null
-    var solarMasses: Int? = null
+    var solarMasses: Double? = null
     var solarRadius: Double? = null
     var surfaceTemperature: Int? = null
     var orbitalPeriod: Double? = null

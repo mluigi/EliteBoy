@@ -36,13 +36,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:padding="8dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
                         android:text="CMDR"
                         android:textColor="@color/md_amber_800"
                         android:textSize="18sp" />
@@ -57,7 +57,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
                         android:text="-"
                         android:textAlignment="viewEnd"
                         android:textSize="18sp" />
@@ -78,13 +77,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:padding="8dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
                         android:text="Credits"
                         android:textColor="@color/md_amber_800"
                         android:textSize="18sp" />
@@ -99,16 +98,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
+                        android:paddingEnd="8dp"
                         android:text="-"
                         android:textAlignment="viewEnd"
                         android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:clickable="true"
                         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -123,16 +121,17 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <LinearLayout
+                    android:id="@+id/lastSystemLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:padding="8dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
                         android:text="Last System"
                         android:textColor="@color/md_amber_800"
                         android:textSize="18sp" />
@@ -147,16 +146,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
+                        android:paddingEnd="8dp"
                         android:text="-"
                         android:textAlignment="viewEnd"
                         android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:clickable="true"
+                        android:clickable="false"
                         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -174,13 +173,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:padding="8dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
                         android:text="Last Station"
                         android:textColor="@color/md_amber_800"
                         android:textSize="18sp" />
@@ -196,16 +195,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="1"
-                        android:padding="8sp"
                         android:text="-"
                         android:textAlignment="viewEnd"
+                        android:paddingEnd="8dp"
                         android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:clickable="true"
+                        android:clickable="false"
                         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -222,7 +221,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
                     <LinearLayout
                         android:id="@+id/rankLayout"
@@ -235,7 +235,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:padding="8sp"
                             android:text="Ranks"
                             android:textColor="@color/md_amber_800"
                             android:textSize="18sp" />
@@ -248,9 +247,8 @@
                         <ImageView
                             android:id="@+id/rankView"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="0"
-                            android:clickable="true"
                             android:focusable="auto"
                             app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                     </LinearLayout>
@@ -689,13 +687,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
+                    android:padding="8dp"
                     android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="8sp"
                         android:text="Ships"
                         android:textColor="@color/md_amber_800"
                         android:textSize="18sp" />
@@ -707,9 +705,9 @@
 
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
-                        android:clickable="true"
+                        android:clickable="false"
                         android:focusable="true"
                         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                 </LinearLayout>

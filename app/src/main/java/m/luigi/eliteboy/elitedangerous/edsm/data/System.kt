@@ -1,5 +1,9 @@
 package m.luigi.eliteboy.elitedangerous.edsm.data
 
+import android.annotation.TargetApi
+import android.icu.text.NumberFormat
+import android.os.Build
+
 class System {
     var name: String? = null
     var coords: Coords? = null
@@ -30,6 +34,17 @@ class System {
         var reserve: String? = null
         var security: String? = null
         var economy: String? = null
+
+        @TargetApi(Build.VERSION_CODES.N)
+        fun asMap(): Map<String, String> {
+            return mapOf(
+                "Allegiance" to allegiance!!,
+                "Government" to government!!,
+                "Population" to NumberFormat.getIntegerInstance().format(population!!),
+                "Security" to security!!,
+                "Economy" to economy!!
+            )
+        }
     }
 
     inner class Coords {
