@@ -88,10 +88,10 @@ fun View.setAnimateOnClickListener(viewToAnimate: View, viewToRotate: View, bool
     setOnClickListener {
         if (bool()) {
             viewToAnimate.collapse()
-            viewToRotate.animate().rotation(0f).apply { duration = 800 }.start()
+            viewToRotate.animate().rotation(90f).apply { duration = 800 }.start()
         } else {
             viewToAnimate.expand()
-            viewToRotate.animate().rotation(90f).apply { duration = 800 }.start()
+            viewToRotate.animate().rotation(270f).apply { duration = 800 }.start()
         }
         block()
     }

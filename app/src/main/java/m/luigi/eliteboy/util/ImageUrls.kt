@@ -48,4 +48,19 @@ val cqcRankImages = arrayOf(
     "https://edassets.org/static/img/pilots-federation/cqc/rank-9-cqc.png"
 )
 
+val stationsImages = mapOf(
+    "Coriolis Starport" to "https://edassets.org/static/img/stations/Coriolis.png",
+    "Ocellus Starport" to "https://edassets.org/static/img/stations/Ocellus.png",
+    "Orbis Starport" to "https://edassets.org/static/img/stations/Orbis.png",
+    "Outpost" to "https://edassets.org/static/img/stations/Outpost.png",
+    "Mega ship" to "https://edassets.org/static/img/stations/Mega-Ship_Icon.png",
+    "Asteroid base" to "https://edassets.org/static/img/stations/Asteroid_Station_Icon.png",
+    "Planetary Outpost" to "https://edassets.org/static/img/settlements/settlement_sm.png",
+    "Planetary Port" to "https://edassets.org/static/img/settlements/surface_port_sm.png"
+)
+
+fun stationImage(type: String): String {
+    return stationsImages[type] ?: "https://edassets.org/static/img/stations/Coriolis.png"
+}
+
 

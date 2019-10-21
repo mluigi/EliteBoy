@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_system.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
+import m.luigi.eliteboy.elitedangerous.adapters.StationsAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import m.luigi.eliteboy.util.onMain
@@ -24,7 +26,6 @@ class SystemFragment : Fragment() {
     var isInfoOpened = false
     lateinit var getSystemJob: Job
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,6 +33,7 @@ class SystemFragment : Fragment() {
             onMain { systemSpinKit.visibility = View.VISIBLE }
             arguments?.let {
                 name = it.getString("system")
+                onMain { (activity as MainActivity).mainToolbar.title = name }
                 name?.let { system ->
                     this@SystemFragment.system = EDSMApi.getSystemComplete(system)
                 }
@@ -67,6 +69,11 @@ class SystemFragment : Fragment() {
                     infoList.layoutManager =
                         LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
                     infoList.adapter = InformationAdapter(it.information!!, view.context)
+
+                    stationsPager.adapter = StationsAdapter(
+                        system!!.stations!!,
+                        this@SystemFragment.requireFragmentManager()
+                    )
                 }
             } ?: snackBarMessage { "Couldn't find System $name" }
         }

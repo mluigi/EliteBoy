@@ -250,6 +250,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0"
                             android:focusable="auto"
+                            android:rotation="90"
                             app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                     </LinearLayout>
 
