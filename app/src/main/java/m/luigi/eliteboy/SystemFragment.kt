@@ -11,8 +11,9 @@ import kotlinx.android.synthetic.main.fragment_system.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import m.luigi.eliteboy.elitedangerous.adapters.BodyPageAdapter
 import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
-import m.luigi.eliteboy.elitedangerous.adapters.StationsAdapter
+import m.luigi.eliteboy.elitedangerous.adapters.StationPageAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import m.luigi.eliteboy.util.onMain
@@ -70,10 +71,19 @@ class SystemFragment : Fragment() {
                         LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
                     infoList.adapter = InformationAdapter(it.information!!, view.context)
 
-                    stationsPager.adapter = StationsAdapter(
+                    stationsPager.adapter = StationPageAdapter(
                         system!!.stations!!,
                         this@SystemFragment.requireFragmentManager()
                     )
+                    stationsDots.setViewPager(stationsPager)
+
+                    bodiesViewPager.adapter = BodyPageAdapter(
+                        system!!.bodies!!,
+                        this@SystemFragment.requireFragmentManager()
+                    )
+
+                    bodiesDots.setViewPager(bodiesViewPager)
+                    bodiesDots.pager!!.addOnPageChangeListener(bodiesDots.buildOnPageChangedListener())
                 }
             } ?: snackBarMessage { "Couldn't find System $name" }
         }

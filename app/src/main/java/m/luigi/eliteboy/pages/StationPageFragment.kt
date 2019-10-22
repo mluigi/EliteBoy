@@ -1,4 +1,4 @@
-package m.luigi.eliteboy.elitedangerous.pages
+package m.luigi.eliteboy.pages
 
 
 import android.annotation.TargetApi

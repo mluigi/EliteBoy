@@ -1,5 +1,10 @@
 package m.luigi.eliteboy.elitedangerous.edsm.data
 
+import android.annotation.TargetApi
+import android.icu.text.NumberFormat
+import android.os.Build
+import kotlin.math.roundToInt
+
 class Body {
     var id: Int = 0
     var id64: Any? = null
@@ -41,5 +46,19 @@ class Body {
         var mass: String? = null
         var innerRadius: Int = 0
         var outerRadius: Int = 0
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.N)
+    fun asMap(): Map<String, String> {
+        val map = mutableMapOf<String, String>()
+
+        map["Name"] = name!!
+        map["Type"] = "$subType"
+        if (isScoopable) map["Scoopable"]="Yes"
+        map["Distance to arrival"] = String.format("%s Ls", NumberFormat.getIntegerInstance().format(distanceToArrival!!.roundToInt()))
+
+
+        return map
     }
 }

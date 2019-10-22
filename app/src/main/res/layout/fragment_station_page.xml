@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".elitedangerous.pages.StationPageFragment">
+    tools:context=".pages.StationPageFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView4"
@@ -51,8 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Controlling Faction"
-                android:textColor="@color/md_amber_800"
+                android:text="Faction"
+                android:textColor="@color/md_amber_700"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Type"
-                android:textColor="@color/md_amber_800"
+                android:textColor="@color/md_amber_700"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Name"
-                android:textColor="@color/md_amber_800"
+                android:textColor="@color/md_amber_700"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toTopOf="parent" />
 
