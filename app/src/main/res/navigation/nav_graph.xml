@@ -41,9 +41,9 @@
         android:name="m.luigi.eliteboy.StationFragment"
         android:label="fragment_station"
         tools:layout="@layout/fragment_station" >
-        <action
-            android:id="@+id/action_stationFragment_to_systemFragment"
-            app:destination="@id/systemFragment" />
+        <argument
+            android:name="station"
+            app:argType="m.luigi.eliteboy.elitedangerous.edsm.data.Station" />
     </fragment>
     <fragment
         android:id="@+id/shipsFragment"

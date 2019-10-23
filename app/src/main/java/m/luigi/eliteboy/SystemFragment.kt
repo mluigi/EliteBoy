@@ -16,6 +16,7 @@ import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.adapters.StationPageAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
+import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
 import m.luigi.eliteboy.util.setAnimateOnClickListener
 import m.luigi.eliteboy.util.snackBarMessage
@@ -29,19 +30,27 @@ class SystemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         getSystemJob = GlobalScope.launch {
-            onMain { systemSpinKit.visibility = View.VISIBLE }
             arguments?.let {
-                name = it.getString("system")
+                name = it.getString("system", "")
                 onMain {
                     (activity as MainActivity).mainToolbar.title = name
                     systemLayout.visibility = View.GONE
+                    systemSpinKit.visibility = View.VISIBLE
                 }
-                name?.let { system ->
-                    this@SystemFragment.system = EDSMApi.getSystemComplete(system)
+                name?.let {
+                    this@SystemFragment.system = onIO { EDSMApi.getSystemComplete(name!!) }
                 }
+
+
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        system?.let {
+            setSystemLayout()
         }
     }
 
@@ -49,8 +58,6 @@ class SystemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_system, container, false)
     }
@@ -65,30 +72,36 @@ class SystemFragment : Fragment() {
                 systemSpinKit.visibility = View.GONE
                 systemLayout.visibility = View.VISIBLE
                 system?.let {
-
-                    infoLayout.setAnimateOnClickListener(
-                        infoList,
-                        infoImg,
-                        { isInfoOpened }) { isInfoOpened = !isInfoOpened }
-                    systemName.text = it.name!!
-                    infoList.layoutManager =
-                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                    infoList.adapter = InformationAdapter(it.information!!, view.context)
-
-                    stationsPager.adapter = StationPageAdapter(
-                        system!!.stations!!,
-                        this@SystemFragment.requireFragmentManager()
-                    )
-                    stationsDots.attachToViewPager(stationsPager)
-
-                    bodiesViewPager.adapter = BodyPageAdapter(
-                        system!!.bodies!!,
-                        this@SystemFragment.requireFragmentManager()
-                    )
-                    bodiesDots.attachToViewPager(bodiesViewPager)
-
-                }
-            } ?: snackBarMessage { "Couldn't find System $name" }
+                    setSystemLayout()
+                } ?: snackBarMessage { "Couldn't find System $name" }
+            }
         }
+    }
+
+    private fun setSystemLayout() {
+
+
+        infoLayout.setAnimateOnClickListener(
+            infoList,
+            infoImg,
+            { isInfoOpened }) { isInfoOpened = !isInfoOpened }
+        systemName.text = system!!.name!!
+        infoList.layoutManager =
+            LinearLayoutManager(view!!.context, LinearLayoutManager.VERTICAL, false)
+        infoList.adapter = InformationAdapter(system!!.information!!.asMap(), view!!.context)
+
+        stationsPager.adapter = StationPageAdapter(
+            system!!.stations!!,
+            this@SystemFragment.requireFragmentManager()
+        )
+        stationsDots.attachToViewPager(stationsPager)
+
+        bodiesViewPager.adapter = BodyPageAdapter(
+            system!!.bodies!!,
+            this@SystemFragment.requireFragmentManager()
+        )
+        bodiesDots.attachToViewPager(bodiesViewPager)
+
+
     }
 }

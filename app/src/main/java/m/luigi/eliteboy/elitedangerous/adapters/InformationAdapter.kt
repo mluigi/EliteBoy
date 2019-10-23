@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.system_information_item.view.*
 import m.luigi.eliteboy.R
-import m.luigi.eliteboy.elitedangerous.edsm.data.System
 
-class InformationAdapter(private val information: System.Information, val context: Context) :
+class InformationAdapter(private val informationMap: Map<String,String>, val context: Context) :
     RecyclerView.Adapter<InformationAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -22,12 +21,11 @@ class InformationAdapter(private val information: System.Information, val contex
     }
 
     override fun getItemCount(): Int {
-        return information.asMap().size
+        return informationMap.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val map = information.asMap()
-        map.entries.elementAt(position).toPair().let { (k, v) ->
+        informationMap.entries.elementAt(position).toPair().let { (k, v) ->
             holder.infoProperty.text = k
             holder.infoValue.text = v
         }

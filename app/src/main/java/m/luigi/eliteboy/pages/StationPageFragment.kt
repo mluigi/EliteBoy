@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_station_page.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,8 +40,15 @@ class StationPageFragment(var station: Station) :
             onMain {
                 nameView.text = station.name
                 typeView.text = station.type
-                distanceView.text = String.format("%s Ls",NumberFormat.getIntegerInstance().format(station.distanceToArrival.roundToInt()))
+                distanceView.text = String.format(
+                    "%s Ls",
+                    NumberFormat.getIntegerInstance().format(station.distanceToArrival.roundToInt())
+                )
                 factionView.text = station.controllingFaction!!.name
+                detailButton.setOnClickListener { findNavController().navigate(R.id.action_systemFragment_to_stationFragment,
+                    bundleOf(
+                        "station" to station
+                    )) }
                 (activity as MainActivity).imageLoaderDeferred.await()
                     .displayImage(stationImage(station.type!!), typeImg)
             }

@@ -3,8 +3,10 @@ package m.luigi.eliteboy.elitedangerous.edsm.data
 import android.annotation.TargetApi
 import android.icu.text.NumberFormat
 import android.os.Build
+import android.os.Parcel
+import android.os.Parcelable
 
-class System {
+class System() :Parcelable {
     var name: String? = null
     var coords: Coords? = null
     var information: Information? = null
@@ -18,6 +20,13 @@ class System {
     var stations: ArrayList<Station>? = null
     var controllingFaction: Faction? = null
     var factions: ArrayList<Faction>? = null
+
+    constructor(parcel: Parcel) : this() {
+        name = parcel.readString()
+        id = parcel.readInt()
+        id64 = parcel.readValue(Long::class.java.classLoader) as? Long
+        distance = parcel.readDouble()
+    }
 
     inner class PrimaryStar {
         var type: String? = null
@@ -53,7 +62,14 @@ class System {
         var z = 0.toDouble()
     }
 
-    companion object {
+    companion object CREATOR : Parcelable.Creator<System> {
+        override fun createFromParcel(parcel: Parcel): System {
+            return System(parcel)
+        }
+
+        override fun newArray(size: Int): Array<System?> {
+            return arrayOfNulls(size)
+        }
         fun updateSystem(original: System, update: System) {
             original.javaClass.declaredFields.forEach {
                 it.isAccessible = true
@@ -65,5 +81,16 @@ class System {
                 }
             }
         }
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeInt(id)
+        parcel.writeValue(id64)
+        parcel.writeDouble(distance)
+    }
+
+    override fun describeContents(): Int {
+        return 0
     }
 }

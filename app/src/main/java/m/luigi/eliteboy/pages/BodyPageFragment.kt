@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_bodies_page.*
 import m.luigi.eliteboy.R
-import m.luigi.eliteboy.elitedangerous.adapters.BodyAdapter
+import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.data.Body
 
 class BodyPageFragment(private val body: Body) : Fragment() {
@@ -26,7 +26,7 @@ class BodyPageFragment(private val body: Body) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bodyList.layoutManager =
             LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-        bodyList.adapter = BodyAdapter(body, context!!)
+        bodyList.adapter = InformationAdapter(body.asMap(), context!!)
 
     }
 
