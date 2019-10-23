@@ -7,6 +7,7 @@
     tools:context=".SystemFragment" >
 
     <ScrollView
+        android:id="@+id/systemLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -165,23 +166,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                        <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
                             android:id="@+id/stationsDots"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="8dp"
-                            app:dotsColor="@color/md_amber_400"
-                            app:dotsCornerRadius="8dp"
-                            app:dotsSize="16dp"
-                            app:dotsSpacing="4dp"
-                            app:dotsWidthFactor="2.5"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="8dp"
+                            app:dotColor="@color/md_amber_600"
+                            app:dotCount="10"
+                            app:dotRadius="6dp"
+                            app:fadingDotCount="2"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.498"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:progressMode="true"
-                            app:selectedDotColor="@color/md_amber_800" />
+                            app:selectedDotColor="@color/md_amber_800"
+                            app:selectedDotRadius="8dp" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
@@ -233,23 +233,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                        <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
                             android:id="@+id/bodiesDots"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="8dp"
-                            app:dotsColor="@color/md_amber_400"
-                            app:dotsCornerRadius="8dp"
-                            app:dotsSize="16dp"
-                            app:dotsSpacing="4dp"
-                            app:dotsWidthFactor="2.5"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="8dp"
+                            app:dotColor="@color/md_amber_600"
+                            app:dotCount="10"
+                            app:dotRadius="6dp"
+                            app:fadingDotCount="2"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.498"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:progressMode="true"
-                            app:selectedDotColor="@color/md_amber_800" />
+                            app:selectedDotColor="@color/md_amber_800"
+                            app:selectedDotRadius="8dp" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>

@@ -34,7 +34,10 @@ class SystemFragment : Fragment() {
             onMain { systemSpinKit.visibility = View.VISIBLE }
             arguments?.let {
                 name = it.getString("system")
-                onMain { (activity as MainActivity).mainToolbar.title = name }
+                onMain {
+                    (activity as MainActivity).mainToolbar.title = name
+                    systemLayout.visibility = View.GONE
+                }
                 name?.let { system ->
                     this@SystemFragment.system = EDSMApi.getSystemComplete(system)
                 }
@@ -60,6 +63,7 @@ class SystemFragment : Fragment() {
 
             onMain {
                 systemSpinKit.visibility = View.GONE
+                systemLayout.visibility = View.VISIBLE
                 system?.let {
 
                     infoLayout.setAnimateOnClickListener(
@@ -75,15 +79,14 @@ class SystemFragment : Fragment() {
                         system!!.stations!!,
                         this@SystemFragment.requireFragmentManager()
                     )
-                    stationsDots.setViewPager(stationsPager)
+                    stationsDots.attachToViewPager(stationsPager)
 
                     bodiesViewPager.adapter = BodyPageAdapter(
                         system!!.bodies!!,
                         this@SystemFragment.requireFragmentManager()
                     )
+                    bodiesDots.attachToViewPager(bodiesViewPager)
 
-                    bodiesDots.setViewPager(bodiesViewPager)
-                    bodiesDots.pager!!.addOnPageChangeListener(bodiesDots.buildOnPageChangedListener())
                 }
             } ?: snackBarMessage { "Couldn't find System $name" }
         }
