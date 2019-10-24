@@ -42,4 +42,4 @@ android:
     - '.+'
 
 script:
-  - ./gradlew build
+  - ./gradlew build -x processDebugGoogleServices
