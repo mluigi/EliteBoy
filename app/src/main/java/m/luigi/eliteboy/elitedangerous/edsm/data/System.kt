@@ -1,8 +1,6 @@
 package m.luigi.eliteboy.elitedangerous.edsm.data
 
-import android.annotation.TargetApi
 import android.icu.text.NumberFormat
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -44,7 +42,6 @@ class System() :Parcelable {
         var security: String? = null
         var economy: String? = null
 
-        @TargetApi(Build.VERSION_CODES.N)
         fun asMap(): Map<String, String> {
             return mapOf(
                 "Allegiance" to allegiance!!,

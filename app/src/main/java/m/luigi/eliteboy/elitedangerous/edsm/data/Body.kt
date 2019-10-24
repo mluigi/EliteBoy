@@ -1,8 +1,6 @@
 package m.luigi.eliteboy.elitedangerous.edsm.data
 
-import android.annotation.TargetApi
 import android.icu.text.NumberFormat
-import android.os.Build
 import kotlin.math.roundToInt
 
 class Body {
@@ -48,8 +46,6 @@ class Body {
         var outerRadius: Int = 0
     }
 
-
-    @TargetApi(Build.VERSION_CODES.N)
     fun asMap(): Map<String, String> {
         val map = mutableMapOf<String, String>()
 

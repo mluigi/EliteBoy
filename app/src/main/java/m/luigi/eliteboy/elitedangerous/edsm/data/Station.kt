@@ -1,8 +1,6 @@
 package m.luigi.eliteboy.elitedangerous.edsm.data
 
-import android.annotation.TargetApi
 import android.icu.text.NumberFormat
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
@@ -53,7 +51,6 @@ class Station() :Parcelable {
         var name: String? = null
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     fun asMap(): Map<String, String> {
         val map = mutableMapOf<String, String>()
         map["Type"] = type!!

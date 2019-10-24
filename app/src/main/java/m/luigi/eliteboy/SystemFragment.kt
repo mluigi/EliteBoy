@@ -24,9 +24,9 @@ import m.luigi.eliteboy.util.snackBarMessage
 class SystemFragment : Fragment() {
 
     var name: String? = null
-    var system: System? = null
-    var isInfoOpened = false
-    lateinit var getSystemJob: Job
+    private var system: System? = null
+    private var isInfoOpened = false
+    private lateinit var getSystemJob: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -15,7 +15,7 @@ import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
 import java.text.NumberFormat
 
 
-class CommodityAdapter(val commodities: ArrayList<Commodity>, val context: Context) :
+class CommodityAdapter(private val commodities: ArrayList<Commodity>, val context: Context) :
     RecyclerView.Adapter<CommodityAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -1,10 +1,8 @@
 package m.luigi.eliteboy.elitedangerous.companionapi
 
-import android.annotation.TargetApi
 import android.content.SharedPreferences
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
-import android.os.Build
 import android.util.Base64.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
@@ -12,7 +10,6 @@ import m.luigi.eliteboy.BuildConfig
 import m.luigi.eliteboy.elitedangerous.companionapi.data.*
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.StarportDeserializer
-
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -76,7 +73,6 @@ object EDCompanionApi {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     fun saveCreds() {
         sharedPrefs.edit().putString("creds", credentials.toJson()).apply()
     }
@@ -128,8 +124,6 @@ object EDCompanionApi {
         return base64.replace('+', '-').replace('/', '_').replace("=", "")
     }
 
-
-    @TargetApi(Build.VERSION_CODES.O)
     fun tokenCallback(code: String) {
         val urlConnection = getRequest("$AUTH_SERVER$TOKEN_URL")
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
@@ -158,7 +152,6 @@ object EDCompanionApi {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     private fun refreshToken() {
         currentState = State.AWAITING_CALLBACK
         val urlConnection = getRequest("$AUTH_SERVER$TOKEN_URL")

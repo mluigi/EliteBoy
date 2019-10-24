@@ -1,10 +1,8 @@
 package m.luigi.eliteboy
 
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.icu.text.NumberFormat
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +37,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

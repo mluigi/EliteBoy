@@ -1,9 +1,7 @@
 package m.luigi.eliteboy.pages
 
 
-import android.annotation.TargetApi
 import android.icu.text.NumberFormat
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +30,6 @@ class StationPageFragment(var station: Station) :
         return inflater.inflate(R.layout.fragment_station_page, container, false)
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

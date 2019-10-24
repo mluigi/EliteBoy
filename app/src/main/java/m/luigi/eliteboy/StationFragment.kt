@@ -22,10 +22,10 @@ import m.luigi.eliteboy.util.setAnimateOnClickListener
 
 class StationFragment : Fragment() {
     lateinit var station: Station
-    lateinit var getStationJob: Job
+    private lateinit var getStationJob: Job
 
-    var isInfoOpened = true
-    var isMarketOpened = false
+    private var isInfoOpened = true
+    private var isMarketOpened = false
     var isShipyardOpened = false
     var isOutfittingOpened = false
 
