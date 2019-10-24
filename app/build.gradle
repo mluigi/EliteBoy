@@ -23,7 +23,6 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'FrontierClientId', FrontierClientId
-
     }
     compileOptions {
         sourceCompatibility = 1.8
