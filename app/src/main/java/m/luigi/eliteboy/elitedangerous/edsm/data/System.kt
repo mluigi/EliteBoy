@@ -51,7 +51,8 @@ class System() :Parcelable {
                 "Government" to government!!,
                 "Population" to NumberFormat.getIntegerInstance().format(population!!),
                 "Security" to security!!,
-                "Economy" to economy!!
+                "Economy" to economy!!,
+                "State" to factionState!!
             )
         }
     }

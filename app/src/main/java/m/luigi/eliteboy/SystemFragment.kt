@@ -49,8 +49,13 @@ class SystemFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        system?.let {
-            setSystemLayout()
+        GlobalScope.launch{
+            onMain{
+                (activity as MainActivity).mainToolbar.title = name
+                system?.let {
+                    setSystemLayout()
+                }
+            }
         }
     }
 
@@ -69,6 +74,7 @@ class SystemFragment : Fragment() {
             getSystemJob.join()
 
             onMain {
+
                 systemSpinKit.visibility = View.GONE
                 systemLayout.visibility = View.VISIBLE
                 system?.let {
@@ -91,13 +97,13 @@ class SystemFragment : Fragment() {
         infoList.adapter = InformationAdapter(system!!.information!!.asMap(), view!!.context)
 
         stationsPager.adapter = StationPageAdapter(
-            system!!.stations!!,
-            this@SystemFragment.requireFragmentManager()
+            system!!.stations!!.apply { sortBy { it.distanceToArrival } } ,
+            childFragmentManager
         )
         stationsDots.attachToViewPager(stationsPager)
 
         bodiesViewPager.adapter = BodyPageAdapter(
-            system!!.bodies!!,
+            system!!.bodies!!.apply { sortBy { it.distanceToArrival } },
             this@SystemFragment.requireFragmentManager()
         )
         bodiesDots.attachToViewPager(bodiesViewPager)

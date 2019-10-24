@@ -170,6 +170,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <LinearLayout
+                    android:id="@+id/lastStationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -195,9 +196,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:maxLines="1"
+                        android:paddingEnd="8dp"
                         android:text="-"
                         android:textAlignment="viewEnd"
-                        android:paddingEnd="8dp"
                         android:textSize="18sp" />
 
                     <ImageView

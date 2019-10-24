@@ -227,7 +227,7 @@ object EDSMApi {
         return system
     }
 
-    fun getShipyard(marketId: Long): Station {
+    private fun getShipyard(marketId: Long): Station {
         val connection = URL(
             BASE_URL + STATIONS + SHIPYARD +
                     "?marketId=$marketId"
@@ -242,7 +242,7 @@ object EDSMApi {
         Station.updateStation(station, getShipyard(station.marketId))
     }
 
-    fun getMarket(marketId: Long): Station {
+    private fun getMarket(marketId: Long): Station {
         val connection = URL(
             BASE_URL + STATIONS + MARKET +
                     "?marketId=$marketId"
@@ -254,7 +254,7 @@ object EDSMApi {
             .create().fromJson<Station>(json, Station::class.java)
     }
 
-    private fun getMarket(station: Station) {
+    fun getMarket(station: Station) {
         Station.updateStation(station, getMarket(station.marketId))
     }
 

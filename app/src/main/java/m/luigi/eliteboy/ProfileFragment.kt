@@ -20,6 +20,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
+import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import m.luigi.eliteboy.elitedangerous.edsm.data.Station
 import m.luigi.eliteboy.util.*
 
 class ProfileFragment : Fragment() {
@@ -83,7 +85,8 @@ class ProfileFragment : Fragment() {
                             NumberFormat.getIntegerInstance().format(commander!!.credits!!)
                         )
                         this@ProfileFragment.lastSystem.text = this.lastSystem!!.name
-                        lastStation.text = lastStarport!!.name
+                        lastStation.text =
+                            if (lastStarport!!.name != "") lastStarport!!.name else "-"
                         combatRank.text = commander!!.rank!!.combat!!.name
                         val combatRank = commander!!.rank!!.combat!!.ordinal
                         imageLoader.displayImage(combatRankImages[combatRank], combatImg)
@@ -111,6 +114,23 @@ class ProfileFragment : Fragment() {
                                 R.id.action_profileFragment_to_systemFragment,
                                 bundleOf(Pair("system", this.lastSystem!!.name))
                             )
+                        }
+
+                        if (lastStarport!!.name != "") {
+                            val station: Station? = onIO {
+                                EDSMApi.getStations(lastSystem!!.name!!).stations!!
+                                    .firstOrNull { it.name == lastStarport!!.name }
+
+                            }
+
+                            station?.let {
+                                lastStationLayout.setOnClickListener {
+                                    Navigation.findNavController(it).navigate(
+                                        R.id.action_profileFragment_to_stationFragment,
+                                        bundleOf(Pair("station", station))
+                                    )
+                                }
+                            }
                         }
 
 
