@@ -1,4 +1,4 @@
-# EliteBoy
+# EliteBoy [![Build Status](https://travis-ci.com/mluigi/EliteBoy.svg?branch=develop)](https://travis-ci.com/mluigi/EliteBoy)
 
 A companion app to Elite Dangerous.
 
