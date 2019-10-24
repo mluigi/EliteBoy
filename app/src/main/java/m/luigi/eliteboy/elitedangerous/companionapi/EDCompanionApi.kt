@@ -6,7 +6,7 @@ import android.net.Uri
 import android.util.Base64.*
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import m.luigi.eliteboy.BuildConfig
+import m.luigi.eliteboy.BuildConfig.FrontierClientId
 import m.luigi.eliteboy.elitedangerous.companionapi.data.*
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.StarportDeserializer
@@ -37,7 +37,7 @@ object EDCompanionApi {
 
     var currentState = State.LOGGED_OUT
     private var credentials = Credentials()
-    private const val clientID = BuildConfig.FrontierClientId
+    private val clientID = FrontierClientId
     private var authSessionId = ""
     private var verifier = ""
 
