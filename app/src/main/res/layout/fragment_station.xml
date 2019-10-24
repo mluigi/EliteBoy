@@ -93,9 +93,9 @@
                         android:id="@+id/infoList"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="16dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
                         android:visibility="visible"
                         tools:itemCount="8"
                         tools:listitem="@layout/system_information_item" />
@@ -162,12 +162,12 @@
                         android:id="@+id/marketList"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:visibility="gone"
                         tools:itemCount="8"
-                        tools:listitem="@layout/system_information_item" />
+                        tools:listitem="@layout/commodities_item" />
 
                 </LinearLayout>
 
