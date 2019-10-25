@@ -18,7 +18,6 @@ before_install:
 before_script:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - bash update_sdk.sh
-  - ./gradlew npmSetup
 
 jdk: oraclejdk8
 
@@ -43,4 +42,4 @@ android:
     - '.+'
 
 script:
-  -  ./gradlew build -x lint -x processDebugGoogleServices -x fabricGenerateResourcesDebug -x processReleaseGoogleServices -x fabricGenerateResourcesRelease
+  -  ./gradlew build -x lint -x processDebugGoogleServices -x fabricGenerateResourcesDebug -x processReleaseGoogleServices -x fabricGenerateResourcesRelease -x includeCoriolisData
