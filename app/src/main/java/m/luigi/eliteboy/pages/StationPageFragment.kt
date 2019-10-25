@@ -46,7 +46,7 @@ class StationPageFragment(var station: Station) :
                     bundleOf(
                         "station" to station
                     )) }
-                (activity as MainActivity).imageLoaderDeferred.await()
+                (activity as MainActivity).imageLoader
                     .displayImage(stationImage(station.type!!), typeImg)
             }
         }

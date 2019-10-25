@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -56,5 +57,8 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.ryanjeffreybrooks:indefinitepagerindicator:1.0.10'
 }
+
+build.dependsOn(':includeCoriolisData')
+
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'

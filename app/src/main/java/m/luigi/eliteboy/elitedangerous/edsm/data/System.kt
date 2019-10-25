@@ -4,7 +4,7 @@ import android.icu.text.NumberFormat
 import android.os.Parcel
 import android.os.Parcelable
 
-class System() :Parcelable {
+class System() : Parcelable {
     var name: String? = null
     var coords: Coords? = null
     var information: Information? = null
@@ -68,6 +68,7 @@ class System() :Parcelable {
         override fun newArray(size: Int): Array<System?> {
             return arrayOfNulls(size)
         }
+
         fun updateSystem(original: System, update: System) {
             original.javaClass.declaredFields.forEach {
                 it.isAccessible = true

@@ -33,7 +33,8 @@ class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initJob = GlobalScope.launch {
-            imageLoader = (activity as MainActivity).imageLoaderDeferred.await()
+            (activity as MainActivity).initjob.join()
+            imageLoader = (activity as MainActivity).imageLoader
         }
     }
 
@@ -43,7 +44,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         GlobalScope.launch {
             initJob.join()
-            (activity as MainActivity).waitForInitApi!!.await()
             val profile = if (EDCompanionApi.currentState == EDCompanionApi.State.AUTHORIZED) {
                 onMain { profileSpinKit.visibility = View.VISIBLE }
                 EDCompanionApi.getProfile()

@@ -15,6 +15,7 @@ import m.luigi.eliteboy.elitedangerous.adapters.CommodityAdapter
 import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
+import m.luigi.eliteboy.util.CoriolisDataHelper
 import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
 import m.luigi.eliteboy.util.setAnimateOnClickListener
@@ -97,13 +98,22 @@ class StationFragment : Fragment() {
 
                     marketList.layoutManager =
                         LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                    marketList.adapter=CommodityAdapter(station.commodities!!,view.context)
+                    marketList.adapter = CommodityAdapter(station.commodities!!, view.context)
                 } else {
                     marketCardView.visibility = View.GONE
                 }
 
                 if (station.haveShipyard) {
-
+                    shipsLayout.setAnimateOnClickListener(
+                        shipList,
+                        shipImg,
+                        { isShipyardOpened }) { isShipyardOpened = !isShipyardOpened }
+                    shipList.layoutManager =
+                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+                    shipList.adapter=InformationAdapter(
+                        CoriolisDataHelper.getShipPriceMapFiltered(station.ships!!),
+                        view.context
+                    )
                 } else {
                     shipsCardView.visibility = View.GONE
                 }

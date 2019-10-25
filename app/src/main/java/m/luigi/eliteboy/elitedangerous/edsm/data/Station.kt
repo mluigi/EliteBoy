@@ -67,7 +67,6 @@ class Station() :Parcelable {
         map["Has Outfitting"] = if (haveOutfitting) "Yes" else "No"
         map["Other Services"] =otherServices!!.joinToString(separator = "\n")
 
-
         return map
     }
 

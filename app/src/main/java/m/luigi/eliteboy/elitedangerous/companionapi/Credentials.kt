@@ -1,7 +1,6 @@
 package m.luigi.eliteboy.elitedangerous.companionapi
 
 import com.google.gson.*
-import m.luigi.eliteboy.util.info
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 
@@ -34,7 +33,6 @@ class Credentials {
                     ): Credentials {
                         val creds = Credentials()
                         val jsonObject = json!!.asJsonObject
-                        info { jsonObject.toString() }
                         creds.refreshToken = jsonObject["refreshToken"].asString
                         creds.accessToken = jsonObject["accessToken"].asString
                         creds.expiryDate= LocalDateTime.now()

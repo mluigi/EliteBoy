@@ -20,51 +20,50 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.utils.StorageUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import m.luigi.eliteboy.util.CoriolisDataHelper
 import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
 
 class MainActivity : AppCompatActivity() {
 
-    var waitForInitApi: Deferred<Any>? = null
-    lateinit var imageLoaderDeferred: Deferred<ImageLoader>
+    lateinit var imageLoader: ImageLoader
+    var initjob: Job = Job()
 
     init {
-        GlobalScope.launch {
+        initjob = GlobalScope.launch {
             onIO {
+                CoriolisDataHelper.init(assets)
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
                 EDSMApi.commander = prefs.getString("pref_edsm_cmdr", "")!!
                 EDSMApi.apiKey = prefs.getString("pref_edsm_api_key", "")!!
-                waitForInitApi = async {
-                    EDCompanionApi.initApi(
-                        getSharedPreferences(
-                            "Main",
-                            Context.MODE_PRIVATE
-                        )
-                    ) { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it))) }
-                }
-                imageLoaderDeferred = async {
-                    ImageLoader.getInstance().apply {
-                        init(
-                            ImageLoaderConfiguration.Builder(this@MainActivity)
-                                .memoryCache(LruMemoryCache(2 * 1024 * 1024))
-                                .diskCache(UnlimitedDiskCache(StorageUtils.getCacheDirectory(this@MainActivity)))
-                                .defaultDisplayImageOptions(
-                                    DisplayImageOptions.Builder()
-                                        .showImageOnFail(R.drawable.ic_error_black_24dp)
-                                        .showImageForEmptyUri(R.drawable.ic_error_black_24dp)
-                                        .cacheInMemory(true)
-                                        .cacheOnDisk(true)
-                                        .build()
-                                )
-                                .build()
-                        )
-                    }
+
+                EDCompanionApi.initApi(
+                    getSharedPreferences(
+                        "Main",
+                        Context.MODE_PRIVATE
+                    )
+                ) { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it))) }
+
+                imageLoader = ImageLoader.getInstance().apply {
+                    init(
+                        ImageLoaderConfiguration.Builder(this@MainActivity)
+                            .memoryCache(LruMemoryCache(2 * 1024 * 1024))
+                            .diskCache(UnlimitedDiskCache(StorageUtils.getCacheDirectory(this@MainActivity)))
+                            .defaultDisplayImageOptions(
+                                DisplayImageOptions.Builder()
+                                    .showImageOnFail(R.drawable.ic_error_black_24dp)
+                                    .showImageForEmptyUri(R.drawable.ic_error_black_24dp)
+                                    .cacheInMemory(true)
+                                    .cacheOnDisk(true)
+                                    .build()
+                            )
+                            .build()
+                    )
                 }
             }
         }

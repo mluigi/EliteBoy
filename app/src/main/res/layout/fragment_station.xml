@@ -227,23 +227,17 @@
 
                     </LinearLayout>
 
-                    <androidx.core.widget.NestedScrollView
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/shipList"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone">
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/shipList"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:nestedScrollingEnabled="true"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingBottom="4dp"
-                            android:visibility="visible"
-                            tools:itemCount="10"
-                            tools:listitem="@layout/system_information_item" />
-                    </androidx.core.widget.NestedScrollView>
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="true"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="4dp"
+                        android:visibility="gone"
+                        tools:itemCount="10"
+                        tools:listitem="@layout/system_information_item" />
 
                 </LinearLayout>
 
