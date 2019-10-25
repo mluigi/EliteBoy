@@ -18,7 +18,6 @@ before_install:
 before_script:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - bash update_sdk.sh
-  - git submodule update --init --recursive
 
 jdk: oraclejdk8
 
