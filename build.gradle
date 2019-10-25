@@ -42,11 +42,9 @@ task includeCoriolisData(type: Copy) {
     dependsOn(':updateCoriolisData')
 }
 
-task updateCoriolisData(type: NodeTask) {
+task updateCoriolisData(type: NpmTask) {
     workingDir = file("coriolis-data")
-    script = file ("coriolis-data/generate_distribution.js")
     args = ['install']
-    dependsOn(':coriolisDataPull')
 }
 
 task coriolisDataPull(type: Exec) {
