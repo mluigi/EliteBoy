@@ -6,10 +6,10 @@ A companion app to Elite Dangerous.
 ### Done
 - Show Profile from ED Companion Api.
 - Show last visited system with stations e bodies
-- Show station with informations and market prices.
+- Show station with informations, market prices and ships sold.
 
 ### Todo
-- Show list of ship and list of modules sold at a station
+- Show list of modules sold at a station
 - Search for a station or a system with filters
 - Search nearest service
 - Show news from Galnet
