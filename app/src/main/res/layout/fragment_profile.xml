@@ -6,237 +6,706 @@
     android:layout_height="match_parent"
     tools:context=".ProfileFragment">
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
-        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:animateLayoutChanges="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="CMDR"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/cmdrName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/creditsView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Credits"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/credits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingEnd="8dp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <LinearLayout
-                    android:id="@+id/lastSystemLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Last System"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/lastSystem"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingEnd="8dp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:clickable="false"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <LinearLayout
-                    android:id="@+id/lastStationLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Last Station"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/lastStation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:paddingEnd="8dp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:clickable="false"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="8dp">
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent">
 
                     <LinearLayout
-                        android:id="@+id/rankLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        android:padding="8dp"
                         android:visibility="visible">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Ranks"
+                            android:text="CMDR"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/cmdrName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/creditsView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Credits"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/credits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingEnd="8dp"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:id="@+id/lastSystemLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Last System"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/lastSystem"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingEnd="8dp"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:clickable="false"
+                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:id="@+id/lastStationLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Last Station"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/lastStation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:maxLines="1"
+                            android:paddingEnd="8dp"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:clickable="false"
+                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/rankLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Ranks"
+                                android:textColor="@color/md_amber_800"
+                                android:textSize="18sp" />
+
+                            <Space
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <ImageView
+                                android:id="@+id/rankView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0"
+                                android:focusable="auto"
+                                android:rotation="90"
+                                app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/rankBars"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:animateLayoutChanges="true"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/combatImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:adjustViewBounds="false"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline8"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
+                                        tools:srcCompat="@tools:sample/avatars[0]" />
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline8"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout3"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="@+id/guideline8"
+                                        app:layout_constraintTop_toTopOf="parent">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:maxLines="1"
+                                            android:paddingTop="8sp"
+                                            android:paddingBottom="8sp"
+                                            android:text="Combat"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="18sp" />
+
+                                        <TextView
+                                            android:id="@+id/combatRank"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="-"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline4"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+
+                                    <ImageView
+                                        android:id="@+id/tradeImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout7"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout7"
+                                        tools:srcCompat="@tools:sample/avatars[0]" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout7"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/tradeImg"
+                                        app:layout_constraintTop_toTopOf="parent">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:maxLines="1"
+                                            android:paddingTop="8sp"
+                                            android:paddingBottom="8sp"
+                                            android:text="Trade"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="18sp" />
+
+                                        <TextView
+                                            android:id="@+id/tradeRank"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="-"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline5"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+
+                                    <ImageView
+                                        android:id="@+id/expImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout9"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout9"
+                                        tools:srcCompat="@tools:sample/avatars[0]" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout9"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/expImg"
+                                        app:layout_constraintTop_toTopOf="parent">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:maxLines="1"
+                                            android:paddingTop="8sp"
+                                            android:paddingBottom="8sp"
+                                            android:text="Exploration"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="18sp" />
+
+                                        <TextView
+                                            android:id="@+id/explorRank"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="-"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline6"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+
+                                    <ImageView
+                                        android:id="@+id/cqcImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout11"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout11"
+                                        tools:srcCompat="@tools:sample/avatars[0]" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout11"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/cqcImg"
+                                        app:layout_constraintTop_toTopOf="parent">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:maxLines="1"
+                                            android:paddingTop="8sp"
+                                            android:paddingBottom="8sp"
+                                            android:text="CQC"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="18sp" />
+
+                                        <TextView
+                                            android:id="@+id/cqcRank"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="2"
+                                            android:text="-"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/impNavyImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout5"
+                                        tools:srcCompat="@tools:sample/avatars[0]" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout5"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/impNavyImg"
+                                        app:layout_constraintTop_toTopOf="parent">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:maxLines="1"
+                                            android:paddingTop="8sp"
+                                            android:paddingBottom="8sp"
+                                            android:text="Imperial Navy"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="18sp" />
+
+                                        <TextView
+                                            android:id="@+id/impNavyRank"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="-"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline7"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+
+                                    <ImageView
+                                        android:id="@+id/fedNavyImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout13"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout13"
+                                        tools:srcCompat="@tools:sample/avatars[0]" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout13"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/fedNavyImg"
+                                        app:layout_constraintTop_toTopOf="parent">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:maxLines="1"
+                                            android:paddingTop="8sp"
+                                            android:paddingBottom="8sp"
+                                            android:text="Federal Navy"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="18sp" />
+
+                                        <TextView
+                                            android:id="@+id/fedNavyRank"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="-"
+                                            android:textAlignment="viewStart"
+                                            android:textSize="14sp" />
+                                    </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:duplicateParentState="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Ships"
                             android:textColor="@color/md_amber_800"
                             android:textSize="18sp" />
 
@@ -246,478 +715,19 @@
                             android:layout_weight="1" />
 
                         <ImageView
-                            android:id="@+id/rankView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0"
-                            android:focusable="auto"
-                            android:rotation="90"
+                            android:clickable="false"
+                            android:focusable="true"
                             app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/rankBars"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:animateLayoutChanges="true"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                </androidx.cardview.widget.CardView>
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <ImageView
-                                    android:id="@+id/combatImg"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:adjustViewBounds="false"
-                                    android:paddingStart="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/guideline8"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/linearLayout3"
-                                    tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                <androidx.constraintlayout.widget.Guideline
-                                    android:id="@+id/guideline8"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    app:layout_constraintGuide_percent="0.25" />
-
-                                <LinearLayout
-                                    android:id="@+id/linearLayout3"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:paddingStart="8dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="@+id/guideline8"
-                                    app:layout_constraintTop_toTopOf="parent">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:paddingTop="8sp"
-                                        android:paddingBottom="8sp"
-                                        android:text="Combat"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="18sp" />
-
-                                    <TextView
-                                        android:id="@+id/combatRank"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="-"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <androidx.constraintlayout.widget.Guideline
-                                    android:id="@+id/guideline4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    app:layout_constraintGuide_percent="0.25" />
-
-                                <ImageView
-                                    android:id="@+id/tradeImg"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:paddingStart="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingBottom="4dp"
-                                    android:scaleType="fitCenter"
-                                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout7"
-                                    app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/linearLayout7"
-                                    tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                <LinearLayout
-                                    android:id="@+id/linearLayout7"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:paddingStart="8dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toEndOf="@+id/tradeImg"
-                                    app:layout_constraintTop_toTopOf="parent">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:paddingTop="8sp"
-                                        android:paddingBottom="8sp"
-                                        android:text="Trade"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="18sp" />
-
-                                    <TextView
-                                        android:id="@+id/tradeRank"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="-"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <androidx.constraintlayout.widget.Guideline
-                                    android:id="@+id/guideline5"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    app:layout_constraintGuide_percent="0.25" />
-
-                                <ImageView
-                                    android:id="@+id/expImg"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:paddingStart="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingBottom="4dp"
-                                    android:scaleType="fitCenter"
-                                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout9"
-                                    app:layout_constraintEnd_toStartOf="@+id/guideline5"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/linearLayout9"
-                                    tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                <LinearLayout
-                                    android:id="@+id/linearLayout9"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:paddingStart="8dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toEndOf="@+id/expImg"
-                                    app:layout_constraintTop_toTopOf="parent">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:paddingTop="8sp"
-                                        android:paddingBottom="8sp"
-                                        android:text="Exploration"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="18sp" />
-
-                                    <TextView
-                                        android:id="@+id/explorRank"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="-"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <androidx.constraintlayout.widget.Guideline
-                                    android:id="@+id/guideline6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    app:layout_constraintGuide_percent="0.25" />
-
-                                <ImageView
-                                    android:id="@+id/cqcImg"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:paddingStart="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingBottom="4dp"
-                                    android:scaleType="fitCenter"
-                                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout11"
-                                    app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/linearLayout11"
-                                    tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                <LinearLayout
-                                    android:id="@+id/linearLayout11"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:paddingStart="8dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toEndOf="@+id/cqcImg"
-                                    app:layout_constraintTop_toTopOf="parent">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:paddingTop="8sp"
-                                        android:paddingBottom="8sp"
-                                        android:text="CQC"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="18sp" />
-
-                                    <TextView
-                                        android:id="@+id/cqcRank"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:text="-"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <ImageView
-                                    android:id="@+id/impNavyImg"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:paddingStart="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingBottom="4dp"
-                                    android:scaleType="fitCenter"
-                                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
-                                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/linearLayout5"
-                                    tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                <LinearLayout
-                                    android:id="@+id/linearLayout5"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:paddingStart="8dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toEndOf="@+id/impNavyImg"
-                                    app:layout_constraintTop_toTopOf="parent">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:paddingTop="8sp"
-                                        android:paddingBottom="8sp"
-                                        android:text="Imperial Navy"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="18sp" />
-
-                                    <TextView
-                                        android:id="@+id/impNavyRank"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="-"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-
-                                <androidx.constraintlayout.widget.Guideline
-                                    android:id="@+id/guideline3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    app:layout_constraintGuide_percent="0.25" />
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <androidx.constraintlayout.widget.Guideline
-                                    android:id="@+id/guideline7"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    app:layout_constraintGuide_percent="0.25" />
-
-                                <ImageView
-                                    android:id="@+id/fedNavyImg"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:paddingStart="8dp"
-                                    android:paddingTop="4dp"
-                                    android:paddingBottom="4dp"
-                                    android:scaleType="fitCenter"
-                                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout13"
-                                    app:layout_constraintEnd_toStartOf="@+id/guideline7"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/linearLayout13"
-                                    tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                <LinearLayout
-                                    android:id="@+id/linearLayout13"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:paddingStart="8dp"
-                                    android:paddingBottom="4dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toEndOf="@+id/fedNavyImg"
-                                    app:layout_constraintTop_toTopOf="parent">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:maxLines="1"
-                                        android:paddingTop="8sp"
-                                        android:paddingBottom="8sp"
-                                        android:text="Federal Navy"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="18sp" />
-
-                                    <TextView
-                                        android:id="@+id/fedNavyRank"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:text="-"
-                                        android:textAlignment="viewStart"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:duplicateParentState="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Ships"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:clickable="false"
-                        android:focusable="true"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-    </ScrollView>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/profileSpinKit"
