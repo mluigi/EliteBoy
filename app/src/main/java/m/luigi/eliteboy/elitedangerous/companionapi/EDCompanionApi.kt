@@ -1,7 +1,6 @@
 package m.luigi.eliteboy.elitedangerous.companionapi
 
 import android.content.SharedPreferences
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
 import android.util.Base64.*
 import com.google.gson.GsonBuilder
@@ -42,6 +41,10 @@ object EDCompanionApi {
     private var verifier = ""
 
     private var authCallback: (String) -> Unit = {}
+
+    private var cachedProfile: Profile? = null
+
+    private var profileLastUpdate = LocalDateTime.now()
 
     enum class Endpoint(val url: String) {
         PROFILE("$LIVE_SERVER$PROFILE_URL"),
@@ -177,26 +180,22 @@ object EDCompanionApi {
         }
     }
 
-    private inline fun <reified T> get(endpoint: Endpoint): T {
-        val url: String = endpoint.url
-        val connection = getRequest(url)
-        connection.doInput = true
-        getResponse(connection)
-        val json = getResponseData(connection)
-        return gson.fromJson(json, T::class.java) as T
-    }
+    fun getProfile(forced: Boolean = false): Profile? {
 
-    fun getProfile(): Profile? {
-        val url=Endpoint.PROFILE.url
-        val connection = getRequest(url)
-        connection.doInput = true
-        getResponse(connection)
-        val json = getResponseData(connection)
-        return gson.fromJson(json, Profile::class.java)
+        if (cachedProfile == null || forced || LocalDateTime.now() > profileLastUpdate.plusMinutes(5)) {
+            val url = Endpoint.PROFILE.url
+            val connection = getRequest(url)
+            connection.doInput = true
+            getResponse(connection)
+            val json = getResponseData(connection)
+            cachedProfile = gson.fromJson(json, Profile::class.java)
+        }
+
+        return cachedProfile
     }
 
     fun getMarket(): Market? {
-        val url=Endpoint.MARKET.url
+        val url = Endpoint.MARKET.url
         val connection = getRequest(url)
         connection.doInput = true
         getResponse(connection)
@@ -205,7 +204,7 @@ object EDCompanionApi {
     }
 
     fun getShipyard(): Shipyard? {
-        val url=Endpoint.SHIPYARD.url
+        val url = Endpoint.SHIPYARD.url
         val connection = getRequest(url)
         connection.doInput = true
         getResponse(connection)
