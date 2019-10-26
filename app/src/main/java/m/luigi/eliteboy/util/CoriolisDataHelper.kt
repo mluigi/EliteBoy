@@ -51,6 +51,47 @@ object CoriolisDataHelper {
         }
     }
 
+    suspend fun getShipBulkheadsPriceMap(ship: String): Map<String, String> {
+        return onDefault {
+            val map = mutableMapOf<String, String>()
+            with(ships()[ship].asJsonObject) {
+                val bulkheads = this["bulkheads"].asJsonArray
+                val bulkheadsPrices = bulkheads
+                    .map { it.asJsonObject["cost"].asLong }
+                    .sorted()
+                    .map {
+                        String.format(
+                            "%s cr",
+                            NumberFormat.getIntegerInstance().format(it)
+                        )
+                    }
+                map["${ship}_armour_grade1"] = bulkheadsPrices[0]
+                map["${ship}_armour_grade2"] = bulkheadsPrices[1]
+                map["${ship}_armour_grade3"] = bulkheadsPrices[2]
+                map["${ship}_armour_mirrored"] = bulkheadsPrices[3]
+                map["${ship}_armour_reactive"] = bulkheadsPrices[4]
+
+            }
+
+            map
+        }
+    }
+
+    suspend fun getBulkheadsPriceMap(modules: Map<String, String>): Map<String, String> {
+        return onDefault {
+            val map = mutableMapOf<String, String>()
+            ships().entrySet().forEach { (shipId, value) ->
+                if (modules.keys.any { it.startsWith(shipId) }) {
+                    val shipName = value.asJsonObject["properties"].asJsonObject["name"].asString
+                    getShipBulkheadsPriceMap(shipId).forEach { bulkId, price ->
+                        map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] = price
+                    }
+                }
+            }
+            map
+        }
+    }
+
     suspend fun getStandardModulePriceMap(): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
@@ -111,6 +152,7 @@ object CoriolisDataHelper {
             val standard = getStandardModulePriceMap()
             val hardpoints = getHardpointModulePriceMap()
             val internal = getInternalModulePriceMap()
+            map.putAll(getBulkheadsPriceMap(modules))
             standard.filter { it.key in modules.keys }.forEach { id, price ->
                 map[modules.getValue(id)] = price
             }
@@ -120,8 +162,6 @@ object CoriolisDataHelper {
             internal.filter { it.key in modules.keys }.forEach { id, price ->
                 map[modules.getValue(id)] = price
             }
-
-
             map
         }
     }

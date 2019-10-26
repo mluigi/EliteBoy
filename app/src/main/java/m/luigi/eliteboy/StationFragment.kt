@@ -131,7 +131,6 @@ class StationFragment : Fragment() {
                         mapSIDtoName[it.sId!!] = it.name!!
                     }
                     val modulePriceMap = CoriolisDataHelper.getModulePriceMapFiltered(mapSIDtoName)
-
                     outfittingList.adapter = InformationAdapter(
                         modulePriceMap,
                         view.context
