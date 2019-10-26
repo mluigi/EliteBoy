@@ -110,7 +110,7 @@ class StationFragment : Fragment() {
                         { isShipyardOpened }) { isShipyardOpened = !isShipyardOpened }
                     shipList.layoutManager =
                         LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                    shipList.adapter=InformationAdapter(
+                    shipList.adapter = InformationAdapter(
                         CoriolisDataHelper.getShipPriceMapFiltered(station.ships!!),
                         view.context
                     )
@@ -119,6 +119,23 @@ class StationFragment : Fragment() {
                 }
 
                 if (station.haveOutfitting) {
+                    outfittingLayout.setAnimateOnClickListener(
+                        outfittingList,
+                        outfittingImg,
+                        { isOutfittingOpened }) { isOutfittingOpened = !isOutfittingOpened }
+
+                    outfittingList.layoutManager =
+                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+                    val mapSIDtoName = mutableMapOf<String, String>()
+                    station.outfitting!!.forEach {
+                        mapSIDtoName[it.sId!!] = it.name!!
+                    }
+                    val modulePriceMap = CoriolisDataHelper.getModulePriceMapFiltered(mapSIDtoName)
+
+                    outfittingList.adapter = InformationAdapter(
+                        modulePriceMap,
+                        view.context
+                    )
                 } else {
                     outfittingCardView.visibility = View.GONE
                 }
@@ -128,5 +145,4 @@ class StationFragment : Fragment() {
             }
         }
     }
-
 }

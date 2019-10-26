@@ -266,7 +266,7 @@
                     tools:layout_editor_absoluteY="152dp">
 
                     <LinearLayout
-                        android:id="@+id/outfittingayout"
+                        android:id="@+id/outfittingLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
