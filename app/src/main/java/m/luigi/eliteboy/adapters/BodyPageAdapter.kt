@@ -1,4 +1,4 @@
-package m.luigi.eliteboy.elitedangerous.adapters
+package m.luigi.eliteboy.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

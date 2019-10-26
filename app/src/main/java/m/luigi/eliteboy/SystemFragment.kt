@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.fragment_system.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import m.luigi.eliteboy.elitedangerous.adapters.BodyPageAdapter
-import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
-import m.luigi.eliteboy.elitedangerous.adapters.StationPageAdapter
+import m.luigi.eliteboy.adapters.BodyPageAdapter
+import m.luigi.eliteboy.adapters.InformationAdapter
+import m.luigi.eliteboy.adapters.StationPageAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import m.luigi.eliteboy.util.onIO

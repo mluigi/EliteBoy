@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_bodies_page.*
 import m.luigi.eliteboy.R
-import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
+import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.data.Body
 
 class BodyPageFragment(private val body: Body) : Fragment() {

@@ -70,7 +70,8 @@ fun View.collapse() {
             if (interpolatedTime == 1f) {
                 this@collapse.visibility = View.GONE
             } else {
-                this@collapse.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                this@collapse.layoutParams.height =
+                    initialHeight - (initialHeight * interpolatedTime).toInt()
                 this@collapse.requestLayout()
             }
         }
@@ -84,7 +85,12 @@ fun View.collapse() {
     this.startAnimation(a)
 }
 
-fun View.setAnimateOnClickListener(viewToAnimate: View, viewToRotate: View, bool: () -> Boolean, block: () -> Unit) {
+fun View.setAnimateOnClickListener(
+    viewToAnimate: View,
+    viewToRotate: View,
+    bool: () -> Boolean,
+    block: () -> Unit
+) {
     setOnClickListener {
         if (bool()) {
             viewToAnimate.collapse()
@@ -118,7 +124,24 @@ suspend fun <T> onMain(block: suspend CoroutineScope.() -> T): T {
 
 fun <T : Activity> Activity.openActivity(activity: KClass<T>): (View?) -> Boolean = {
     if (this::class.java != activity.java) {
-        startActivity(Intent(this, activity.java), ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        startActivity(
+            Intent(this, activity.java),
+            ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+        )
     }
     false
+}
+
+fun Long?.isNullOrZero(): Boolean {
+    return this == 0L || this == null
+}
+
+suspend fun runWhile(block: suspend CoroutineScope.(stop: () -> Unit) -> Unit) {
+    var isRunning = true
+    while (isRunning) {
+        onDefault {
+            block { isRunning = false }
+        }
+    }
+
 }

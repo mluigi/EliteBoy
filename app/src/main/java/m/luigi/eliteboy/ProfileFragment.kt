@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.nostra13.universalimageloader.core.ImageLoader
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,10 +18,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Profile
+import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
-import m.luigi.eliteboy.util.onIO
-import m.luigi.eliteboy.util.onMain
-import m.luigi.eliteboy.util.setAnimateOnClickListener
+import m.luigi.eliteboy.util.*
+import java.text.NumberFormat
 
 class ProfileFragment : Fragment() {
 
@@ -75,7 +77,7 @@ class ProfileFragment : Fragment() {
     private suspend fun updateProfile(forced: Boolean = false) {
         onIO {
             profile = if (EDCompanionApi.currentState == EDCompanionApi.State.AUTHORIZED) {
-                onMain { profileSpinKit.visibility = View.VISIBLE }
+                onMain { profileSpinKit?.let { it.visibility = View.VISIBLE } }
                 EDCompanionApi.getProfile(forced)
             } else {
                 Snackbar.make(
@@ -101,9 +103,9 @@ class ProfileFragment : Fragment() {
             profile?.let {
                 with(it) {
                     cmdrName.text = commander!!.name
-                    credits.text = kotlin.String.format(
-                        resources.getString(m.luigi.eliteboy.R.string.credits),
-                        android.icu.text.NumberFormat.getIntegerInstance().format(commander!!.credits!!)
+                    credits.text = String.format(
+                        resources.getString(R.string.credits),
+                        NumberFormat.getIntegerInstance().format(commander!!.credits!!)
                     )
                     this@ProfileFragment.lastSystem.text = this.lastSystem!!.name
                     lastStation.text =
@@ -111,39 +113,39 @@ class ProfileFragment : Fragment() {
                     combatRank.text = commander!!.rank!!.combat!!.name
                     val combatRank = commander!!.rank!!.combat!!.ordinal
                     imageLoader.displayImage(
-                        m.luigi.eliteboy.util.combatRankImages[combatRank],
+                        combatRankImages[combatRank],
                         combatImg
                     )
 
                     tradeRank.text = commander!!.rank!!.trade!!.name
                     val tradeRank = commander!!.rank!!.trade!!.ordinal
                     imageLoader.displayImage(
-                        m.luigi.eliteboy.util.tradingRankImages[tradeRank],
+                        tradingRankImages[tradeRank],
                         tradeImg
                     )
 
                     explorRank.text = commander!!.rank!!.explore!!.name
                     val expRank = commander!!.rank!!.explore!!.ordinal
                     imageLoader.displayImage(
-                        m.luigi.eliteboy.util.explorationRankImages[expRank],
+                        explorationRankImages[expRank],
                         expImg
                     )
 
                     cqcRank.text = commander!!.rank!!.cqc!!.name
                     val cqcRank = commander!!.rank!!.cqc!!.ordinal
-                    imageLoader.displayImage(m.luigi.eliteboy.util.cqcRankImages[cqcRank], cqcImg)
+                    imageLoader.displayImage(cqcRankImages[cqcRank], cqcImg)
 
                     impNavyRank.text = commander!!.rank!!.empire!!.name
-                    imageLoader.displayImage(m.luigi.eliteboy.util.empireIcon, impNavyImg)
+                    imageLoader.displayImage(empireIcon, impNavyImg)
 
                     fedNavyRank.text = commander!!.rank!!.federation!!.name
-                    imageLoader.displayImage(m.luigi.eliteboy.util.federationIcon, fedNavyImg)
+                    imageLoader.displayImage(federationIcon, fedNavyImg)
 
                     lastSystemLayout.setOnClickListener {
-                        androidx.navigation.Navigation.findNavController(it).navigate(
-                            m.luigi.eliteboy.R.id.action_profileFragment_to_systemFragment,
-                            androidx.core.os.bundleOf(
-                                kotlin.Pair(
+                        Navigation.findNavController(it).navigate(
+                            R.id.action_profileFragment_to_systemFragment,
+                            bundleOf(
+                                Pair(
                                     "system",
                                     this.lastSystem!!.name
                                 )
@@ -152,8 +154,8 @@ class ProfileFragment : Fragment() {
                     }
 
                     if (lastStarport!!.name != "") {
-                        val station: Station? = m.luigi.eliteboy.util.onIO {
-                            m.luigi.eliteboy.elitedangerous.edsm.EDSMApi.getStations(lastSystem!!.name!!).stations!!
+                        val station: Station? = onIO {
+                            EDSMApi.getStations(lastSystem!!.name!!).stations!!
                                 .firstOrNull { it.name == lastStarport!!.name }
 
                         }
@@ -161,18 +163,18 @@ class ProfileFragment : Fragment() {
                         station?.let {
                             lastStationLayout.setOnClickListener {
                                 androidx.navigation.Navigation.findNavController(it).navigate(
-                                    m.luigi.eliteboy.R.id.action_profileFragment_to_stationFragment,
-                                    androidx.core.os.bundleOf(kotlin.Pair("station", station))
+                                    R.id.action_profileFragment_to_stationFragment,
+                                    bundleOf(Pair("station", station))
                                 )
                             }
                         }
                     }
 
                     creditsView.setOnClickListener {
-                        androidx.navigation.Navigation.findNavController(it).navigate(
-                            m.luigi.eliteboy.R.id.action_profileFragment_to_creditsFragment,
-                            androidx.core.os.bundleOf(
-                                kotlin.Pair(
+                        Navigation.findNavController(it).navigate(
+                            R.id.action_profileFragment_to_creditsFragment,
+                            bundleOf(
+                                Pair(
                                     "creds",
                                     commander!!.credits!!
                                 )

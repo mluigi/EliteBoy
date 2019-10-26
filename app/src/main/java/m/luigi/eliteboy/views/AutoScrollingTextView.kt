@@ -1,4 +1,4 @@
-package m.luigi.eliteboy.util
+package m.luigi.eliteboy.views
 
 import android.content.Context
 import android.graphics.Rect

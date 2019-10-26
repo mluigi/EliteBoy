@@ -156,7 +156,7 @@
 
                     </LinearLayout>
 
-                    <m.luigi.eliteboy.util.DynamicHeightViewPager
+                    <m.luigi.eliteboy.views.DynamicHeightViewPager
                         android:id="@+id/stationsPager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -224,7 +224,7 @@
 
                     </LinearLayout>
 
-                    <m.luigi.eliteboy.util.DynamicHeightViewPager
+                    <m.luigi.eliteboy.views.DynamicHeightViewPager
                         android:id="@+id/bodiesViewPager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />

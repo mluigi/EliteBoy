@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.fragment_station.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import m.luigi.eliteboy.elitedangerous.adapters.CommodityAdapter
-import m.luigi.eliteboy.elitedangerous.adapters.InformationAdapter
+import m.luigi.eliteboy.adapters.CommodityAdapter
+import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
 import m.luigi.eliteboy.util.CoriolisDataHelper
@@ -90,7 +90,7 @@ class StationFragment : Fragment() {
                     infoImg,
                     { isInfoOpened }) { isInfoOpened = !isInfoOpened }
 
-                if (station.haveMarket) {
+                if (station.haveMarket && station.commodities != null) {
                     marketLayout.setAnimateOnClickListener(
                         marketList,
                         marketImg,
@@ -103,7 +103,7 @@ class StationFragment : Fragment() {
                     marketCardView.visibility = View.GONE
                 }
 
-                if (station.haveShipyard) {
+                if (station.haveShipyard && station.ships != null) {
                     shipsLayout.setAnimateOnClickListener(
                         shipList,
                         shipImg,
@@ -118,7 +118,7 @@ class StationFragment : Fragment() {
                     shipsCardView.visibility = View.GONE
                 }
 
-                if (station.haveOutfitting) {
+                if (station.haveOutfitting && station.outfitting != null) {
                     outfittingLayout.setAnimateOnClickListener(
                         outfittingList,
                         outfittingImg,

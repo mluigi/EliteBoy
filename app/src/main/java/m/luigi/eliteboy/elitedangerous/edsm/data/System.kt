@@ -3,6 +3,9 @@ package m.luigi.eliteboy.elitedangerous.edsm.data
 import android.icu.text.NumberFormat
 import android.os.Parcel
 import android.os.Parcelable
+import m.luigi.eliteboy.util.onIO
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class System() : Parcelable {
     var name: String? = null
@@ -60,6 +63,41 @@ class System() : Parcelable {
         var z = 0.toDouble()
     }
 
+    private fun getDistance(
+        x1: Double = 0.0,
+        y1: Double = 0.0,
+        z1: Double = 0.0,
+        x2: Double = 0.0,
+        y2: Double = 0.0,
+        z2: Double = 0.0
+    ): Double {
+        return sqrt((x1 - x2).pow(2) + (y1 - y2).pow(2) + (z1 - z2).pow(2))
+    }
+
+    fun distanceTo(
+        x: Double = 0.0,
+        y: Double = 0.0,
+        z: Double = 0.0
+    ): Double {
+        return getDistance(
+            coords!!.x,
+            coords!!.y,
+            coords!!.z,
+            x,
+            y,
+            z
+        )
+    }
+
+    fun distanceTo(system: System): Double {
+        return distanceTo(
+            system.coords!!.x,
+            system.coords!!.y,
+            system.coords!!.z
+        )
+    }
+
+
     companion object CREATOR : Parcelable.Creator<System> {
         override fun createFromParcel(parcel: Parcel): System {
             return System(parcel)
@@ -69,13 +107,15 @@ class System() : Parcelable {
             return arrayOfNulls(size)
         }
 
-        fun updateSystem(original: System, update: System) {
-            original.javaClass.declaredFields.forEach {
-                it.isAccessible = true
-                if (it.get(original) == null) {
-                    val updateField = it.get(update)
-                    if (updateField != null) {
-                        it.set(original, updateField)
+        suspend fun updateSystem(original: System, update: System) {
+            onIO {
+                original.javaClass.declaredFields.forEach {
+                    it.isAccessible = true
+                    if (it.get(original) == null) {
+                        val updateField = it.get(update)
+                        if (updateField != null) {
+                            it.set(original, updateField)
+                        }
                     }
                 }
             }

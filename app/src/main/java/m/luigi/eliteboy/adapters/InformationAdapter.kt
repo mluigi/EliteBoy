@@ -1,4 +1,4 @@
-package m.luigi.eliteboy.elitedangerous.adapters
+package m.luigi.eliteboy.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
