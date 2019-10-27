@@ -82,12 +82,14 @@ class FoundAdapter(
             }
         }
 
-        holder.dataLayout.setOnClickListener {
+        val clickListener = View.OnClickListener {
             fragment.findNavController().navigate(
                 R.id.action_systemsFragment_to_systemFragment,
                 bundleOf("system" to system.name!!)
             )
         }
+        holder.dataLayout.setOnClickListener(clickListener)
+        holder.infoList.setOnClickListener(clickListener)
     }
 
 

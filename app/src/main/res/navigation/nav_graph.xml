@@ -84,4 +84,9 @@
         android:name="m.luigi.eliteboy.StationsFragment"
         android:label="fragment_stations"
         tools:layout="@layout/fragment_stations" />
+    <fragment
+        android:id="@+id/searchSystemsFragment"
+        android:name="m.luigi.eliteboy.SearchSystemsFragment"
+        android:label="fragment_search_systems"
+        tools:layout="@layout/fragment_search_systems" />
 </navigation>

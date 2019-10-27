@@ -79,7 +79,7 @@ object EDSMApi {
         SEARCHRESCUE("Search and Rescue", 1),
         UNICART("Universal Cartographics", 1),
         WORKSHOP("Workshop", 1),
-        REARM("Rearm", 1),
+        REARM("Restock", 1),
         REFUEL("Refuel", 1),
         REPAIR("Repair", 1),
         MISSIONS("Missions", 1),

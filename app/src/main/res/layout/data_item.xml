@@ -71,6 +71,7 @@
                 android:id="@+id/infoList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"

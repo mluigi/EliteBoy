@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     primaryItem("System") {
                         onClick { _ ->
                             Navigation.findNavController(this@MainActivity, R.id.navHost)
-                                .navigate(R.id.systemsFragment)
+                                .navigate(R.id.searchSystemsFragment)
                             false
                         }
                     }

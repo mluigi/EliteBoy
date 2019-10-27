@@ -7,10 +7,10 @@ A companion app to Elite Dangerous.
 - Show Profile from ED Companion Api.
 - Show last visited system with stations e bodies
 - Show station with informations, market prices, ships and modules sold.
+- Search nearest service
 
 ### Todo
 - Search for a station or a system with filters
-- Search nearest service
 - Show news from Galnet
 - Add Engineers assistant
 - Integration with Google Assistant

@@ -49,8 +49,8 @@ class SystemFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        GlobalScope.launch{
-            onMain{
+        GlobalScope.launch {
+            onMain {
                 (activity as MainActivity).mainToolbar.title = name
                 system?.let {
                     setSystemLayout()
@@ -97,11 +97,10 @@ class SystemFragment : Fragment() {
         infoList.adapter = InformationAdapter(system!!.information!!.asMap(), view!!.context)
 
         stationsPager.adapter = StationPageAdapter(
-            system!!.stations!!.apply { sortBy { it.distanceToArrival } } ,
+            system!!.stations!!.apply { sortBy { it.distanceToArrival } },
             childFragmentManager
         )
         stationsDots.attachToViewPager(stationsPager)
-
         bodiesViewPager.adapter = BodyPageAdapter(
             system!!.bodies!!.apply { sortBy { it.distanceToArrival } },
             this@SystemFragment.requireFragmentManager()

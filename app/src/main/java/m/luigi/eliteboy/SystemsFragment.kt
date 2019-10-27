@@ -42,6 +42,7 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                 val flow = EDSMApi.search(searchType!!, currentSystem!!)
                 initLayoutJob.join()
                 withTimeoutOrNull(10000) {
+                    var i = 0
                     flow.collect {
                         systems.add(it)
 
@@ -49,7 +50,8 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                             if (systems.isNotEmpty()) {
                                 systemsSpinKit.visibility = View.GONE
                             }
-                            foundList.adapter!!.notifyDataSetChanged()
+                            foundList.adapter!!.notifyItemInserted(i)
+                            i++
                         }
                         delay(100)
                     }
