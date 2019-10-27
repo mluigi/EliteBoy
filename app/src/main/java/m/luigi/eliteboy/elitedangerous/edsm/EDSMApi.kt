@@ -495,6 +495,7 @@ object EDSMApi {
             FEDERAL -> {
                 filterBySystem(system) {
                     it.information!!.allegiance!! == "Federation"
+
                 }
             }
             SearchType.MARKET -> {
