@@ -6,8 +6,10 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.runBlocking
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
@@ -418,13 +420,22 @@ object EDSMApi {
 
     private suspend fun filterBySystem(
         system: String,
+        max:Int=20,
         filter: suspend (system: System) -> Boolean
     ): Flow<System> {
         return flow {
-            filteredNearbySystems(system).forEach {
-                if (filter(it)) {
-                    emit(it)
+            val systems = filteredNearbySystems(system)
+            var i = 0
+            var systemsFound = 0
+            while (systemsFound < 20 && i < systems.size) {
+                val sys = systems[i]
+
+                if (filter(sys)) {
+                    emit(sys)
+                    systemsFound++
                 }
+
+                i++
             }
 
         }.flowOn(Dispatchers.Default)
@@ -432,26 +443,30 @@ object EDSMApi {
 
     private suspend fun filterByStation(
         system: String,
+        max:Int=20,
         filter: (stations: ArrayList<Station>) -> Unit
     ): Flow<System> {
         return flow {
             val systems = filteredNearbySystems(system)
 
-            val systemsFound = ArrayList<System>()
+            var systemsFound = 0
             var i = 0
-            while (systemsFound.size < 20 && i < systems.size) {
+            while (systemsFound < 20 && i < systems.size) {
                 val sys = systems[i]
 
                 onIO {
                     getStations(sys)
                 }
 
-                sys.stations?.let { stations ->
-                    filter(stations)
+                onDefault {
+                    sys.stations?.let { stations ->
+                        filter(stations)
+                    }
                 }
 
                 if (!sys.stations.isNullOrEmpty()) {
                     emit(sys)
+                    systemsFound++
                 }
                 i++
             }
@@ -512,10 +527,10 @@ object EDSMApi {
             MISSIONS,
             CREW_LOUNGE,
             TUNING -> {
-                filterByStation(system) { stations ->
+                filterByStation(system,30) { stations ->
                     stations.removeIf {
                         it.otherServices.isNullOrEmpty()
-                                || it.otherServices!!.contains(search.type)
+                                || !it.otherServices!!.contains(search.type)
                     }
                 }
             }
@@ -542,7 +557,6 @@ object EDSMApi {
                 }
             }
         }
-
     }
 
     fun checkApiKey(): Boolean {
@@ -556,4 +570,12 @@ object EDSMApi {
         val msgnum = JsonParser.parseString(json).asJsonObject["msgnum"].asInt
         return msgnum == 100
     }
+}
+
+@FlowPreview
+fun main() = runBlocking<Unit> {
+    EDSMApi.search(MISSIONS).collect {
+        println(it.name!!)
+    }
+
 }

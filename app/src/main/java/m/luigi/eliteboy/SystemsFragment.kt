@@ -9,20 +9,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_systems.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import m.luigi.eliteboy.adapters.FoundAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
+import m.luigi.eliteboy.util.onMain
 import m.luigi.eliteboy.util.snackBarMessage
 import java.util.concurrent.CancellationException
 
 
+@FlowPreview
 class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
-    lateinit var systems: ArrayList<System>
+    val systems = ArrayList<System>()
     var searchJob: Job = Job()
     var initLayoutJob: Job = Job()
     var searchType: EDSMApi.SearchType? = null
@@ -39,7 +39,18 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
             if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
                 searchType = EDSMApi.SearchType.getByType(searchName!!)
-                systems = EDSMApi.search(searchType!!, currentSystem!!)
+                val flow = EDSMApi.search(searchType!!, currentSystem!!)
+                initLayoutJob.join()
+                withTimeout(10000) {
+                    flow.collect {
+                        systems.add(it)
+
+                        onMain {
+
+                            systemsSpinKit.visibility = View.GONE
+                        }
+                    }
+                }
                 if (systems.isEmpty()) {
                     snackBarMessage { "No system with name $currentSystem" }
                     initLayoutJob.cancel(CancellationException("No system found"))
@@ -66,12 +77,10 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
         super.onViewCreated(view, savedInstanceState)
         initLayoutJob = launch {
             systemsSpinKit.visibility = View.VISIBLE
-            searchJob.join()
             foundList.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
             foundList.adapter =
                 FoundAdapter(systems, searchType!!, this@SystemsFragment, view.context)
-            systemsSpinKit.visibility = View.GONE
         }
     }
 }
