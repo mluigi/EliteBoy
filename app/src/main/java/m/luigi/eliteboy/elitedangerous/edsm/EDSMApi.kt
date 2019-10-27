@@ -23,7 +23,6 @@ import m.luigi.eliteboy.util.onIO
 import java.net.URL
 import java.net.URLEncoder
 
-@FlowPreview
 object EDSMApi {
     var commander: String = ""
     var apiKey: String = ""
@@ -65,7 +64,7 @@ object EDSMApi {
          * 1 returns Stations
          * 2 returns Systems with factions
          */
-        INDIPENDENT("Indipendent Systems", 0),
+        INDIPENDENT("Independent Systems", 0),
         ALLIANCE("Alliance Systems", 0),
         IMPERIAL("Imperial Systems", 0),
         FEDERAL("Federation Systems", 0),
@@ -417,7 +416,7 @@ object EDSMApi {
             systems
         }
     }
-
+    @FlowPreview
     private suspend fun filterBySystem(
         system: String,
         max:Int=20,
@@ -440,7 +439,7 @@ object EDSMApi {
 
         }.flowOn(Dispatchers.Default)
     }
-
+    @FlowPreview
     private suspend fun filterByStation(
         system: String,
         max:Int=20,
@@ -472,7 +471,7 @@ object EDSMApi {
             }
         }.flowOn(Dispatchers.Default)
     }
-
+    @FlowPreview
     suspend fun search(
         search: SearchType,
         system: String = "Sol"
@@ -480,7 +479,7 @@ object EDSMApi {
         return when (search) {
             INDIPENDENT -> {
                 filterBySystem(system) {
-                    it.information!!.allegiance!! == "Indipendent"
+                    it.information!!.allegiance!! == "Independent"
                 }
             }
             ALLIANCE -> {

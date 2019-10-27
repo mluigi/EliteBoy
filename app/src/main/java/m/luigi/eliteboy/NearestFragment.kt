@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import m.luigi.eliteboy.adapters.PropertyAdapter
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import m.luigi.eliteboy.util.onIO
 
 class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
@@ -25,9 +26,11 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
         savedInstanceState: Bundle?
     ): View? {
         launch {
-            currentSystem = EDCompanionApi.getLastPosition()
+            onIO {
+                currentSystem = EDCompanionApi.getLastPosition()
+            }
             refSystem.setText(currentSystem)
-            (activity as MainActivity).mainToolbar.title = "Nearest"
+            (activity as MainActivity).mainToolbar.title = "Nearest (50 ly)"
         }
 
 

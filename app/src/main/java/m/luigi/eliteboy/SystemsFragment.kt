@@ -39,28 +39,32 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
             if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
                 searchType = EDSMApi.SearchType.getByType(searchName!!)
+                (activity as MainActivity).mainToolbar.title =
+                    "Nearest ${searchType?.type ?: "Systems"}"
                 val flow = EDSMApi.search(searchType!!, currentSystem!!)
                 initLayoutJob.join()
-                withTimeout(10000) {
+                withTimeoutOrNull(10000) {
                     flow.collect {
                         systems.add(it)
 
                         onMain {
-
-                            systemsSpinKit.visibility = View.GONE
+                            if (systems.isNotEmpty()) {
+                                systemsSpinKit.visibility = View.GONE
+                            }
+                            foundList.adapter!!.notifyDataSetChanged()
                         }
+                        delay(100)
                     }
                 }
+
                 if (systems.isEmpty()) {
-                    snackBarMessage { "No system with name $currentSystem" }
+                    snackBarMessage { "Couldn't find nearest ${searchType!!.type}" }
                     initLayoutJob.cancel(CancellationException("No system found"))
                     findNavController().navigateUp()
                 }
             } else {
                 snackBarMessage { "Shouldn't be here" }
             }
-
-            (activity as MainActivity).mainToolbar.title = "Nearest ${searchName ?: ""}"
         }
     }
 

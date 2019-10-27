@@ -182,7 +182,11 @@ object EDCompanionApi {
 
     fun getProfile(forced: Boolean = false): Profile? {
 
-        if (cachedProfile == null || forced || LocalDateTime.now() > profileLastUpdate.plusMinutes(5)) {
+        if ((cachedProfile == null ||
+                    forced ||
+                    LocalDateTime.now() > profileLastUpdate.plusMinutes(5)) &&
+            currentState == State.AUTHORIZED
+        ) {
             val url = Endpoint.PROFILE.url
             val connection = getRequest(url)
             connection.doInput = true
@@ -195,7 +199,7 @@ object EDCompanionApi {
     }
 
     fun getLastPosition(forced: Boolean = false): String {
-        return (getProfile(forced)?.lastSystem?.name) ?: "Sol"
+        return getProfile(forced)?.lastSystem?.name ?: "Sol"
     }
 
     fun getMarket(): Market? {
