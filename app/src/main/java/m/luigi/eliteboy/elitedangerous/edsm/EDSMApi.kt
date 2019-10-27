@@ -3,7 +3,12 @@ package m.luigi.eliteboy.elitedangerous.edsm
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
@@ -412,71 +417,88 @@ object EDSMApi {
         }
     }
 
+    @FlowPreview
     private suspend fun filterBySystem(
         system: String,
-        filter: suspend CoroutineScope.(systems: ArrayList<System>) -> Unit
-    ): ArrayList<System> {
-        return onDefault {
+        max: Int = 20,
+        filter: suspend (system: System) -> Boolean
+    ): Flow<System> {
+        return flow {
             val systems = filteredNearbySystems(system)
+            var i = 0
+            var systemsFound = 0
+            while (systemsFound < 20 && i < systems.size) {
+                val sys = systems[i]
 
-            filter(systems)
+                if (filter(sys)) {
+                    emit(sys)
+                    systemsFound++
+                }
 
-            systems.ifEmpty { ArrayList() }
-        }
+                i++
+            }
+
+        }.flowOn(Dispatchers.Default)
     }
 
+    @FlowPreview
     private suspend fun filterByStation(
         system: String,
+        max: Int = 20,
         filter: (stations: ArrayList<Station>) -> Unit
-    ): ArrayList<System> {
-        return onDefault {
+    ): Flow<System> {
+        return flow {
             val systems = filteredNearbySystems(system)
 
-            val systemsFound = ArrayList<System>()
+            var systemsFound = 0
             var i = 0
-            while (systemsFound.size < 20 && i < systems.size) {
+            while (systemsFound < 20 && i < systems.size) {
                 val sys = systems[i]
 
                 onIO {
                     getStations(sys)
                 }
 
-                sys.stations?.let { stations ->
-                    filter(stations)
+                onDefault {
+                    sys.stations?.let { stations ->
+                        filter(stations)
+                    }
                 }
 
                 if (!sys.stations.isNullOrEmpty()) {
-                    systemsFound.add(sys)
+                    emit(sys)
+                    systemsFound++
                 }
                 i++
             }
-            systemsFound
-        }
+        }.flowOn(Dispatchers.Default)
     }
 
+    @FlowPreview
     suspend fun search(
         search: SearchType,
         system: String = "Sol"
-    ): ArrayList<System> {
+    ): Flow<System> {
         return when (search) {
             INDIPENDENT -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! != "Independent" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Independent"
                 }
             }
             ALLIANCE -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! != "Alliance" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Alliance"
                 }
             }
             IMPERIAL -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! != "Empire" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Empire"
                 }
             }
             FEDERAL -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! != "Federation" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Federation"
+
                 }
             }
             SearchType.MARKET -> {
@@ -508,7 +530,7 @@ object EDSMApi {
             MISSIONS,
             CREW_LOUNGE,
             TUNING -> {
-                filterByStation(system) { stations ->
+                filterByStation(system, 30) { stations ->
                     stations.removeIf {
                         it.otherServices.isNullOrEmpty()
                                 || !it.otherServices!!.contains(search.type)
@@ -532,13 +554,9 @@ object EDSMApi {
             INFESTED,
             RETREAT,
             WAR -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf {
-                        runBlocking {
-                            getFactions(it)
-                            it.factions.isNullOrEmpty() || !it.factions!!.any { it.state!! == search.type }
-                        }
-                    }
+                filterBySystem(system) {
+                    getFactions(it)
+                    !it.factions.isNullOrEmpty() && it.factions!!.any { it.state!! == search.type }
                 }
             }
         }
@@ -555,4 +573,12 @@ object EDSMApi {
         val msgnum = JsonParser.parseString(json).asJsonObject["msgnum"].asInt
         return msgnum == 100
     }
+}
+
+@FlowPreview
+fun main() = runBlocking<Unit> {
+    EDSMApi.search(MISSIONS).collect {
+        println(it.name!!)
+    }
+
 }
