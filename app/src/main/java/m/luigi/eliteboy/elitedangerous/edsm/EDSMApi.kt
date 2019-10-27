@@ -53,45 +53,56 @@ object EDSMApi {
         CUBE
     }
 
-    enum class SearchType(val type: String) {
-        INDIPENDENT("Indipendent Systems"),
-        ALLIANCE("Alliance Systems"),
-        IMPERIAL("Imperial Systems"),
-        FEDERAL("Federation Systems"),
-        MARKET("Market"),
-        BLACK_MARKET("Black Market"),
-        SHIPYARD("Shipyard"),
-        OUTFITTING("Outfitting"),
-        CONTACTS("Contacts"),
-        MAT_TRADER("Material Trader"),
-        BROKER("Technology Broker"),
-        INTERSTELLAR("Interstellar Factors"),
-        SEARCHRESCUE("Search and Rescue"),
-        UNICART("Universal Cartographics"),
-        WORKSHOP("Workshop"),
-        REARM("Rearm"),
-        REFUEL("Refuel"),
-        REPAIR("Repair"),
-        MISSIONS("Missions"),
-        CREW_LOUNGE("Crew Lounge"),
-        TUNING("Tuning"),
-        BOOM("Boom"),
-        BUST("Bust"),
-        CIVLIBERTY("Civil Liberty"),
-        CIVUNREST("Civil Unrest"),
-        CIVWAR("Civil War"),
-        ELECTIONS("Elections"),
-        EXPANSION("Expansion"),
-        FAMINE("Famine"),
-        INCURSION("Incursion"),
-        INVESTMENT("Investment"),
-        LOCKDOWN("Lockdown"),
-        OUTBREAK("Outbreak"),
-        BLIGHT("Blight"),
-        PIRATE_ATTACK("Pirate Attack"),
-        INFESTED("Infested"),
-        RETREAT("Retreat"),
-        WAR("War")
+    enum class SearchType(val type: String, val returnType: Int) {
+
+        /* 0 returns Systems
+         * 1 returns Stations
+         * 2 returns Systems with factions
+         */
+        INDIPENDENT("Indipendent Systems", 0),
+        ALLIANCE("Alliance Systems", 0),
+        IMPERIAL("Imperial Systems", 0),
+        FEDERAL("Federation Systems", 0),
+        MARKET("Market", 1),
+        BLACK_MARKET("Black Market", 1),
+        SHIPYARD("Shipyard", 1),
+        OUTFITTING("Outfitting", 1),
+        CONTACTS("Contacts", 1),
+        MAT_TRADER("Material Trader", 1),
+        BROKER("Technology Broker", 1),
+        INTERSTELLAR("Interstellar Factors", 1),
+        SEARCHRESCUE("Search and Rescue", 1),
+        UNICART("Universal Cartographics", 1),
+        WORKSHOP("Workshop", 1),
+        REARM("Rearm", 1),
+        REFUEL("Refuel", 1),
+        REPAIR("Repair", 1),
+        MISSIONS("Missions", 1),
+        CREW_LOUNGE("Crew Lounge", 1),
+        TUNING("Tuning", 1),
+        BOOM("Boom", 2),
+        BUST("Bust", 2),
+        CIVLIBERTY("Civil Liberty", 2),
+        CIVUNREST("Civil Unrest", 2),
+        CIVWAR("Civil War", 2),
+        ELECTIONS("Elections", 2),
+        EXPANSION("Expansion", 2),
+        FAMINE("Famine", 2),
+        INCURSION("Incursion", 2),
+        INVESTMENT("Investment", 2),
+        LOCKDOWN("Lockdown", 2),
+        OUTBREAK("Outbreak", 2),
+        BLIGHT("Blight", 2),
+        PIRATE_ATTACK("Pirate Attack", 2),
+        INFESTED("Infested", 2),
+        RETREAT("Retreat", 2),
+        WAR("War", 2);
+
+        companion object {
+            fun getByType(s: String): SearchType {
+                return values().first { it.type == s }
+            }
+        }
     }
 
     private fun makeOptionsString(
@@ -132,7 +143,7 @@ object EDSMApi {
         y: Double = 0.0,
         z: Double = 0.0,
         size: Int = 0,
-        showId: Boolean = true,
+        showId: Boolean = false,
         showCoordinates: Boolean = true,
         showPermit: Boolean = false,
         showInformation: Boolean = true,
@@ -204,7 +215,6 @@ object EDSMApi {
                 }
             }
         }
-        println(url)
         val connection = URL(url).openConnection()
         connection.doInput = true
         val json =
@@ -212,16 +222,20 @@ object EDSMApi {
         val systems = ArrayList<System>()
 
         onDefault {
-            val jsonArray = JsonParser.parseString(json).asJsonArray
-            jsonArray.forEach {
-                systems.add(Gson().fromJson<System>(it.asJsonObject, System::class.java))
+            try {
+                val jsonArray = JsonParser.parseString(json).asJsonArray
+                jsonArray.forEach {
+                    systems.add(Gson().fromJson<System>(it.asJsonObject, System::class.java))
+                }
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
             }
         }
         return systems
     }
 
     suspend fun findSystemsByName(name: String): ArrayList<System> {
-        return findSystems(FindType.NAME, name)
+        return findSystems(FindType.NAME, name, showCoordinates = false)
     }
 
     suspend fun findSystemsInSphere(
@@ -263,15 +277,24 @@ object EDSMApi {
 
     suspend fun getFactions(system: String): System {
         val name = URLEncoder.encode(system, "UTF-8")
-        val json = onIO {
-            val connection = URL(
-                BASE_URL + FACTIONS +
-                        "/?systemName=$name"
-            ).openConnection()
-            connection.doInput = true
-            connection.inputStream.bufferedReader().readText()
+        val json: String? = onIO {
+            try {
+                val connection = URL(
+                    BASE_URL + FACTIONS +
+                            "/?systemName=$name"
+                ).openConnection()
+                connection.doInput = true
+                connection.inputStream.bufferedReader().readText()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         }
-        return onDefault { Gson().fromJson<System>(json, System::class.java) }
+        return onDefault {
+            json?.let {
+                Gson().fromJson(json, System::class.java)
+            } ?: System()
+        }
     }
 
     suspend fun getFactions(system: System) {
@@ -279,16 +302,25 @@ object EDSMApi {
     }
 
     suspend fun getStations(system: String): System {
-        val json = onIO {
-            val name = URLEncoder.encode(system, "UTF-8")
-            val connection = URL(
-                BASE_URL + STATIONS +
-                        "/?systemName=$name"
-            ).openConnection()
-            connection.doInput = true
-            connection.inputStream.bufferedReader().readText()
+        val json: String? = onIO {
+            try {
+                val name = URLEncoder.encode(system, "UTF-8")
+                val connection = URL(
+                    BASE_URL + STATIONS +
+                            "/?systemName=$name"
+                ).openConnection()
+                connection.doInput = true
+                connection.inputStream.bufferedReader().readText()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         }
-        return Gson().fromJson<System>(json, System::class.java)
+        return onDefault {
+            json?.let {
+                Gson().fromJson(json, System::class.java)
+            } ?: System()
+        }
     }
 
     suspend fun getStations(system: System) {
@@ -376,7 +408,6 @@ object EDSMApi {
                 }
                 systems.sortBy { it.distance }
             }
-
             systems
         }
     }
@@ -504,15 +535,14 @@ object EDSMApi {
                 filterBySystem(system) { systems ->
                     systems.removeIf {
                         runBlocking {
-                            getFactions(it.name!!)
+                            getFactions(it)
+                            it.factions.isNullOrEmpty() || !it.factions!!.any { it.state!! == search.type }
                         }
-                        it.factions.isNullOrEmpty() || it.factions!!.any { it.state!! == search.type }
                     }
                 }
             }
         }
     }
-
 
     fun checkApiKey(): Boolean {
         val connection = URL(

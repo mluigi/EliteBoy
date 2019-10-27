@@ -34,8 +34,6 @@ class StationFragment : Fragment() {
         super.onCreate(savedInstanceState)
         getStationJob = GlobalScope.launch {
             arguments?.let {
-
-
                 station = it.getParcelable("station") as Station
                 onMain {
                     stationLayout.visibility = View.GONE
@@ -62,7 +60,6 @@ class StationFragment : Fragment() {
                 }
             }
         }
-
     }
 
     override fun onCreateView(
@@ -80,7 +77,6 @@ class StationFragment : Fragment() {
             getStationJob.join()
 
             onMain {
-
                 infoList.layoutManager =
                     LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
                 infoList.adapter = InformationAdapter(station.asMap(), view.context)

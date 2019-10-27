@@ -194,6 +194,10 @@ object EDCompanionApi {
         return cachedProfile
     }
 
+    fun getLastPosition(forced: Boolean = false): String {
+        return (getProfile(forced)?.lastSystem?.name) ?: "Sol"
+    }
+
     fun getMarket(): Market? {
         val url = Endpoint.MARKET.url
         val connection = getRequest(url)

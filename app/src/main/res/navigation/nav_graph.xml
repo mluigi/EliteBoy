@@ -44,6 +44,9 @@
         <argument
             android:name="station"
             app:argType="m.luigi.eliteboy.elitedangerous.edsm.data.Station" />
+        <argument
+            android:name="marketId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/shipsFragment"
@@ -63,14 +66,8 @@
         <action
             android:id="@+id/action_systemsFragment_to_systemFragment"
             app:destination="@id/systemFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/stationsFragment"
-        android:name="m.luigi.eliteboy.StationsFragment"
-        android:label="fragment_stations"
-        tools:layout="@layout/fragment_stations" >
         <action
-            android:id="@+id/action_stationsFragment_to_stationFragment"
+            android:id="@+id/action_systemsFragment_to_stationFragment"
             app:destination="@id/stationFragment" />
     </fragment>
     <fragment
@@ -79,7 +76,12 @@
         android:label="fragment_nearest"
         tools:layout="@layout/fragment_nearest" >
         <action
-            android:id="@+id/action_nearestFragment_to_stationFragment"
-            app:destination="@id/stationFragment" />
+            android:id="@+id/action_nearestFragment_to_systemsFragment"
+            app:destination="@id/systemsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/stationsFragment"
+        android:name="m.luigi.eliteboy.StationsFragment"
+        android:label="fragment_stations"
+        tools:layout="@layout/fragment_stations" />
 </navigation>
