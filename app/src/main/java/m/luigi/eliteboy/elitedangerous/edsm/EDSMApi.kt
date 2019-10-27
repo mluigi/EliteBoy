@@ -3,8 +3,11 @@ package m.luigi.eliteboy.elitedangerous.edsm
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
@@ -18,6 +21,7 @@ import m.luigi.eliteboy.util.onIO
 import java.net.URL
 import java.net.URLEncoder
 
+@FlowPreview
 object EDSMApi {
     var commander: String = ""
     var apiKey: String = ""
@@ -414,22 +418,23 @@ object EDSMApi {
 
     private suspend fun filterBySystem(
         system: String,
-        filter: suspend CoroutineScope.(systems: ArrayList<System>) -> Unit
-    ): ArrayList<System> {
-        return onDefault {
-            val systems = filteredNearbySystems(system)
+        filter: suspend (system: System) -> Boolean
+    ): Flow<System> {
+        return flow {
+            filteredNearbySystems(system).forEach {
+                if (filter(it)) {
+                    emit(it)
+                }
+            }
 
-            filter(systems)
-
-            systems.ifEmpty { ArrayList() }
-        }
+        }.flowOn(Dispatchers.Default)
     }
 
     private suspend fun filterByStation(
         system: String,
         filter: (stations: ArrayList<Station>) -> Unit
-    ): ArrayList<System> {
-        return onDefault {
+    ): Flow<System> {
+        return flow {
             val systems = filteredNearbySystems(system)
 
             val systemsFound = ArrayList<System>()
@@ -446,37 +451,36 @@ object EDSMApi {
                 }
 
                 if (!sys.stations.isNullOrEmpty()) {
-                    systemsFound.add(sys)
+                    emit(sys)
                 }
                 i++
             }
-            systemsFound
-        }
+        }.flowOn(Dispatchers.Default)
     }
 
     suspend fun search(
         search: SearchType,
         system: String = "Sol"
-    ): ArrayList<System> {
+    ): Flow<System> {
         return when (search) {
             INDIPENDENT -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Indipendent" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Indipendent"
                 }
             }
             ALLIANCE -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Alliance" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Alliance"
                 }
             }
             IMPERIAL -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Imperial" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Empire"
                 }
             }
             FEDERAL -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Federation" }
+                filterBySystem(system) {
+                    it.information!!.allegiance!! == "Federation"
                 }
             }
             SearchType.MARKET -> {
@@ -532,16 +536,13 @@ object EDSMApi {
             INFESTED,
             RETREAT,
             WAR -> {
-                filterBySystem(system) { systems ->
-                    systems.removeIf {
-                        runBlocking {
-                            getFactions(it)
-                            it.factions.isNullOrEmpty() || !it.factions!!.any { it.state!! == search.type }
-                        }
-                    }
+                filterBySystem(system) {
+                    getFactions(it)
+                    !it.factions.isNullOrEmpty() && it.factions!!.any { it.state!! == search.type }
                 }
             }
         }
+
     }
 
     fun checkApiKey(): Boolean {
