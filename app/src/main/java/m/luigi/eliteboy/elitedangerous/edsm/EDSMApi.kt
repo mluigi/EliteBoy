@@ -416,10 +416,11 @@ object EDSMApi {
             systems
         }
     }
+
     @FlowPreview
     private suspend fun filterBySystem(
         system: String,
-        max:Int=20,
+        max: Int = 20,
         filter: suspend (system: System) -> Boolean
     ): Flow<System> {
         return flow {
@@ -439,10 +440,11 @@ object EDSMApi {
 
         }.flowOn(Dispatchers.Default)
     }
+
     @FlowPreview
     private suspend fun filterByStation(
         system: String,
-        max:Int=20,
+        max: Int = 20,
         filter: (stations: ArrayList<Station>) -> Unit
     ): Flow<System> {
         return flow {
@@ -471,6 +473,7 @@ object EDSMApi {
             }
         }.flowOn(Dispatchers.Default)
     }
+
     @FlowPreview
     suspend fun search(
         search: SearchType,
@@ -527,7 +530,7 @@ object EDSMApi {
             MISSIONS,
             CREW_LOUNGE,
             TUNING -> {
-                filterByStation(system,30) { stations ->
+                filterByStation(system, 30) { stations ->
                     stations.removeIf {
                         it.otherServices.isNullOrEmpty()
                                 || !it.otherServices!!.contains(search.type)
