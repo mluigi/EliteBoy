@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_systems.*
@@ -16,8 +15,8 @@ import kotlinx.coroutines.launch
 import m.luigi.eliteboy.adapters.FoundAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
+import m.luigi.eliteboy.util.onDefault
 import m.luigi.eliteboy.util.snackBarMessage
-import java.util.concurrent.CancellationException
 
 
 class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
@@ -39,12 +38,12 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
             if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
                 searchType = EDSMApi.SearchType.getByType(searchName!!)
-                systems = EDSMApi.search(searchType!!, currentSystem!!)
-                if (systems.isEmpty()) {
+                systems = onDefault{ EDSMApi.search(searchType!!, currentSystem!!) }
+                /*if (systems.isEmpty()) {
                     snackBarMessage { "No system with name $currentSystem" }
                     initLayoutJob.cancel(CancellationException("No system found"))
                     findNavController().navigateUp()
-                }
+                }*/
             } else {
                 snackBarMessage { "Shouldn't be here" }
             }

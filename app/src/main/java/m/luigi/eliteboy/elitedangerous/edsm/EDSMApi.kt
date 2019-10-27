@@ -59,7 +59,7 @@ object EDSMApi {
          * 1 returns Stations
          * 2 returns Systems with factions
          */
-        INDIPENDENT("Indipendent Systems", 0),
+        INDIPENDENT("Independent Systems", 0),
         ALLIANCE("Alliance Systems", 0),
         IMPERIAL("Imperial Systems", 0),
         FEDERAL("Federation Systems", 0),
@@ -461,22 +461,22 @@ object EDSMApi {
         return when (search) {
             INDIPENDENT -> {
                 filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Indipendent" }
+                    systems.removeIf { it.information!!.allegiance!! != "Independent" }
                 }
             }
             ALLIANCE -> {
                 filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Alliance" }
+                    systems.removeIf { it.information!!.allegiance!! != "Alliance" }
                 }
             }
             IMPERIAL -> {
                 filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Empire" }
+                    systems.removeIf { it.information!!.allegiance!! != "Empire" }
                 }
             }
             FEDERAL -> {
                 filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Federation" }
+                    systems.removeIf { it.information!!.allegiance!! != "Federation" }
                 }
             }
             SearchType.MARKET -> {
@@ -511,7 +511,7 @@ object EDSMApi {
                 filterByStation(system) { stations ->
                     stations.removeIf {
                         it.otherServices.isNullOrEmpty()
-                                || it.otherServices!!.contains(search.type)
+                                || !it.otherServices!!.contains(search.type)
                     }
                 }
             }
