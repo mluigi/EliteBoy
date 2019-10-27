@@ -471,7 +471,7 @@ object EDSMApi {
             }
             IMPERIAL -> {
                 filterBySystem(system) { systems ->
-                    systems.removeIf { it.information!!.allegiance!! == "Imperial" }
+                    systems.removeIf { it.information!!.allegiance!! == "Empire" }
                 }
             }
             FEDERAL -> {
