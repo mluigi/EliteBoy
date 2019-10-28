@@ -53,11 +53,14 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
                         onMain {
                             if (systems.size == 1) {
+                                val diff = systemsSpinKit.x*2-systemsSpinKit.x*15/8
                                 systemsSpinKit.animate()
                                     .scaleX(0.5f)
                                     .scaleY(0.5f)
-                                    .x(systemsSpinKit.x*15/8)
-                                    .y(systemsSpinKit.y*15/8)
+                                    .x(systemsSpinKit.x*2-diff)
+                                    .y(systemsSpinKit.y*2-diff)
+                                    .apply { duration=800 }
+                                    .start()
                             }
                             foundList.adapter!!.notifyItemInserted(i)
                             i++
