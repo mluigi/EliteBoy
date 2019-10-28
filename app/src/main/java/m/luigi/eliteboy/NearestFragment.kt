@@ -52,5 +52,4 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
         }
     }
-
 }

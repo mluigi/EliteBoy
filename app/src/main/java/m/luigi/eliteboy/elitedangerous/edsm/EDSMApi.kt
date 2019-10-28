@@ -442,9 +442,8 @@ object EDSMApi {
             val systems = filteredNearbySystems(system)
             var i = 0
             var systemsFound = 0
-            while (systemsFound < 20 && i < systems.size) {
+            while (systemsFound < 20 && i < systems.size && systems[i] != null) {
                 val sys = systems[i]
-
                 if (filter(sys)) {
                     emit(sys)
                     systemsFound++
@@ -452,7 +451,6 @@ object EDSMApi {
 
                 i++
             }
-
         }.flowOn(Dispatchers.Default)
     }
 
@@ -464,7 +462,6 @@ object EDSMApi {
     ): Flow<System> {
         return flow {
             val systems = filteredNearbySystems(system)
-
             var systemsFound = 0
             var i = 0
             while (systemsFound < 20 && i < systems.size) {
@@ -497,22 +494,22 @@ object EDSMApi {
         return when (search) {
             INDIPENDENT -> {
                 filterBySystem(system) {
-                    it.information!!.allegiance!! == "Independent"
+                    (it.information!!.allegiance ?: "") == "Independent"
                 }
             }
             ALLIANCE -> {
                 filterBySystem(system) {
-                    it.information!!.allegiance!! == "Alliance"
+                    (it.information!!.allegiance ?: "") == "Alliance"
                 }
             }
             IMPERIAL -> {
                 filterBySystem(system) {
-                    it.information!!.allegiance!! == "Empire"
+                    (it.information!!.allegiance ?: "") == "Empire"
                 }
             }
             FEDERAL -> {
                 filterBySystem(system) {
-                    it.information!!.allegiance!! == "Federation"
+                    (it.information!!.allegiance ?: "") == "Federation"
 
                 }
             }
@@ -587,7 +584,7 @@ object EDSMApi {
             connection.doInput = true
             connection.getInputStream().bufferedReader().readText()
         }
-        val msgnum = onDefault{ JsonParser.parseString(json).asJsonObject["msgnum"].asInt }
+        val msgnum = onDefault { JsonParser.parseString(json).asJsonObject["msgnum"].asInt }
         return msgnum == 100
     }
 }

@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.data_item.view.*
+import kotlinx.coroutines.FlowPreview
 import m.luigi.eliteboy.R
 import m.luigi.eliteboy.SystemsFragment
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
