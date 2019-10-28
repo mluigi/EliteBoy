@@ -125,20 +125,24 @@ object EDSMApi {
     }
 
 
-    fun getSystem(name: String): System {
+    suspend fun getSystem(name: String): System {
         val system = URLEncoder.encode(name, "UTF-8")
-        val connection = URL(
-            BASE_URL + SYSTEM +
-                    "/?systemName=$system" +
-                    "&showId=1" +
-                    "&showCoordinates=1" +
-                    "&showPermit=1" +
-                    "&showInformation=1" +
-                    "&showPrimaryStar=1"
-        ).openConnection()
-        connection.doInput = true
-        val json = connection.getInputStream().bufferedReader().readText()
-        return Gson().fromJson<System>(json, System::class.java)
+        val json = onIO {
+            val connection = URL(
+                BASE_URL + SYSTEM +
+                        "/?systemName=$system" +
+                        makeOptionsString(
+                            showId = true,
+                            showCoordinates = true,
+                            showPermit = true,
+                            showInformation = true,
+                            showPrimaryStar = true
+                        )
+            ).openConnection()
+            connection.doInput = true
+            connection.getInputStream().bufferedReader().readText()
+        }
+        return onDefault { Gson().fromJson<System>(json, System::class.java) }
     }
 
     private suspend fun findSystems(
@@ -220,10 +224,11 @@ object EDSMApi {
                 }
             }
         }
-        val connection = URL(url).openConnection()
-        connection.doInput = true
-        val json =
-            onIO { connection.getInputStream().bufferedReader().readText() }
+        val json = onIO {
+            val connection = URL(url).openConnection()
+            connection.doInput = true
+            connection.getInputStream().bufferedReader().readText()
+        }
         val systems = ArrayList<System>()
 
         onDefault {
@@ -340,54 +345,64 @@ object EDSMApi {
         return system
     }
 
-    private fun getShipyard(marketId: Long): Station {
-        val connection = URL(
-            BASE_URL + STATIONS + SHIPYARD +
-                    "?marketId=$marketId"
-        ).openConnection()
-        connection.doInput = true
-        val json = connection.inputStream.bufferedReader().readText()
+    private suspend fun getShipyard(marketId: Long): Station {
+        val json = onIO {
+            val connection = URL(
+                BASE_URL + STATIONS + SHIPYARD +
+                        "?marketId=$marketId"
+            ).openConnection()
+            connection.doInput = true
+            connection.inputStream.bufferedReader().readText()
+        }
 
-        return Gson().fromJson<Station>(json, Station::class.java)
+        return onDefault { Gson().fromJson<Station>(json, Station::class.java) }
     }
 
-    fun getShipyard(station: Station) {
+    suspend fun getShipyard(station: Station) {
         Station.updateStation(station, getShipyard(station.marketId))
     }
 
-    private fun getMarket(marketId: Long): Station {
-        val connection = URL(
-            BASE_URL + STATIONS + MARKET +
-                    "?marketId=$marketId"
-        ).openConnection()
-        connection.doInput = true
-        val json = connection.inputStream.bufferedReader().readText()
+    private suspend fun getMarket(marketId: Long): Station {
+        val json = onIO {
+            val connection = URL(
+                BASE_URL + STATIONS + MARKET +
+                        "?marketId=$marketId"
+            ).openConnection()
+            connection.doInput = true
+            connection.inputStream.bufferedReader().readText()
+        }
 
-        return GsonBuilder().registerTypeAdapter(Commodity::class.java, CommodityDeserializer())
-            .create().fromJson<Station>(json, Station::class.java)
+        return onDefault {
+            GsonBuilder().registerTypeAdapter(Commodity::class.java, CommodityDeserializer())
+                .create().fromJson<Station>(json, Station::class.java)
+        }
     }
 
-    fun getMarket(station: Station) {
+    suspend fun getMarket(station: Station) {
         Station.updateStation(station, getMarket(station.marketId))
     }
 
-    private fun getOutfitting(marketId: Long): Station {
-        val connection = URL(
-            BASE_URL + STATIONS + OUTFITTING +
-                    "?marketId=$marketId"
-        ).openConnection()
-        connection.doInput = true
-        val json = connection.inputStream.bufferedReader().readText()
+    private suspend fun getOutfitting(marketId: Long): Station {
+        val json = onIO {
+            val connection = URL(
+                BASE_URL + STATIONS + OUTFITTING +
+                        "?marketId=$marketId"
+            ).openConnection()
+            connection.doInput = true
+            connection.inputStream.bufferedReader().readText()
+        }
 
-        return GsonBuilder().registerTypeAdapter(Module::class.java, ModuleDeserializer())
-            .create().fromJson<Station>(json, Station::class.java)
+        return onDefault {
+            GsonBuilder().registerTypeAdapter(Module::class.java, ModuleDeserializer())
+                .create().fromJson<Station>(json, Station::class.java)
+        }
     }
 
-    fun getOutfitting(station: Station) {
+    suspend fun getOutfitting(station: Station) {
         Station.updateStation(station, getOutfitting(station.marketId))
     }
 
-    fun getCompleteStation(station: Station) {
+    suspend fun getCompleteStation(station: Station) {
         getShipyard(station)
         getMarket(station)
         getOutfitting(station)
@@ -562,15 +577,17 @@ object EDSMApi {
         }
     }
 
-    fun checkApiKey(): Boolean {
-        val connection = URL(
-            BASE_URL + RANKS +
-                    "/?commanderName=${URLEncoder.encode(commander, "UTF-8")}" +
-                    "&apiKey=${if (apiKey == "") "s" else apiKey}"
-        ).openConnection()
-        connection.doInput = true
-        val json = connection.getInputStream().bufferedReader().readText()
-        val msgnum = JsonParser.parseString(json).asJsonObject["msgnum"].asInt
+    suspend fun checkApiKey(): Boolean {
+        val json = onIO {
+            val connection = URL(
+                BASE_URL + RANKS +
+                        "/?commanderName=${URLEncoder.encode(commander, "UTF-8")}" +
+                        "&apiKey=${if (apiKey == "") "s" else apiKey}"
+            ).openConnection()
+            connection.doInput = true
+            connection.getInputStream().bufferedReader().readText()
+        }
+        val msgnum = onDefault{ JsonParser.parseString(json).asJsonObject["msgnum"].asInt }
         return msgnum == 100
     }
 }
