@@ -65,11 +65,12 @@ object CoriolisDataHelper {
                             NumberFormat.getIntegerInstance().format(it)
                         )
                     }
-                map["${ship}_armour_grade1"] = bulkheadsPrices[0]
-                map["${ship}_armour_grade2"] = bulkheadsPrices[1]
-                map["${ship}_armour_grade3"] = bulkheadsPrices[2]
-                map["${ship}_armour_mirrored"] = bulkheadsPrices[3]
-                map["${ship}_armour_reactive"] = bulkheadsPrices[4]
+                val shipId = getEDSMShipId(ship)
+                map["${shipId}_armour_grade1"] = bulkheadsPrices[0]
+                map["${shipId}_armour_grade2"] = bulkheadsPrices[1]
+                map["${shipId}_armour_grade3"] = bulkheadsPrices[2]
+                map["${shipId}_armour_mirrored"] = bulkheadsPrices[3]
+                map["${shipId}_armour_reactive"] = bulkheadsPrices[4]
 
             }
 
@@ -83,8 +84,9 @@ object CoriolisDataHelper {
             ships().entrySet().forEach { (shipId, value) ->
                 if (modules.keys.any { it.startsWith(shipId) }) {
                     val shipName = value.asJsonObject["properties"].asJsonObject["name"].asString
-                    getShipBulkheadsPriceMap(shipId).forEach { bulkId, price ->
-                        map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] = price
+                    getShipBulkheadsPriceMap(shipId).forEach { (bulkId, price) ->
+                        map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] =
+                            price
                     }
                 }
             }
@@ -177,5 +179,36 @@ object CoriolisDataHelper {
         "Viper" to "Viper MkIII",
         "Cobra Mk IV" to "Cobra MkIV",
         "Cobra Mk III" to "Cobra MkIII"
+    )
+
+    private fun getEDSMShipId(coriolisId: String): String {
+        return coriolistoEDSMShipIdMap[coriolisId] ?: coriolisId
+    }
+
+    private val coriolistoEDSMShipIdMap = mapOf(
+        "beluga" to "belugaliner",
+        "cobra_mk_iii" to "cobramkiii",
+        "cobra_mk_iv" to "cobramkiv",
+        "imperial_cutter" to "cutter",
+        "diamondback_explorer" to "diamondbackxl",
+        "imperial_eagle" to "empire_eagle",
+        "imperial_courier" to "empire_courier",
+        "imperial_clipper" to "empire_trader",
+        "federal_corvette" to "federation_corvette",
+        "federal_assault_ship" to "federation_dropship_mkii",
+        "federal_dropship" to "federation_dropship",
+        "federal_gunship" to "federation_gunship",
+        "fer_de_lance" to "ferdelance",
+        "krait_phantom" to "krait_light",
+        "type_6_transporter" to "type6",
+        "type_7_transport" to "type7",
+        "type_9_heavy" to "type9",
+        "type_10_defender" to "type9_military",
+        "alliance_challenger" to "typex_3",
+        "alliance_chieftain" to "typex",
+        "alliance_crusader" to "typex_2",
+        "fer_de_lance" to "ferdelance",
+        "keelback" to "independant_trader",
+        "viper_mk_iv" to "viper_mkiv"
     )
 }

@@ -18,7 +18,7 @@ class AutoScrollingTextView : TextView {
 
     override fun onFocusChanged(
         focused: Boolean, direction: Int,
-        previouslyFocusedRect: Rect
+        previouslyFocusedRect: Rect?
     ) {
         if (focused) {
             super.onFocusChanged(focused, direction, previouslyFocusedRect)
