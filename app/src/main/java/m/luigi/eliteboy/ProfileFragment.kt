@@ -43,11 +43,12 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         GlobalScope.launch {
-            initJob.join()
-            updateProfile()
-
             onMain {
                 (activity as MainActivity).mainToolbar.title = "Profile"
+
+                initJob.join()
+                updateProfile()
+
                 rankLayout.setAnimateOnClickListener(
                     rankBars,
                     rankView,
@@ -65,7 +66,6 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-
             setProfileLayout()
         }
 

@@ -275,9 +275,8 @@
                             <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8sp"
-                                android:layout_marginRight="8sp"
-                                android:layout_marginBottom="8sp">
+                                android:layout_marginHorizontal="8sp"
+                                android:layout_marginVertical="8sp">
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
