@@ -1,241 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileFragment">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:animateLayoutChanges="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="CMDR"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/cmdrName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="Credits"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/credits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/creditsImg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:clickable="true"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="Last System"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/lastSystem"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/lastSystemImg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:clickable="true"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="8sp"
-                        android:text="Last Station"
-                        android:textColor="@color/md_amber_800"
-                        android:textSize="18sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/lastStation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLines="1"
-                        android:padding="8sp"
-                        android:text="-"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/lastStationImg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:clickable="true"
-                        app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        android:padding="8dp"
                         android:visibility="visible">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:padding="8sp"
-                            android:text="Ranks"
+                            android:text="CMDR"
                             android:textColor="@color/md_amber_800"
                             android:textSize="18sp" />
 
@@ -244,52 +61,259 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
 
-                        <ImageView
-                            android:id="@+id/rankView"
+                        <TextView
+                            android:id="@+id/cmdrName"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:clickable="true"
-                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
                     </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/creditsView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <LinearLayout
-                        android:id="@+id/rankBars"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:animateLayoutChanges="true"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
+                            android:layout_weight="1"
+                            android:text="Credits"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
 
-                            <LinearLayout
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/credits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingEnd="8dp"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:id="@+id/lastSystemLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Last System"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/lastSystem"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingEnd="8dp"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:clickable="false"
+                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:id="@+id/lastStationLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Last Station"
+                            android:textColor="@color/md_amber_800"
+                            android:textSize="18sp" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/lastStation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:maxLines="1"
+                            android:paddingEnd="8dp"
+                            android:text="-"
+                            android:textAlignment="viewEnd"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:clickable="false"
+                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/rankLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Ranks"
+                                android:textColor="@color/md_amber_800"
+                                android:textSize="18sp" />
+
+                            <Space
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <ImageView
+                                android:id="@+id/rankView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0"
+                                android:focusable="auto"
+                                android:rotation="90"
+                                app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/rankBars"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:animateLayoutChanges="true"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginHorizontal="8sp"
+                                android:layout_marginVertical="8sp">
 
-                                <LinearLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
-                                        android:scaleType="fitCenter"
+                                        android:id="@+id/combatImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:adjustViewBounds="false"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline8"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout3"
                                         tools:srcCompat="@tools:sample/avatars[0]" />
 
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline8"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayout3"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="@+id/guideline8"
+                                        app:layout_constraintTop_toTopOf="parent">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -311,66 +335,54 @@
                                             android:textAlignment="viewStart"
                                             android:textSize="14sp" />
                                     </LinearLayout>
-                                </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                    <ProgressBar
-                                        android:id="@+id/combatRankProgressBar"
-                                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="500"
-                                        android:max="100"
-                                        android:paddingLeft="8sp"
-                                        android:paddingRight="8sp"
-                                        android:progress="50"
-                                        android:progressTint="@color/md_amber_800" />
+                            </androidx.cardview.widget.CardView>
 
-                                    <TextView
-                                        android:id="@+id/combatRankPercentage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:paddingRight="8sp"
-                                        android:text="-"
-                                        android:textSize="10sp" />
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
 
-                                <LinearLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline4"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
+                                        android:id="@+id/tradeImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
                                         android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout7"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout7"
                                         tools:srcCompat="@tools:sample/avatars[0]" />
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:id="@+id/linearLayout7"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/tradeImg"
+                                        app:layout_constraintTop_toTopOf="parent">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -392,66 +404,53 @@
                                             android:textAlignment="viewStart"
                                             android:textSize="14sp" />
                                     </LinearLayout>
-                                </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                            </androidx.cardview.widget.CardView>
 
-                                    <ProgressBar
-                                        android:id="@+id/tradeRankProgressBar"
-                                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="500"
-                                        android:max="100"
-                                        android:paddingLeft="8sp"
-                                        android:paddingRight="8sp"
-                                        android:progress="50"
-                                        android:progressTint="@color/md_amber_800" />
-
-                                    <TextView
-                                        android:id="@+id/tradeRankPercentage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:paddingRight="8sp"
-                                        android:text="-"
-                                        android:textSize="10sp" />
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
 
-                                <LinearLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline5"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
+                                        android:id="@+id/expImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
                                         android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout9"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout9"
                                         tools:srcCompat="@tools:sample/avatars[0]" />
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:id="@+id/linearLayout9"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/expImg"
+                                        app:layout_constraintTop_toTopOf="parent">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -473,66 +472,53 @@
                                             android:textAlignment="viewStart"
                                             android:textSize="14sp" />
                                     </LinearLayout>
-                                </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                            </androidx.cardview.widget.CardView>
 
-                                    <ProgressBar
-                                        android:id="@+id/expRankBar"
-                                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="500"
-                                        android:max="100"
-                                        android:paddingLeft="8sp"
-                                        android:paddingRight="8sp"
-                                        android:progress="50"
-                                        android:progressTint="@color/md_amber_800" />
-
-                                    <TextView
-                                        android:id="@+id/explorRankPercentage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:paddingRight="8sp"
-                                        android:text="-"
-                                        android:textSize="10sp" />
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
 
-                                <LinearLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline6"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
+                                        android:id="@+id/cqcImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
                                         android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout11"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout11"
                                         tools:srcCompat="@tools:sample/avatars[0]" />
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:id="@+id/linearLayout11"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/cqcImg"
+                                        app:layout_constraintTop_toTopOf="parent">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -554,66 +540,46 @@
                                             android:textAlignment="viewStart"
                                             android:textSize="14sp" />
                                     </LinearLayout>
-                                </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                            </androidx.cardview.widget.CardView>
 
-                                    <ProgressBar
-                                        android:id="@+id/cqcProgressBar"
-                                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="500"
-                                        android:max="100"
-                                        android:paddingLeft="8sp"
-                                        android:paddingRight="8sp"
-                                        android:progress="50"
-                                        android:progressTint="@color/md_amber_800" />
-
-                                    <TextView
-                                        android:id="@+id/cqcRankPercentage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:paddingRight="8sp"
-                                        android:text="-"
-                                        android:textSize="10sp" />
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
 
-                                <LinearLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
+                                        android:id="@+id/impNavyImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
                                         android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout5"
                                         tools:srcCompat="@tools:sample/avatars[0]" />
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:id="@+id/linearLayout5"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/impNavyImg"
+                                        app:layout_constraintTop_toTopOf="parent">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -635,69 +601,63 @@
                                             android:textAlignment="viewStart"
                                             android:textSize="14sp" />
                                     </LinearLayout>
-                                </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <ProgressBar
-                                        android:id="@+id/impProgressBar"
-                                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline3"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="500"
-                                        android:max="100"
-                                        android:paddingLeft="8sp"
-                                        android:paddingRight="8sp"
-                                        android:progress="50"
-                                        android:progressTint="@color/md_amber_800" />
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                    <TextView
-                                        android:id="@+id/impNavyRankPercentage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:paddingRight="8sp"
-                                        android:text="-"
-                                        android:textSize="10sp" />
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                            </androidx.cardview.widget.CardView>
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginLeft="8sp"
+                                android:layout_marginRight="8sp"
+                                android:layout_marginBottom="8sp">
 
-                                <LinearLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content">
+
+                                    <androidx.constraintlayout.widget.Guideline
+                                        android:id="@+id/guideline7"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintGuide_percent="0.25" />
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
+                                        android:id="@+id/fedNavyImg"
+                                        android:layout_width="0dp"
+                                        android:layout_height="0dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingBottom="4dp"
                                         android:scaleType="fitCenter"
+                                        app:layout_constraintBottom_toBottomOf="@+id/linearLayout13"
+                                        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="@+id/linearLayout13"
                                         tools:srcCompat="@tools:sample/avatars[0]" />
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:id="@+id/linearLayout13"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
+                                        android:orientation="vertical"
+                                        android:paddingStart="8dp"
+                                        android:paddingBottom="4dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/fedNavyImg"
+                                        app:layout_constraintTop_toTopOf="parent">
 
                                         <TextView
-                                            android:layout_width="match_parent"
+                                            android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_weight="1"
                                             android:maxLines="1"
@@ -716,293 +676,34 @@
                                             android:textAlignment="viewStart"
                                             android:textSize="14sp" />
                                     </LinearLayout>
-                                </LinearLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <ProgressBar
-                                        android:id="@+id/fedProgressBar"
-                                        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="500"
-                                        android:max="100"
-                                        android:paddingLeft="8sp"
-                                        android:paddingRight="8sp"
-                                        android:progress="50"
-                                        android:progressTint="@color/md_amber_800" />
-
-                                    <TextView
-                                        android:id="@+id/fedNavyRankPercentage"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="2"
-                                        android:paddingRight="8sp"
-                                        android:text="-"
-                                        android:textSize="10sp" />
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
-
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:duplicateParentState="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        android:padding="8dp"
                         android:visibility="visible">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:padding="8sp"
-                            android:text="@string/reputation"
-                            android:textColor="@color/md_amber_800"
-                            android:textSize="18sp" />
-
-                        <Space
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <ImageView
-                            android:id="@+id/reputationView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:clickable="true"
-                            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/reputationBars"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginTop="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
-                                        android:scaleType="fitCenter"
-                                        tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="1"
-                                            android:maxLines="1"
-                                            android:padding="8sp"
-                                            android:text="Alliance"
-                                            android:textAlignment="viewStart"
-                                            android:textSize="18sp" />
-
-                                        <TextView
-                                            android:id="@+id/allianceRep"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="2"
-                                            android:paddingLeft="8sp"
-                                            android:paddingBottom="8sp"
-                                            android:text="-"
-                                            android:textAlignment="viewStart"
-                                            android:textSize="14sp" />
-                                    </LinearLayout>
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
-                                        android:scaleType="fitCenter"
-                                        tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="1"
-                                            android:maxLines="1"
-                                            android:padding="8sp"
-                                            android:text="@string/empire"
-                                            android:textAlignment="viewStart"
-                                            android:textSize="18sp" />
-
-                                        <TextView
-                                            android:id="@+id/empireRep"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="2"
-                                            android:paddingLeft="8sp"
-                                            android:paddingBottom="8sp"
-                                            android:text="-"
-                                            android:textAlignment="viewStart"
-                                            android:textSize="14sp" />
-                                    </LinearLayout>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"></LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8sp"
-                            android:layout_marginRight="8sp"
-                            android:layout_marginBottom="8sp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0"
-                                        android:scaleType="fitCenter"
-                                        tools:srcCompat="@tools:sample/avatars[0]" />
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="0"
-                                        android:orientation="vertical">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="1"
-                                            android:maxLines="1"
-                                            android:padding="8sp"
-                                            android:text="@string/federation"
-                                            android:textAlignment="viewStart"
-                                            android:textSize="18sp" />
-
-                                        <TextView
-                                            android:id="@+id/federationRep"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="2"
-                                            android:paddingLeft="8sp"
-                                            android:paddingBottom="8sp"
-                                            android:text="-"
-                                            android:textAlignment="viewStart"
-                                            android:textSize="14sp" />
-                                    </LinearLayout>
-                                </LinearLayout>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/shipCardView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:duplicateParentState="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_toolbar">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:visibility="visible">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:padding="8sp"
                             android:text="Ships"
                             android:textColor="@color/md_amber_800"
                             android:textSize="18sp" />
@@ -1014,14 +715,27 @@
 
                         <ImageView
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="0"
-                            android:clickable="true"
+                            android:clickable="false"
+                            android:focusable="true"
                             app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
                     </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-        </LinearLayout>
-    </ScrollView>
-</FrameLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/profileSpinKit"
+        style="@style/SpinKitView.Large.DoubleBounce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:SpinKit_Color="@color/md_amber_700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

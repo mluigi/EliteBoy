@@ -5,13 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_credits.*
 
 class CreditsFragment : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,4 +17,14 @@ class CreditsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_credits, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        arguments?.let {
+            val creds = it.getLong("creds", 0)
+            credsChart.show(linkedMapOf(
+                "0" to creds.toFloat()/2,
+                "1" to creds.toFloat()
+            ))
+        }
+    }
 }

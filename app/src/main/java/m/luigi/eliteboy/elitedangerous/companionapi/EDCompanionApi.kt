@@ -1,21 +1,15 @@
 package m.luigi.eliteboy.elitedangerous.companionapi
 
-import android.annotation.TargetApi
 import android.content.SharedPreferences
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
-import android.os.Build
 import android.util.Base64.*
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import m.luigi.eliteboy.BuildConfig
+import m.luigi.eliteboy.BuildConfig.FrontierClientId
 import m.luigi.eliteboy.elitedangerous.companionapi.data.*
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.StarportDeserializer
-import m.luigi.eliteboy.util.info
 import java.io.DataOutputStream
-import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
@@ -38,15 +32,19 @@ object EDCompanionApi {
     const val MARKET_URL = "/market"
     const val SHIPYARD_URL = "/shipyard"
 
-    lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     var currentState = State.LOGGED_OUT
-    var credentials = Credentials()
-    private val clientID = BuildConfig.FrontierClientId
+    private var credentials = Credentials()
+    private val clientID = FrontierClientId
     private var authSessionId = ""
     private var verifier = ""
 
     private var authCallback: (String) -> Unit = {}
+
+    private var cachedProfile: Profile? = null
+
+    private var profileLastUpdate = LocalDateTime.now()
 
     enum class Endpoint(val url: String) {
         PROFILE("$LIVE_SERVER$PROFILE_URL"),
@@ -68,7 +66,6 @@ object EDCompanionApi {
         setAuthCallback(authcallback)
         sharedPrefs = sharedPreferences
         val credentialsJson = sharedPrefs.getString("creds", null)
-        info { credentialsJson }
         credentialsJson?.let {
             credentials = Credentials.fromJson(credentialsJson)
             try {
@@ -79,11 +76,8 @@ object EDCompanionApi {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    fun saveCreds() {
+    private fun saveCreds() {
         sharedPrefs.edit().putString("creds", credentials.toJson()).apply()
-
-        info { sharedPrefs.getString("creds","")!!}
     }
 
     private val gson = GsonBuilder()
@@ -93,7 +87,6 @@ object EDCompanionApi {
         .create()!!
 
     fun login() {
-        info { "logging in" }
         if (currentState != State.LOGGED_OUT) {
             throw Exception("Wrong state")
         }
@@ -117,7 +110,6 @@ object EDCompanionApi {
         sr.nextBytes(code)
         verifier =
             base64UrlEncode(code)
-        info { verifier }
         val bytes = verifier.toByteArray(charset("US-ASCII"))
 
         val rawAuthSessionId = ByteArray(8)
@@ -135,8 +127,6 @@ object EDCompanionApi {
         return base64.replace('+', '-').replace('/', '_').replace("=", "")
     }
 
-
-    @TargetApi(Build.VERSION_CODES.O)
     fun tokenCallback(code: String) {
         val urlConnection = getRequest("$AUTH_SERVER$TOKEN_URL")
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
@@ -165,7 +155,6 @@ object EDCompanionApi {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     private fun refreshToken() {
         currentState = State.AWAITING_CALLBACK
         val urlConnection = getRequest("$AUTH_SERVER$TOKEN_URL")
@@ -191,26 +180,30 @@ object EDCompanionApi {
         }
     }
 
-    private inline fun <reified T> get(endpoint: Endpoint): T {
-        val url: String = endpoint.url
-        val connection = getRequest(url)
-        connection.doInput = true
-        getResponse(connection)
-        val json = getResponseData(connection)
-        return gson.fromJson(json, T::class.java) as T
+    fun getProfile(forced: Boolean = false): Profile? {
+
+        if ((cachedProfile == null ||
+                    forced ||
+                    LocalDateTime.now() > profileLastUpdate.plusMinutes(5)) &&
+            currentState == State.AUTHORIZED
+        ) {
+            val url = Endpoint.PROFILE.url
+            val connection = getRequest(url)
+            connection.doInput = true
+            getResponse(connection)
+            val json = getResponseData(connection)
+            cachedProfile = gson.fromJson(json, Profile::class.java)
+        }
+
+        return cachedProfile
     }
 
-    fun getProfile(): Profile? {
-        val url=Endpoint.PROFILE.url
-        val connection = getRequest(url)
-        connection.doInput = true
-        getResponse(connection)
-        val json = getResponseData(connection)
-        return gson.fromJson(json, Profile::class.java)
+    fun getLastPosition(forced: Boolean = false): String {
+        return getProfile(forced)?.lastSystem?.name ?: "Sol"
     }
 
     fun getMarket(): Market? {
-        val url=Endpoint.MARKET.url
+        val url = Endpoint.MARKET.url
         val connection = getRequest(url)
         connection.doInput = true
         getResponse(connection)
@@ -219,7 +212,7 @@ object EDCompanionApi {
     }
 
     fun getShipyard(): Shipyard? {
-        val url=Endpoint.SHIPYARD.url
+        val url = Endpoint.SHIPYARD.url
         val connection = getRequest(url)
         connection.doInput = true
         getResponse(connection)

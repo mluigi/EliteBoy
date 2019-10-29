@@ -2,7 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
     app:startDestination="@id/profileFragment">
 
     <fragment
@@ -17,11 +16,11 @@
             android:id="@+id/action_profileFragment_to_systemFragment"
             app:destination="@id/systemFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_stationFragment"
-            app:destination="@id/stationFragment" />
-        <action
             android:id="@+id/action_profileFragment_to_shipsFragment"
             app:destination="@id/shipsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_stationFragment"
+            app:destination="@id/stationFragment" />
     </fragment>
     <fragment
         android:id="@+id/creditsFragment"
@@ -42,12 +41,12 @@
         android:name="m.luigi.eliteboy.StationFragment"
         android:label="fragment_station"
         tools:layout="@layout/fragment_station" >
-        <action
-            android:id="@+id/action_stationFragment_to_shipsFragment"
-            app:destination="@id/shipsFragment" />
-        <action
-            android:id="@+id/action_stationFragment_to_systemFragment"
-            app:destination="@id/systemFragment" />
+        <argument
+            android:name="station"
+            app:argType="m.luigi.eliteboy.elitedangerous.edsm.data.Station" />
+        <argument
+            android:name="marketId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/shipsFragment"
@@ -67,14 +66,8 @@
         <action
             android:id="@+id/action_systemsFragment_to_systemFragment"
             app:destination="@id/systemFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/stationsFragment"
-        android:name="m.luigi.eliteboy.StationsFragment"
-        android:label="fragment_stations"
-        tools:layout="@layout/fragment_stations" >
         <action
-            android:id="@+id/action_stationsFragment_to_stationFragment"
+            android:id="@+id/action_systemsFragment_to_stationFragment"
             app:destination="@id/stationFragment" />
     </fragment>
     <fragment
@@ -83,7 +76,17 @@
         android:label="fragment_nearest"
         tools:layout="@layout/fragment_nearest" >
         <action
-            android:id="@+id/action_nearestFragment_to_stationFragment"
-            app:destination="@id/stationFragment" />
+            android:id="@+id/action_nearestFragment_to_systemsFragment"
+            app:destination="@id/systemsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/stationsFragment"
+        android:name="m.luigi.eliteboy.StationsFragment"
+        android:label="fragment_stations"
+        tools:layout="@layout/fragment_stations" />
+    <fragment
+        android:id="@+id/searchSystemsFragment"
+        android:name="m.luigi.eliteboy.SearchSystemsFragment"
+        android:label="fragment_search_systems"
+        tools:layout="@layout/fragment_search_systems" />
 </navigation>

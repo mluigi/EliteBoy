@@ -7,7 +7,7 @@ class Log {
     var shipId = 0
     var system = ""
     var firstDiscover = false
-    var date = ""
+    private var date = ""
 
     fun date() = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))!!
 }

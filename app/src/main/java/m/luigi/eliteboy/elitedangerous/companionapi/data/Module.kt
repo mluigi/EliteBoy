@@ -5,6 +5,7 @@ class Module {
     var free: Boolean? = null
     var health: Int? = null
     var id: Int? = null
+    var sId: String? = null
     var locDescription: String? = null
     var locName: String? = null
     var name: String? = null

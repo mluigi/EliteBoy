@@ -36,8 +36,8 @@ fun View.expand() {
         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
     )
     val targetHeight = this.measuredHeight
-    this.layoutParams.height = 1
     this.visibility = View.VISIBLE
+    this.layoutParams.height = 0
 
     val a = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
@@ -66,7 +66,8 @@ fun View.collapse() {
             if (interpolatedTime == 1f) {
                 this@collapse.visibility = View.GONE
             } else {
-                this@collapse.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                this@collapse.layoutParams.height =
+                    initialHeight - (initialHeight * interpolatedTime).toInt()
                 this@collapse.requestLayout()
             }
         }
@@ -80,14 +81,19 @@ fun View.collapse() {
     this.startAnimation(a)
 }
 
-fun View.setAnimateOnClickListener(viewToAnimate: View, viewToRotate: View, bool: () -> Boolean, block: () -> Unit) {
+fun View.setAnimateOnClickListener(
+    viewToAnimate: View,
+    viewToRotate: View,
+    bool: () -> Boolean,
+    block: () -> Unit
+) {
     setOnClickListener {
         if (bool()) {
             viewToAnimate.collapse()
-            viewToRotate.animate().rotation(0f).apply { duration = 800 }.start()
+            viewToRotate.animate().rotation(90f).apply { duration = 800 }.start()
         } else {
             viewToAnimate.expand()
-            viewToRotate.animate().rotation(90f).apply { duration = 800 }.start()
+            viewToRotate.animate().rotation(270f).apply { duration = 800 }.start()
         }
         block()
     }
@@ -110,4 +116,18 @@ suspend fun <T> onMain(block: suspend CoroutineScope.() -> T): T {
     return withContext(Dispatchers.Main) {
         block()
     }
+}
+
+fun Long?.isNullOrZero(): Boolean {
+    return this == 0L || this == null
+}
+
+suspend fun runWhile(block: suspend CoroutineScope.(stop: () -> Unit) -> Unit) {
+    var isRunning = true
+    while (isRunning) {
+        onDefault {
+            block { isRunning = false }
+        }
+    }
+
 }

@@ -8,6 +8,7 @@ class Commodity {
     var demand: Int? = null
     var demandBracket: Int? = null
     var id: Int? = null
+    var sId: String? = null
     var legality: String? = null
     var locName: String? = null
     var meanPrice: Int? = null
