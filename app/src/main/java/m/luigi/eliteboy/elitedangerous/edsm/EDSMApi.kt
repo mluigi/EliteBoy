@@ -156,7 +156,8 @@ object EDSMApi {
         showCoordinates: Boolean = true,
         showPermit: Boolean = false,
         showInformation: Boolean = true,
-        showPrimaryStar: Boolean = false
+        showPrimaryStar: Boolean = false,
+        limit: Int = 0
     ): ArrayList<System> {
         var url = BASE_URL
         val systemEncoded = URLEncoder.encode(system, "UTF-8")
@@ -225,6 +226,7 @@ object EDSMApi {
             }
         }
         val json = onIO {
+            println(url)
             val connection = URL(url).openConnection()
             connection.doInput = true
             connection.getInputStream().bufferedReader().readText()
@@ -234,8 +236,19 @@ object EDSMApi {
         onDefault {
             try {
                 val jsonArray = JsonParser.parseString(json).asJsonArray
-                jsonArray.forEach {
-                    systems.add(Gson().fromJson<System>(it.asJsonObject, System::class.java))
+                if (limit == 0) {
+                    jsonArray.forEach {
+                        systems.add(Gson().fromJson<System>(it.asJsonObject, System::class.java))
+                    }
+                } else if (jsonArray.size() > 0) {
+                    for (i in 0 until if (limit < jsonArray.size()) limit else jsonArray.size()) {
+                        systems.add(
+                            Gson().fromJson<System>(
+                                jsonArray[i].asJsonObject,
+                                System::class.java
+                            )
+                        )
+                    }
                 }
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
@@ -244,8 +257,25 @@ object EDSMApi {
         return systems
     }
 
-    suspend fun findSystemsByName(name: String): ArrayList<System> {
-        return findSystems(FindType.NAME, name, showCoordinates = false)
+    suspend fun findSystemsByName(
+        name: String,
+        showId: Boolean = false,
+        showCoordinates: Boolean = true,
+        showPermit: Boolean = false,
+        showInformation: Boolean = true,
+        showPrimaryStar: Boolean = false,
+        limit: Int = 0
+    ): ArrayList<System> {
+        return findSystems(
+            FindType.NAME,
+            name,
+            showId = showId,
+            showCoordinates = showCoordinates,
+            showPermit = showPermit,
+            showInformation = showInformation,
+            showPrimaryStar = showPrimaryStar,
+            limit = limit
+        )
     }
 
     suspend fun findSystemsInSphere(
@@ -442,7 +472,7 @@ object EDSMApi {
             val systems = filteredNearbySystems(system)
             var i = 0
             var systemsFound = 0
-            while (systemsFound < 20 && i < systems.size && systems[i] != null) {
+            while (systemsFound < 20 && i < systems.size) {
                 val sys = systems[i]
                 if (filter(sys)) {
                     emit(sys)
