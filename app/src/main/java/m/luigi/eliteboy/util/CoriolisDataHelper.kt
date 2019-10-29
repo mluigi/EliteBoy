@@ -24,7 +24,7 @@ object CoriolisDataHelper {
         }
     }
 
-    suspend fun getShipPriceMap(): Map<String, String> {
+    private suspend fun getShipPriceMap(): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
 
@@ -51,7 +51,7 @@ object CoriolisDataHelper {
         }
     }
 
-    suspend fun getShipBulkheadsPriceMap(ship: String): Map<String, String> {
+    private suspend fun getShipBulkheadsPriceMap(ship: String): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
             with(ships()[ship].asJsonObject) {
@@ -78,7 +78,7 @@ object CoriolisDataHelper {
         }
     }
 
-    suspend fun getBulkheadsPriceMap(modules: Map<String, String>): Map<String, String> {
+    private suspend fun getBulkheadsPriceMap(modules: Map<String, String>): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
             ships().entrySet().forEach { (shipId, value) ->
@@ -94,7 +94,7 @@ object CoriolisDataHelper {
         }
     }
 
-    suspend fun getStandardModulePriceMap(): Map<String, String> {
+    private suspend fun getStandardModulePriceMap(): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
             standardModules().entrySet().forEach {
@@ -112,7 +112,7 @@ object CoriolisDataHelper {
         }
     }
 
-    suspend fun getHardpointModulePriceMap(): Map<String, String> {
+    private suspend fun getHardpointModulePriceMap(): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
             hardpointModules().entrySet().forEach {
@@ -130,7 +130,7 @@ object CoriolisDataHelper {
         }
     }
 
-    suspend fun getInternalModulePriceMap(): Map<String, String> {
+    private suspend fun getInternalModulePriceMap(): Map<String, String> {
         return onDefault {
             val map = mutableMapOf<String, String>()
             internalModules().entrySet().forEach {
@@ -155,13 +155,13 @@ object CoriolisDataHelper {
             val hardpoints = getHardpointModulePriceMap()
             val internal = getInternalModulePriceMap()
             map.putAll(getBulkheadsPriceMap(modules))
-            standard.filter { it.key in modules.keys }.forEach { id, price ->
+            standard.filter { it.key in modules.keys }.forEach { (id, price) ->
                 map[modules.getValue(id)] = price
             }
-            hardpoints.filter { it.key in modules.keys }.forEach { id, price ->
+            hardpoints.filter { it.key in modules.keys }.forEach { (id, price) ->
                 map[modules.getValue(id)] = price
             }
-            internal.filter { it.key in modules.keys }.forEach { id, price ->
+            internal.filter { it.key in modules.keys }.forEach { (id, price) ->
                 map[modules.getValue(id)] = price
             }
             map

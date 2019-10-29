@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -49,9 +51,9 @@ class PropertyAdapter(
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val primaryData = view.primaryData
-        val secondaryData = view.secondaryData
-        val infoList = view.infoList
-        val dataLayout = view.dataLayout
+        val primaryData: TextView = view.primaryData
+        val secondaryData: TextView = view.secondaryData
+        val infoList: RecyclerView = view.infoList
+        val dataLayout: ConstraintLayout = view.dataLayout
     }
 }

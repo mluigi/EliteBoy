@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +21,7 @@ import java.text.NumberFormat
 
 class FoundAdapter(
     val systems: ArrayList<System>,
-    val searchType: EDSMApi.SearchType,
+    private val searchType: EDSMApi.SearchType,
     val fragment: SystemsFragment,
     val context: Context
 ) :
@@ -116,9 +118,9 @@ class FoundAdapter(
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val primaryData = view.primaryData
-        val secondaryData = view.secondaryData
-        val infoList = view.infoList
-        val dataLayout = view.dataLayout
+        val primaryData: TextView = view.primaryData
+        val secondaryData: TextView = view.secondaryData
+        val infoList: RecyclerView = view.infoList
+        val dataLayout: ConstraintLayout = view.dataLayout
     }
 }

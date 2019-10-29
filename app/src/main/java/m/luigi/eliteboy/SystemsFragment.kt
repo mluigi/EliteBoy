@@ -23,8 +23,8 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
     val systems = ArrayList<System>()
     var initJob: Job = Job()
     var initLayoutJob: Job = Job()
-    var searchType: EDSMApi.SearchType? = null
-    var currentSystem: String? = null
+    private var searchType: EDSMApi.SearchType? = null
+    private var currentSystem: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

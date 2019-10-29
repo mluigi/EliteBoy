@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
             onMain {
                 drawer {
                     toolbar = mainToolbar
+                    
                     accountHeader {
                         profile {
                             name = "CMDR"

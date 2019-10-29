@@ -24,9 +24,9 @@ class SystemsSuggestionsAdapter(context: Context, resId: Int, val results: Array
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 results?.let {
                     if (results.count > 0) {
-                        notifyDataSetChanged();
+                        notifyDataSetChanged()
                     } else {
-                        notifyDataSetInvalidated();
+                        notifyDataSetInvalidated()
                     }
                 }
             }

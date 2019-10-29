@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.commodities_item.view.*
 import m.luigi.eliteboy.R
@@ -99,9 +100,9 @@ class CommodityAdapter(private val commodities: ArrayList<Commodity>, val contex
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name = view.nameView
-        val buySell = view.buySellView
-        val demandStock = view.demandStockView
+        val name: TextView = view.nameView
+        val buySell: TextView = view.buySellView
+        val demandStock: TextView = view.demandStockView
 
     }
 

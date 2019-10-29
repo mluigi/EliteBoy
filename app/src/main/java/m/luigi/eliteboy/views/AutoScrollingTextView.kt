@@ -3,10 +3,10 @@ package m.luigi.eliteboy.views
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 
 
-class AutoScrollingTextView : TextView {
+class AutoScrollingTextView : AppCompatTextView {
     constructor(
         context: Context, attrs: AttributeSet,
         defStyle: Int

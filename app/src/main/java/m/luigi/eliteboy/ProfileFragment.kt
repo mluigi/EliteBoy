@@ -162,7 +162,7 @@ class ProfileFragment : Fragment() {
 
                         station?.let {
                             lastStationLayout.setOnClickListener {
-                                androidx.navigation.Navigation.findNavController(it).navigate(
+                                Navigation.findNavController(it).navigate(
                                     R.id.action_profileFragment_to_stationFragment,
                                     bundleOf(Pair("station", station))
                                 )

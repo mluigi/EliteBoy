@@ -27,7 +27,7 @@ import m.luigi.eliteboy.util.onIO
 class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     var currentSystem = ""
-    var systemsSuggestions = ArrayList<String>()
+    private var systemsSuggestions = ArrayList<String>()
     var searchJob: Job = Job()
 
     override fun onCreateView(

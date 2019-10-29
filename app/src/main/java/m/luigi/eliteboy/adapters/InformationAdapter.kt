@@ -4,9 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.system_information_item.view.*
 import m.luigi.eliteboy.R
+import m.luigi.eliteboy.views.AutoScrollingTextView
 
 class InformationAdapter(private val informationMap: Map<String,String>, val context: Context) :
     RecyclerView.Adapter<InformationAdapter.ViewHolder>() {
@@ -33,8 +35,8 @@ class InformationAdapter(private val informationMap: Map<String,String>, val con
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val infoProperty = view.infoProperty
-        val infoValue = view.infoValue
+        val infoProperty: AutoScrollingTextView = view.infoProperty
+        val infoValue: TextView = view.infoValue
 
     }
 }

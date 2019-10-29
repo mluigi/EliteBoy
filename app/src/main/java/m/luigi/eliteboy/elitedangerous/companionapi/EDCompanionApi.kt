@@ -76,7 +76,7 @@ object EDCompanionApi {
         }
     }
 
-    fun saveCreds() {
+    private fun saveCreds() {
         sharedPrefs.edit().putString("creds", credentials.toJson()).apply()
     }
 
