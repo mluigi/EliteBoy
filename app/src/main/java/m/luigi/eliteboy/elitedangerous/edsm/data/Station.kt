@@ -9,7 +9,7 @@ import m.luigi.eliteboy.elitedangerous.companionapi.data.Ship
 import kotlin.math.roundToInt
 
 
-class Station() :Parcelable {
+class Station() : Parcelable {
     var id: Int = 0
     var marketId: Long = 0
     var id64: Long? = null
@@ -29,6 +29,8 @@ class Station() :Parcelable {
     var ships: ArrayList<Ship>? = null
     var commodities: ArrayList<Commodity>? = null
     var outfitting: ArrayList<Module>? = null
+    var traderType: String? = null
+    var brokerType: String? = null
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readInt()
@@ -62,10 +64,17 @@ class Station() :Parcelable {
         map["Allegiance"] = allegiance!!
         map["Government"] = government!!
         map["Economy"] = economy!!
+        map["Second Economy"] = secondEconomy ?: "None"
         map["Has Market"] = if (haveMarket) "Yes" else "No"
         map["Has Shipyard"] = if (haveShipyard) "Yes" else "No"
         map["Has Outfitting"] = if (haveOutfitting) "Yes" else "No"
-        map["Other Services"] =otherServices!!.joinToString(separator = "\n")
+        map["Other Services"] = otherServices!!.joinToString("\n")
+        if (!traderType.isNullOrBlank()) {
+            map["Trader Type"] = traderType!!
+        }
+        if (!brokerType.isNullOrBlank()) {
+            map["Broker Type"] = brokerType!!
+        }
 
         return map
     }
@@ -78,6 +87,7 @@ class Station() :Parcelable {
         override fun newArray(size: Int): Array<Station?> {
             return arrayOfNulls(size)
         }
+
         fun updateStation(original: Station, update: Station) {
             original.javaClass.declaredFields.forEach {
                 it.isAccessible = true

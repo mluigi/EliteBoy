@@ -53,13 +53,21 @@ class FoundAdapter(
         when (searchType.returnType) {
             0 -> {
             }
-            1 -> {
+            1, 3 -> {
                 val map = mutableMapOf<String, String>()
                 system.stations!!.sortedBy { it.distanceToArrival }.forEach {
                     map[it.name!!] = String.format(
                         "%s ls",
                         NumberFormat.getIntegerInstance().format(it.distanceToArrival)
                     )
+                    if (searchType.returnType == 3) {
+                        if (it.otherServices!!.contains("Material Trader")){
+                            map["Trader Type"] = it.traderType!!
+                        }
+                        if (it.otherServices!!.contains("Technology Broker")){
+                            map["Broker Type"] = it.brokerType!!
+                        }
+                    }
                 }
 
                 with(holder.infoList) {
@@ -68,6 +76,8 @@ class FoundAdapter(
                     adapter = InformationAdapter(map, context)
                     visibility = View.VISIBLE
                 }
+
+
             }
             2 -> {
                 val map = mutableMapOf<String, String>()

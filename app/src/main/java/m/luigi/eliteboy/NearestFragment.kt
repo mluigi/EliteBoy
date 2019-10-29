@@ -28,7 +28,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
     var currentSystem = ""
     var systemsSuggestions = ArrayList<String>()
-    private var searchJob: Job = Job()
+    var searchJob: Job = Job()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -119,7 +119,6 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                         val imm = getSystemService(view.context, InputMethodManager::class.java)
                         imm?.hideSoftInputFromWindow(v.windowToken, 0)
                     }
-
                 }
             }
         }

@@ -37,6 +37,7 @@ class PropertyAdapter(
         holder.primaryData.text = primaryData
 
         holder.dataLayout.setOnClickListener {
+            fragment.searchJob.cancel()
             fragment.findNavController().navigate(
                 R.id.action_nearestFragment_to_systemsFragment, bundleOf(
                     "searchType" to primaryData,

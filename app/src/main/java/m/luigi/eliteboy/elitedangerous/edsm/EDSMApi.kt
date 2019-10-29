@@ -6,10 +6,8 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.runBlocking
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Commodity
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
 import m.luigi.eliteboy.elitedangerous.companionapi.data.deserializers.CommodityDeserializer
@@ -63,6 +61,7 @@ object EDSMApi {
         /* 0 returns Systems
          * 1 returns Stations
          * 2 returns Systems with factions
+         * 3 is like 1 but with type
          */
         INDIPENDENT("Independent Systems", 0),
         ALLIANCE("Alliance Systems", 0),
@@ -73,8 +72,8 @@ object EDSMApi {
         SHIPYARD("Shipyard", 1),
         OUTFITTING("Outfitting", 1),
         CONTACTS("Contacts", 1),
-        MAT_TRADER("Material Trader", 1),
-        BROKER("Technology Broker", 1),
+        MAT_TRADER("Material Trader", 3),
+        BROKER("Technology Broker", 3),
         INTERSTELLAR("Interstellar Factors", 1),
         SEARCHRESCUE("Search and Rescue", 1),
         UNICART("Universal Cartographics", 1),
@@ -226,7 +225,6 @@ object EDSMApi {
             }
         }
         val json = onIO {
-            println(url)
             val connection = URL(url).openConnection()
             connection.doInput = true
             connection.getInputStream().bufferedReader().readText()
@@ -363,8 +361,19 @@ object EDSMApi {
         }
     }
 
-    suspend fun getStations(system: System) {
-        System.updateSystem(system, getStations(system.name!!))
+    private suspend fun getStations(system: System) {
+        val compSys = getStations(system.name!!)
+        compSys.stations!!.forEach { station ->
+            station.otherServices?.let {
+                if (it.contains("Material Trader")) {
+                    getMatTraderType(station, compSys)
+                }
+                if (it.contains("Technology Broker")) {
+                    getTechBrokerType(station, compSys)
+                }
+            }
+        }
+        System.updateSystem(system, compSys)
     }
 
     suspend fun getSystemComplete(name: String): System {
@@ -472,7 +481,7 @@ object EDSMApi {
             val systems = filteredNearbySystems(system)
             var i = 0
             var systemsFound = 0
-            while (systemsFound < 20 && i < systems.size) {
+            while (systemsFound < max && i < systems.size) {
                 val sys = systems[i]
                 if (filter(sys)) {
                     emit(sys)
@@ -494,7 +503,7 @@ object EDSMApi {
             val systems = filteredNearbySystems(system)
             var systemsFound = 0
             var i = 0
-            while (systemsFound < 20 && i < systems.size) {
+            while (systemsFound < max && i < systems.size) {
                 val sys = systems[i]
 
                 onIO {
@@ -617,12 +626,38 @@ object EDSMApi {
         val msgnum = onDefault { JsonParser.parseString(json).asJsonObject["msgnum"].asInt }
         return msgnum == 100
     }
-}
 
-@FlowPreview
-fun main() = runBlocking<Unit> {
-    EDSMApi.search(MISSIONS).collect {
-        println(it.name!!)
+    //I have to do this, i am forced
+
+    suspend fun getMatTraderType(station: Station, system: System) {
+        val page = getEDSMPage(station, system)
+
+        station.traderType = onDefault {
+            when {
+                page.contains("<strong class=\"scramble\">Encoded</strong>") -> "Encoded"
+                page.contains("<strong class=\"scramble\">Manufactured</strong>") -> "Manufactured"
+                page.contains("<strong class=\"scramble\">Raw</strong>") -> "Raw"
+                else -> ""
+            }
+        }
     }
 
+    suspend fun getTechBrokerType(station: Station, system: System) {
+        val page = getEDSMPage(station, system)
+        station.brokerType = onDefault {
+            when {
+                page.contains("<strong class=\"scramble\">Guardian</strong>") -> "Guardian"
+                page.contains("<strong class=\"scramble\">Human</strong>") -> "Human"
+                else -> ""
+            }
+        }
+    }
+
+
+    private suspend fun getEDSMPage(station: Station, system: System): String {
+        val url = "https://www.edsm.net/en/system/stations/id/" +
+                "${system.id}/name/${URLEncoder.encode(system.name, "UTF-8")}" +
+                "/details/idS/${station.id}/nameS/${URLEncoder.encode(station.name, "UTF-8")}"
+        return onIO { URL(url).readText() }
+    }
 }
