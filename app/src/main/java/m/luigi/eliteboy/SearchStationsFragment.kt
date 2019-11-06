@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 /**
  * A simple [Fragment] subclass.
  */
-class StationsFragment : Fragment() {
+class SearchStationsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

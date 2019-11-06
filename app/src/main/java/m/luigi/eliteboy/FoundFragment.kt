@@ -18,7 +18,7 @@ import m.luigi.eliteboy.util.onMain
 import m.luigi.eliteboy.util.snackBarMessage
 
 @FlowPreview
-class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
+class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     val systems = ArrayList<System>()
     var initJob: Job = Job()
@@ -94,7 +94,7 @@ class SystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
             foundList.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
             foundList.adapter =
-                FoundAdapter(systems, searchType!!, this@SystemsFragment, view.context)
+                FoundAdapter(systems, searchType!!, this@FoundFragment, view.context)
         }
     }
 

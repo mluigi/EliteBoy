@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.data_item.view.*
+import m.luigi.eliteboy.FoundFragment
 import m.luigi.eliteboy.R
-import m.luigi.eliteboy.SystemsFragment
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import java.text.NumberFormat
@@ -22,7 +22,7 @@ import java.text.NumberFormat
 class FoundAdapter(
     val systems: ArrayList<System>,
     private val searchType: EDSMApi.SearchType,
-    val fragment: SystemsFragment,
+    val fragment: FoundFragment,
     val context: Context
 ) :
     RecyclerView.Adapter<FoundAdapter.ViewHolder>() {
