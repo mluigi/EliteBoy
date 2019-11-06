@@ -356,24 +356,24 @@ object EDSMApi {
         }
         return onDefault {
             json?.let {
-                Gson().fromJson(json, System::class.java)
+                Gson().fromJson(json, System::class.java).apply {
+                    stations!!.forEach { station ->
+                        station.otherServices?.let {
+                            if (it.contains("Material Trader")) {
+                                getMatTraderType(station, this)
+                            }
+                            if (it.contains("Technology Broker")) {
+                                getTechBrokerType(station, this)
+                            }
+                        }
+                    }
+                }
             } ?: System()
         }
     }
 
     private suspend fun getStations(system: System) {
-        val compSys = getStations(system.name!!)
-        compSys.stations!!.forEach { station ->
-            station.otherServices?.let {
-                if (it.contains("Material Trader")) {
-                    getMatTraderType(station, compSys)
-                }
-                if (it.contains("Technology Broker")) {
-                    getTechBrokerType(station, compSys)
-                }
-            }
-        }
-        System.updateSystem(system, compSys)
+        System.updateSystem(system, getStations(system.name!!))
     }
 
     suspend fun getSystemComplete(name: String): System {

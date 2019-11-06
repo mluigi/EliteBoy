@@ -80,8 +80,6 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
     }
 
     private fun setSystemLayout() {
-
-
         infoLayout.setAnimateOnClickListener(
             infoList,
             infoImg,
