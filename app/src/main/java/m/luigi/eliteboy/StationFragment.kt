@@ -34,7 +34,7 @@ class StationFragment : Fragment() {
         super.onCreate(savedInstanceState)
         getStationJob = GlobalScope.launch {
             arguments?.let {
-                station = it.getParcelable("station") as Station
+                station = it.getParcelable("station")!!
                 onMain {
                     stationLayout.visibility = View.GONE
                     stationSpinKit.visibility = View.VISIBLE
