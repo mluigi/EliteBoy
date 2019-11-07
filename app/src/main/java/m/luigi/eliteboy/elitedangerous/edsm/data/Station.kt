@@ -63,6 +63,7 @@ class Station() : Parcelable {
 
         map["Allegiance"] = allegiance!!
         map["Government"] = government!!
+        map["Faction"] = controllingFaction!!.name!!
         map["Economy"] = economy!!
         map["Second Economy"] = secondEconomy ?: "None"
         map["Has Market"] = if (haveMarket) "Yes" else "No"

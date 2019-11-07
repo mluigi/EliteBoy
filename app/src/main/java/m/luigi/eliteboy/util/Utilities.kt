@@ -6,6 +6,7 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -129,5 +130,26 @@ suspend fun runWhile(block: suspend CoroutineScope.(stop: () -> Unit) -> Unit) {
             block { isRunning = false }
         }
     }
+}
 
+/* Function to add a simple onPageListener to a ViewPager
+ * that will run the function at every onPageChange.
+ * nPage accepts an Int, the position of the page
+ */
+
+fun ViewPager.setOnPageListenerWhere(function: (page: Int) -> Unit) {
+    this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            function(position)
+        }
+    })
 }

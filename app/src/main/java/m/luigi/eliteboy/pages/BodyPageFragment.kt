@@ -29,5 +29,4 @@ class BodyPageFragment(private val body: Body) : Fragment() {
         bodyList.adapter = InformationAdapter(body.asMap(), context!!)
 
     }
-
 }

@@ -1,5 +1,7 @@
 package m.luigi.eliteboy.elitedangerous.edsm.data
 
+import java.text.NumberFormat
+
 class Faction {
     var id: Int = 0
 
@@ -27,4 +29,15 @@ class Faction {
         var trend: Int = 0
     }
 
+    fun asMap(): Map<String, String> {
+        val map = mutableMapOf<String, String>()
+        map["Name"] = name!!
+        map["Allegiance"] = allegiance!!
+        map["Government"] = government!!
+        map["Influence"] = NumberFormat.getPercentInstance().format(influence)
+        map["State"] = state!!
+        map["Pending State"] = pendingStates.orEmpty().firstOrNull()?.state ?: "None"
+        map["Is Player Faction?"] = if (isPlayer) "Yes" else "No"
+        return map
+    }
 }
