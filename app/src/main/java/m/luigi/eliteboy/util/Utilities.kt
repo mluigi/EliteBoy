@@ -150,6 +150,7 @@ fun ViewPager.setOnPageListenerWhere(function: (page: Int) -> Unit) {
 
         override fun onPageSelected(position: Int) {
             function(position)
+            info { "pos $position" }
         }
     })
 }
