@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -100,6 +101,7 @@ object EDSMApi {
         PIRATE_ATTACK("Pirate Attack", 2),
         INFESTED("Infested", 2),
         RETREAT("Retreat", 2),
+        UNDREP("Under Repairs", 2),
         WAR("War", 2);
 
         companion object {
@@ -146,7 +148,7 @@ object EDSMApi {
 
     private suspend fun findSystems(
         type: FindType,
-        system: String = "",
+        system: String = "Sol",
         x: Double = 0.0,
         y: Double = 0.0,
         z: Double = 0.0,
@@ -447,13 +449,16 @@ object EDSMApi {
         getOutfitting(station)
     }
 
-    private suspend fun filteredNearbySystems(system: String): ArrayList<System> {
+    private suspend fun filteredNearbySystems(
+        system: String = "Sol",
+        size: Int = 50
+    ): ArrayList<System> {
         return onIO {
             val systems =
                 findSystems(
                     FindType.CUBE,
                     system,
-                    size = 50,
+                    size = size,
                     showInformation = true
                 )
 
@@ -471,6 +476,7 @@ object EDSMApi {
         }
     }
 
+    @ExperimentalCoroutinesApi
     @FlowPreview
     private suspend fun filterBySystem(
         system: String,
@@ -493,6 +499,7 @@ object EDSMApi {
         }.flowOn(Dispatchers.Default)
     }
 
+    @ExperimentalCoroutinesApi
     @FlowPreview
     private suspend fun filterByStation(
         system: String,
@@ -525,8 +532,9 @@ object EDSMApi {
         }.flowOn(Dispatchers.Default)
     }
 
+    @ExperimentalCoroutinesApi
     @FlowPreview
-    suspend fun search(
+    suspend fun searchNearest(
         search: SearchType,
         system: String = "Sol"
     ): Flow<System> {
@@ -604,10 +612,78 @@ object EDSMApi {
             PIRATE_ATTACK,
             INFESTED,
             RETREAT,
+            UNDREP,
             WAR -> {
                 filterBySystem(system) {
                     getFactions(it)
                     !it.factions.isNullOrEmpty() && it.factions!!.any { it.state!! == search.type }
+                }
+            }
+        }
+    }
+
+    suspend fun searchSystem(data: Array<String>): Flow<System> {
+        val sysName = data[0]
+        val refName = data[1]
+        val allegiance = data[2]
+        val government = data[3]
+        val economy = data[4]
+        val security = data[5]
+        val state = data[6]
+
+        return flow {
+            if (!sysName.isBlank()) {
+                val systems = findSystemsByName(sysName)
+                systems.forEach {
+                    emit(it)
+                }
+            } else {
+                val systems = filteredNearbySystems(if (refName.isBlank()) "Sol" else refName, 50)
+                systems.forEach {
+                    var all = false
+                    var gov = false
+                    var eco = false
+                    var sec = false
+                    var sta = false
+                    if (!allegiance.isBlank()) {
+                        if (it.information!!.allegiance == allegiance) {
+                            all = true
+                        }
+                    } else {
+                        all = true
+                    }
+
+                    if (!government.isBlank()) {
+                        if (it.information!!.government == government) {
+                            gov = true
+                        }
+                    } else {
+                        gov = true
+                    }
+                    if (!economy.isBlank()) {
+                        if (it.information!!.economy == economy) {
+                            eco = true
+                        }
+                    } else {
+                        eco = true
+                    }
+                    if (!security.isBlank()) {
+                        if (it.information!!.security == security) {
+                            sec = true
+                        }
+                    } else {
+                        sec = true
+                    }
+                    if (!state.isBlank()) {
+                        if (it.information!!.factionState == state) {
+                            sta = true
+                        }
+                    } else {
+                        sta = true
+                    }
+                    if (all && gov && eco && sec && sta) {
+                        emit(it)
+                    }
                 }
             }
         }
@@ -629,7 +705,7 @@ object EDSMApi {
 
     //I have to do this, i am forced
 
-    suspend fun getMatTraderType(station: Station, system: System) {
+    private suspend fun getMatTraderType(station: Station, system: System) {
         val page = getEDSMPage(station, system)
 
         station.traderType = onDefault {
@@ -642,7 +718,7 @@ object EDSMApi {
         }
     }
 
-    suspend fun getTechBrokerType(station: Station, system: System) {
+    private suspend fun getTechBrokerType(station: Station, system: System) {
         val page = getEDSMPage(station, system)
         station.brokerType = onDefault {
             when {
