@@ -5,6 +5,8 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
@@ -150,7 +152,27 @@ fun ViewPager.setOnPageListenerWhere(function: (page: Int) -> Unit) {
 
         override fun onPageSelected(position: Int) {
             function(position)
-            info { "pos $position" }
         }
     })
+}
+
+fun Fragment.makeAlertDialog(
+    items: Array<String>,
+    title: String,
+    textViewToUpdate: TextView
+): AlertDialog {
+    return AlertDialog.Builder(this.requireContext()).apply {
+        setTitle(title)
+        var updateF: () -> Unit = {textViewToUpdate.text = items[0]}
+        setSingleChoiceItems(items, 0) { _, which ->
+            updateF = { textViewToUpdate.text = items[which] }
+        }
+        setPositiveButton("OK") { _, _ ->
+            updateF()
+        }
+
+        setNegativeButton("None") { _, _ ->
+            textViewToUpdate.text = ""
+        }
+    }.create()
 }

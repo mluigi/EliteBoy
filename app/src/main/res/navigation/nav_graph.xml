@@ -61,6 +61,11 @@
         <action
             android:id="@+id/action_systemsFragment_to_stationFragment"
             app:destination="@id/stationFragment" />
+        <argument
+            android:name="searchData"
+            android:defaultValue="@null"
+            app:argType="string[]"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/nearestFragment"
@@ -75,7 +80,7 @@
         android:id="@+id/stationsFragment"
         android:name="m.luigi.eliteboy.SearchStationsFragment"
         android:label="fragment_stations"
-        tools:layout="@layout/fragment_stations" >
+        tools:layout="@layout/fragment_search_stations" >
         <action
             android:id="@+id/action_stationsFragment_to_systemsFragment"
             app:destination="@id/systemsFragment" />
@@ -87,6 +92,7 @@
         tools:layout="@layout/fragment_search_systems" >
         <action
             android:id="@+id/action_searchSystemsFragment_to_systemsFragment"
-            app:destination="@id/systemsFragment" />
+            app:destination="@id/systemsFragment"
+            app:popUpTo="@+id/searchSystemsFragment" />
     </fragment>
 </navigation>

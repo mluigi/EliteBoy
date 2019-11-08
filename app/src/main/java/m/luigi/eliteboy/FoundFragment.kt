@@ -25,12 +25,15 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
     var initLayoutJob: Job = Job()
     private var searchType: EDSMApi.SearchType? = null
     private var currentSystem: String? = null
+    private var searchData: Array<String>? = null
+    private var isFromNearest = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initJob = launch {
             var searchName: String? = null
             arguments?.let {
+                searchData = it.getStringArray("searchData")
                 currentSystem = it.getString("currentSystem", "Sol")
                 searchName = it.getString("searchType")
                 searchType = try {
@@ -40,42 +43,95 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
                 }
             }
 
-            if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
-                (activity as MainActivity).mainToolbar.title =
-                    "Nearest ${searchType?.type ?: "Systems"}"
-                val flow = EDSMApi.search(searchType!!, currentSystem!!)
-                initLayoutJob.join()
-                systemsSpinKit.visibility = View.VISIBLE
-                withTimeoutOrNull(10000) {
-                    var i = 0
-                    flow.collect {
-                        systems.add(it)
+            if (searchData == null) {
+                isFromNearest = true
+            }
 
-                        onMain {
-                            if (systems.size == 1) {
-                                val diff = systemsSpinKit.x*2-systemsSpinKit.x*15/8
-                                systemsSpinKit.animate()
-                                    .scaleX(0.5f)
-                                    .scaleY(0.5f)
-                                    .x(systemsSpinKit.x*2-diff)
-                                    .y(systemsSpinKit.y*2-diff)
-                                    .apply { duration=800 }
-                                    .start()
+
+            //TODO: Fix logic
+            if (isFromNearest) {
+                if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
+                    (activity as MainActivity).mainToolbar.title =
+                        "Nearest ${searchType?.type ?: "Systems"}"
+                    val flow = EDSMApi.searchNearest(searchType!!, currentSystem!!)
+                    initLayoutJob.join()
+                    systemsSpinKit.visibility = View.VISIBLE
+                    withTimeoutOrNull(10000) {
+                        var i = 0
+                        flow.collect {
+                            systems.add(it)
+
+                            onMain {
+                                if (systems.size == 1) {
+                                    val diff = systemsSpinKit.x * 2 - systemsSpinKit.x * 15 / 8
+                                    systemsSpinKit.animate()
+                                        .scaleX(0.5f)
+                                        .scaleY(0.5f)
+                                        .x(systemsSpinKit.x * 2 - diff)
+                                        .y(systemsSpinKit.y * 2 - diff)
+                                        .apply { duration = 800 }
+                                        .start()
+                                }
+                                foundList.adapter!!.notifyItemInserted(i)
+                                i++
                             }
-                            foundList.adapter!!.notifyItemInserted(i)
-                            i++
+                            delay(100)
                         }
-                        delay(100)
                     }
-                }
 
-                if (systems.isEmpty()) {
-                    snackBarMessage { "Couldn't find nearest ${searchType!!.type}" }
+                    if (systems.isEmpty()) {
+                        snackBarMessage { "Couldn't find nearest ${searchType!!.type}" }
+                        initLayoutJob.cancel(CancellationException("No system found"))
+                        findNavController().navigateUp()
+                    }
+                } else {
+                    snackBarMessage { "Shouldn't be here" }
                     initLayoutJob.cancel(CancellationException("No system found"))
                     findNavController().navigateUp()
                 }
             } else {
-                snackBarMessage { "Shouldn't be here" }
+                searchData?.let {
+                    (activity as MainActivity).mainToolbar.title =
+                        "Systems found"
+
+                    val flow = EDSMApi.searchSystem(it)
+                    initLayoutJob.join()
+                    systemsSpinKit.visibility = View.VISIBLE
+                    withTimeoutOrNull(10000) {
+                        var i = 0
+                        flow.collect {
+                            systems.add(it)
+
+                            onMain {
+                                if (systems.size == 1) {
+                                    val diff = systemsSpinKit.x * 2 - systemsSpinKit.x * 15 / 8
+                                    systemsSpinKit.animate()
+                                        .scaleX(0.5f)
+                                        .scaleY(0.5f)
+                                        .x(systemsSpinKit.x * 2 - diff)
+                                        .y(systemsSpinKit.y * 2 - diff)
+                                        .apply { duration = 800 }
+                                        .start()
+                                }
+                                foundList.adapter!!.notifyItemInserted(i)
+                                i++
+                            }
+                            delay(100)
+                        }
+                    }
+
+                    if (systems.isEmpty()) {
+                        snackBarMessage { "Couldn't find any system" }
+                        initLayoutJob.cancel(CancellationException("No system found"))
+                        findNavController().navigateUp()
+                    }
+
+
+                } ?: run {
+                    snackBarMessage { "Couldn't find any system" }
+                    initLayoutJob.cancel(CancellationException("No system found"))
+                    findNavController().navigateUp()
+                }
             }
         }
     }
@@ -94,7 +150,12 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
             foundList.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
             foundList.adapter =
-                FoundAdapter(systems, searchType!!, this@FoundFragment, view.context)
+                FoundAdapter(
+                    systems,
+                    if (isFromNearest) searchType!! else null,
+                    this@FoundFragment,
+                    view.context
+                )
         }
     }
 

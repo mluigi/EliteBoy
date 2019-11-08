@@ -101,7 +101,6 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
             stationsDots.attachToViewPager(stationsPager)
         } else {
             stationsCard.visibility = View.GONE
-            stationsDots.visibility = View.GONE
         }
 
         bodiesViewPager.adapter = BodyPageAdapter(
@@ -120,7 +119,6 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
             factionsDots.attachToViewPager(factionsViewPager)
         } else {
             factionsCard.visibility = View.GONE
-            factionsDots.visibility = View.GONE
         }
     }
 }
