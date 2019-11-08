@@ -92,12 +92,17 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
             LinearLayoutManager(view!!.context, LinearLayoutManager.VERTICAL, false)
         infoList.adapter = InformationAdapter(system!!.information!!.asMap(), view!!.context)
 
-        stationsPager.adapter = StationPageAdapter(
-            system!!.stations!!.apply { sortBy { it.distanceToArrival } },
-            childFragmentManager
-        )
-        stationsPager.setOnPageListenerWhere { lastStationPage = it }
-        stationsDots.attachToViewPager(stationsPager)
+        if (!system!!.stations.isNullOrEmpty()) {
+            stationsPager.adapter = StationPageAdapter(
+                system!!.stations!!.apply { sortBy { it.distanceToArrival } },
+                childFragmentManager
+            )
+            stationsPager.setOnPageListenerWhere { lastStationPage = it }
+            stationsDots.attachToViewPager(stationsPager)
+        } else {
+            stationsCard.visibility = View.GONE
+            stationsDots.visibility = View.GONE
+        }
 
         bodiesViewPager.adapter = BodyPageAdapter(
             system!!.bodies!!.apply { sortBy { it.distanceToArrival } },
@@ -106,11 +111,16 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
         bodiesViewPager.setOnPageListenerWhere { lastBodyPage = it }
         bodiesDots.attachToViewPager(bodiesViewPager)
 
-        factionsViewPager.adapter = FactionPageAdapter(
-            system!!.factions!!.apply { sortByDescending { it.influence } },
-            this@SystemFragment.requireFragmentManager()
-        )
-        factionsViewPager.setOnPageListenerWhere { lastFactionPage = it }
-        factionsDots.attachToViewPager(factionsViewPager)
+        if (!system!!.factions.isNullOrEmpty()) {
+            factionsViewPager.adapter = FactionPageAdapter(
+                system!!.factions!!.apply { sortByDescending { it.influence } },
+                this@SystemFragment.requireFragmentManager()
+            )
+            factionsViewPager.setOnPageListenerWhere { lastFactionPage = it }
+            factionsDots.attachToViewPager(factionsViewPager)
+        } else {
+            factionsCard.visibility = View.GONE
+            factionsDots.visibility = View.GONE
+        }
     }
 }
