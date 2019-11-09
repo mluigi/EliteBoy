@@ -182,10 +182,10 @@ object CoriolisDataHelper {
     )
 
     private fun getEDSMShipId(coriolisId: String): String {
-        return coriolistoEDSMShipIdMap[coriolisId] ?: coriolisId
+        return coriolisToEDSMShipIdMap[coriolisId] ?: coriolisId
     }
 
-    private val coriolistoEDSMShipIdMap = mapOf(
+    private val coriolisToEDSMShipIdMap = mapOf(
         "beluga" to "belugaliner",
         "cobra_mk_iii" to "cobramkiii",
         "cobra_mk_iv" to "cobramkiv",
@@ -211,4 +211,10 @@ object CoriolisDataHelper {
         "keelback" to "independant_trader",
         "viper_mk_iv" to "viper_mkiv"
     )
+
+    private fun getCoriolisShipId(EDSMId: String): String {
+        return EDSMShipIdToCoriolisId[EDSMId] ?: EDSMId
+    }
+
+    private val EDSMShipIdToCoriolisId = coriolisToEDSMShipIdMap.mapValues { it.key }
 }

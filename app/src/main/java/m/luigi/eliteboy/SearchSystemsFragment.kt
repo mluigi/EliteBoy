@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.adapters.SystemsSuggestionsAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import m.luigi.eliteboy.elitedangerous.edsm.SearchData
 import m.luigi.eliteboy.util.*
 
 
@@ -41,7 +42,7 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
         return inflater.inflate(R.layout.fragment_search_systems, container, false)
     }
 
-    //TODO: Save and restore search parameters onResume3
+    //TODO: Save and restore search parameters onResume
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launch {
@@ -188,17 +189,18 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
 
             searchButton.setOnClickListener {
                 Navigation.findNavController(it).navigate(
-                    R.id.action_searchSystemsFragment_to_systemsFragment,
+                    R.id.action_searchSystemsFragment_to_foundFragment,
                     bundleOf(
-                        "searchData" to arrayOf(
-                            systemName.text.toString(),
-                            refSystem.text.toString(),
-                            allegianceText.text.toString(),
-                            govText.text.toString(),
-                            economyText.text.toString(),
-                            secText.text.toString(),
-                            factionText.text.toString()
-                        )
+                        "systemSearchData" to SearchData(
+                            systemName = systemName.text.toString(),
+                            refSystem = refSystem.text.toString(),
+                            allegiance = allegianceText.text.toString(),
+                            government = govText.text.toString(),
+                            economy = economyText.text.toString(),
+                            security = secText.text.toString(),
+                            factionState = factionText.text.toString()
+                        ),
+                        "origin" to "SearchSystemFragment"
                     )
                 )
             }

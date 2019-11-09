@@ -51,10 +51,10 @@
         android:label="fragment_news"
         tools:layout="@layout/fragment_news" />
     <fragment
-        android:id="@+id/systemsFragment"
+        android:id="@+id/foundFragment"
         android:name="m.luigi.eliteboy.FoundFragment"
-        android:label="fragment_systems"
-        tools:layout="@layout/fragment_systems" >
+        android:label="fragment_found"
+        tools:layout="@layout/fragment_found">
         <action
             android:id="@+id/action_systemsFragment_to_systemFragment"
             app:destination="@id/systemFragment" />
@@ -62,10 +62,11 @@
             android:id="@+id/action_systemsFragment_to_stationFragment"
             app:destination="@id/stationFragment" />
         <argument
-            android:name="searchData"
-            android:defaultValue="@null"
-            app:argType="string[]"
-            app:nullable="true" />
+            android:name="systemSearchData"
+            app:argType="m.luigi.eliteboy.elitedangerous.edsm.SearchData" />
+        <argument
+            android:name="stationSearchData"
+            app:argType="m.luigi.eliteboy.elitedangerous.edsm.SearchData" />
     </fragment>
     <fragment
         android:id="@+id/nearestFragment"
@@ -73,8 +74,8 @@
         android:label="fragment_nearest"
         tools:layout="@layout/fragment_nearest" >
         <action
-            android:id="@+id/action_nearestFragment_to_systemsFragment"
-            app:destination="@id/systemsFragment" />
+            android:id="@+id/action_nearestFragment_to_foundFragment"
+            app:destination="@id/foundFragment" />
     </fragment>
     <fragment
         android:id="@+id/stationsFragment"
@@ -82,8 +83,8 @@
         android:label="fragment_stations"
         tools:layout="@layout/fragment_search_stations" >
         <action
-            android:id="@+id/action_stationsFragment_to_systemsFragment"
-            app:destination="@id/systemsFragment" />
+            android:id="@+id/action_searchStationsFragment_to_foundFragment"
+            app:destination="@id/foundFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchSystemsFragment"
@@ -91,8 +92,8 @@
         android:label="fragment_search_systems"
         tools:layout="@layout/fragment_search_systems" >
         <action
-            android:id="@+id/action_searchSystemsFragment_to_systemsFragment"
-            app:destination="@id/systemsFragment"
+            android:id="@+id/action_searchSystemsFragment_to_foundFragment"
+            app:destination="@id/foundFragment"
             app:popUpTo="@+id/searchSystemsFragment" />
     </fragment>
 </navigation>

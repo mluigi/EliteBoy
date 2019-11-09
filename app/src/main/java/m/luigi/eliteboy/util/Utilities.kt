@@ -163,7 +163,7 @@ fun Fragment.makeAlertDialog(
 ): AlertDialog {
     return AlertDialog.Builder(this.requireContext()).apply {
         setTitle(title)
-        var updateF: () -> Unit = {textViewToUpdate.text = items[0]}
+        var updateF: () -> Unit = { textViewToUpdate.text = items[0] }
         setSingleChoiceItems(items, 0) { _, which ->
             updateF = { textViewToUpdate.text = items[which] }
         }
@@ -173,6 +173,32 @@ fun Fragment.makeAlertDialog(
 
         setNegativeButton("None") { _, _ ->
             textViewToUpdate.text = ""
+        }
+    }.create()
+}
+
+fun Fragment.makeMultiChoiceAlertDialog(
+    items: Array<String>,
+    title: String,
+    textViewToUpdate: TextView
+): AlertDialog {
+    return AlertDialog.Builder(this.requireContext()).apply {
+        setTitle(title)
+        val chosenShips = arrayListOf<String>()
+        setMultiChoiceItems(items, BooleanArray(items.size){false}) { _, which, isChecked ->
+            if (isChecked) {
+                chosenShips.add(items[which])
+            } else {
+                chosenShips.remove(items[which])
+            }
+        }
+        setPositiveButton("OK") { _, _ ->
+            textViewToUpdate.text = chosenShips.joinToString(separator = ", ")
+        }
+
+        setNegativeButton("None") { _, _ ->
+            textViewToUpdate.text = ""
+
         }
     }.create()
 }
