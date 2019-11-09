@@ -8,12 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_systems.*
+import kotlinx.android.synthetic.main.fragment_found.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import m.luigi.eliteboy.adapters.FoundAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import m.luigi.eliteboy.elitedangerous.edsm.SearchData
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import m.luigi.eliteboy.util.onMain
 import m.luigi.eliteboy.util.snackBarMessage
@@ -26,16 +27,20 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
     var initLayoutJob: Job = Job()
     private var searchType: EDSMApi.SearchType? = null
     private var currentSystem: String? = null
-    private var searchData: Array<String>? = null
-    private var isFromNearest = false
+    private var systemSearchData: SearchData? = null
+    private var stationSearchData: SearchData? = null
+    private var origin: Deferred<String?>? = null
 
+    @InternalCoroutinesApi
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initJob = launch {
             var searchName: String? = null
             arguments?.let {
-                searchData = it.getStringArray("searchData")
+                origin = async { it.getString("origin") }
+                systemSearchData = it.getParcelable("systemSearchData")
+                stationSearchData = it.getParcelable("stationSearchData")
                 currentSystem = it.getString("currentSystem", "Sol")
                 searchName = it.getString("searchType")
                 searchType = try {
@@ -44,36 +49,50 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
                     null
                 }
             }
-
-            if (searchData == null) {
-                isFromNearest = true
-            }
-
-            val flow = if (isFromNearest) {
-                if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
-                    (activity as MainActivity).mainToolbar.title =
-                        "Nearest ${searchType?.type ?: "Systems"}"
-                    EDSMApi.searchNearest(searchType!!, currentSystem!!)
-                } else {
-                    snackBarMessage { "Shouldn't be here" }
-                    initLayoutJob.cancel(CancellationException("No system found"))
-                    findNavController().navigateUp()
-                    flow {}
+            val flow = when (origin!!.await()) {
+                "NearestFragment" -> {
+                    if (!(searchName.isNullOrBlank() || currentSystem.isNullOrBlank())) {
+                        (activity as MainActivity).mainToolbar.title =
+                            "Nearest ${searchType?.type ?: "Systems"}"
+                        EDSMApi.searchNearest(searchType!!, currentSystem!!)
+                    } else {
+                        snackBarMessage { "Shouldn't be here" }
+                        initLayoutJob.cancel(CancellationException("No system found"))
+                        findNavController().navigateUp()
+                        flow {}
+                    }
                 }
-            } else {
-                searchData?.let {
-                    (activity as MainActivity).mainToolbar.title =
-                        "Systems found"
+                "SearchSystemFragment" -> {
+                    systemSearchData?.let {
+                        (activity as MainActivity).mainToolbar.title =
+                            "Systems found"
 
-                    EDSMApi.searchSystem(it)
+                        EDSMApi.searchSystem(it)
 
-                } ?: run {
-                    snackBarMessage { "Couldn't find any system" }
-                    initLayoutJob.cancel(CancellationException("No system found"))
-                    findNavController().navigateUp()
-                    flow<System>{}
+                    } ?: run {
+                        snackBarMessage { "Couldn't find any system" }
+                        initLayoutJob.cancel(CancellationException("No system found"))
+                        findNavController().navigateUp()
+                        flow<System> {}
+                    }
                 }
+                "SearchStationsFragment" -> {
+                    stationSearchData?.let {
+                        (activity as MainActivity).mainToolbar.title =
+                            "Stations found"
 
+                        EDSMApi.searchStation(it)
+
+                    } ?: run {
+                        snackBarMessage { "Couldn't find any station" }
+                        initLayoutJob.cancel(CancellationException("No station found"))
+                        findNavController().navigateUp()
+                        flow<System> {}
+                    }
+                }
+                else -> {
+                    flow { }
+                }
             }
 
             initLayoutJob.join()
@@ -114,9 +133,10 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_systems, container, false)
+        return inflater.inflate(R.layout.fragment_found, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLayoutJob = launch {
@@ -125,7 +145,17 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
             foundList.adapter =
                 FoundAdapter(
                     systems,
-                    if (isFromNearest) searchType!! else null,
+                    when (origin!!.await()) {
+                        "NearestFragment" -> {
+                            searchType!!
+                        }
+                        "SearchStationFragment" -> {
+                            EDSMApi.SearchType.MARKET
+                        }
+                        else -> {
+                            null
+                        }
+                    },
                     this@FoundFragment,
                     view.context
                 )

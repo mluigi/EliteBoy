@@ -8,7 +8,6 @@ import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Ship
 import kotlin.math.roundToInt
 
-
 class Station() : Parcelable {
     var id: Int = 0
     var marketId: Long = 0

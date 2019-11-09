@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.util.CoriolisDataHelper
+import m.luigi.eliteboy.util.modulesList
 import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
 
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     init {
         initjob = GlobalScope.launch {
             onIO {
+                //initialize modulesList here because it would slow SearchStationFragment
+                modulesList
                 CoriolisDataHelper.init(assets)
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
                 EDSMApi.commander = prefs.getString("pref_edsm_cmdr", "")!!
