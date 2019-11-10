@@ -149,8 +149,8 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
                         "NearestFragment" -> {
                             searchType!!
                         }
-                        "SearchStationFragment" -> {
-                            EDSMApi.SearchType.MARKET
+                        "SearchStationsFragment" -> {
+                            EDSMApi.SearchType.SHIPYARD
                         }
                         else -> {
                             null

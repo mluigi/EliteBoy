@@ -698,17 +698,45 @@ object EDSMApi {
         val allegiance = data.allegiance
         val government = data.government
         val economy = data.economy
-        val ships = data.ships.split(", ")
+        val ships: ArrayList<String> = kotlin.run {
+            onDefault {
+                val arr = data.ships.split(",")
+                if (arr.size == 1) {
+                    if (!arr.first().isBlank()) {
+                        arrayListOf(arr.first())
+                    }else{
+                        arrayListOf()
+                    }
+                } else {
+                    (arr as ArrayList<String>).apply { removeIf { it.isBlank() } }
+                }
+            }
+        }.map { it.trim() }  as ArrayList<String>
         val modules = onDefault {
-            data.modules.split(", ").map {
+            data.modules.split(",").map {
                 if (it.contains("Alloy") || it.contains("Composite")) {
                     it.split(" - ").first()
                 } else {
                     it
                 }
+            }.apply {
+                (this as ArrayList).removeIf { it.isBlank() }
             }
-        }
-        val commodities = data.commodities.split(", ")
+        }.map { it.trim() }  as ArrayList<String>
+        val commodities: ArrayList<String> = kotlin.run {
+            onDefault {
+                val arr = data.commodities.split(",")
+                if (arr.size == 1) {
+                    if (!arr.first().isBlank()) {
+                        arrayListOf(arr.first())
+                    }else{
+                        arrayListOf()
+                    }
+                } else {
+                    (arr as ArrayList<String>).apply { removeIf { it.isBlank() } }
+                }
+            }
+        }.map { it.trim() }  as ArrayList<String>
 
         return filterByStation(if (refName.isBlank()) "Sol" else refName) {
             var all = false
@@ -739,7 +767,6 @@ object EDSMApi {
             } else {
                 eco = true
             }
-
 
             if (!ships.isNullOrEmpty()) {
                 if (it.haveShipyard) {
