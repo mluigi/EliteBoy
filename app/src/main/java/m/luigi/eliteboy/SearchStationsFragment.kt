@@ -188,6 +188,7 @@ class SearchStationsFragment : Fragment(), CoroutineScope by CoroutineScope(Disp
                     R.id.action_searchStationsFragment_to_foundFragment,
                     bundleOf(
                         "stationSearchData" to SearchData(
+                            refSystem = refSystem.text.toString(),
                             allegiance = allegianceText.text.toString(),
                             government = govText.text.toString(),
                             economy = economyText.text.toString(),
