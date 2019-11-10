@@ -8,7 +8,6 @@ import m.luigi.eliteboy.elitedangerous.companionapi.data.Module
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Ship
 import kotlin.math.roundToInt
 
-
 class Station() : Parcelable {
     var id: Int = 0
     var marketId: Long = 0
@@ -63,6 +62,7 @@ class Station() : Parcelable {
 
         map["Allegiance"] = allegiance!!
         map["Government"] = government!!
+        map["Faction"] = controllingFaction!!.name!!
         map["Economy"] = economy!!
         map["Second Economy"] = secondEconomy ?: "None"
         map["Has Market"] = if (haveMarket) "Yes" else "No"

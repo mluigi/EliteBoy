@@ -13,16 +13,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.data_item.view.*
+import kotlinx.coroutines.FlowPreview
+import m.luigi.eliteboy.FoundFragment
 import m.luigi.eliteboy.R
-import m.luigi.eliteboy.SystemsFragment
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
 import java.text.NumberFormat
 
+@FlowPreview
 class FoundAdapter(
     val systems: ArrayList<System>,
-    private val searchType: EDSMApi.SearchType,
-    val fragment: SystemsFragment,
+    private val searchType: EDSMApi.SearchType?=null,
+    val fragment: FoundFragment,
     val context: Context
 ) :
     RecyclerView.Adapter<FoundAdapter.ViewHolder>() {
@@ -52,47 +54,49 @@ class FoundAdapter(
             visibility = View.VISIBLE
         }
 
-        when (searchType.returnType) {
-            0 -> {
-            }
-            1, 3 -> {
-                val map = mutableMapOf<String, String>()
-                system.stations!!.sortedBy { it.distanceToArrival }.forEach {
-                    map[it.name!!] = String.format(
-                        "%s ls",
-                        NumberFormat.getIntegerInstance().format(it.distanceToArrival)
-                    )
-                    if (searchType.returnType == 3) {
-                        if (it.otherServices!!.contains("Material Trader")){
-                            map["Trader Type"] = it.traderType!!
-                        }
-                        if (it.otherServices!!.contains("Technology Broker")){
-                            map["Broker Type"] = it.brokerType!!
+        searchType?.let {
+            when (searchType.returnType) {
+                0 -> {
+                }
+                1, 3 -> {
+                    val map = mutableMapOf<String, String>()
+                    system.stations!!.sortedBy { it.distanceToArrival }.forEach {
+                        map[it.name!!] = String.format(
+                            "%s ls",
+                            NumberFormat.getIntegerInstance().format(it.distanceToArrival)
+                        )
+                        if (searchType.returnType == 3) {
+                            if (it.otherServices!!.contains("Material Trader")){
+                                map["Trader Type"] = it.traderType!!
+                            }
+                            if (it.otherServices!!.contains("Technology Broker")){
+                                map["Broker Type"] = it.brokerType!!
+                            }
                         }
                     }
-                }
 
-                with(holder.infoList) {
-                    layoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                    adapter = InformationAdapter(map, context)
-                    visibility = View.VISIBLE
-                }
-
-
-            }
-            2 -> {
-                val map = mutableMapOf<String, String>()
-                system.factions!!.forEach {
-                    if (it.state!! == searchType.type) {
-                        map[it.name!!] = it.state!!
+                    with(holder.infoList) {
+                        layoutManager =
+                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        adapter = InformationAdapter(map, context)
+                        visibility = View.VISIBLE
                     }
+
+
                 }
-                with(holder.infoList) {
-                    layoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                    adapter = InformationAdapter(map, context)
-                    visibility = View.VISIBLE
+                2 -> {
+                    val map = mutableMapOf<String, String>()
+                    system.factions!!.forEach {
+                        if (it.state!! == searchType.type) {
+                            map[it.name!!] = it.state!!
+                        }
+                    }
+                    with(holder.infoList) {
+                        layoutManager =
+                            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                        adapter = InformationAdapter(map, context)
+                        visibility = View.VISIBLE
+                    }
                 }
             }
         }

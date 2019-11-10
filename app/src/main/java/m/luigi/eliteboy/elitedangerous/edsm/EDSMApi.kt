@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,6 +22,11 @@ import m.luigi.eliteboy.util.onIO
 import java.net.URL
 import java.net.URLEncoder
 
+
+//TODO: Refactor this mess
+
+@FlowPreview
+@ExperimentalCoroutinesApi
 object EDSMApi {
     var commander: String = ""
     var apiKey: String = ""
@@ -72,7 +78,7 @@ object EDSMApi {
         SHIPYARD("Shipyard", 1),
         OUTFITTING("Outfitting", 1),
         CONTACTS("Contacts", 1),
-        MAT_TRADER("Material Trader", 3),
+        TRADER("Material Trader", 3),
         BROKER("Technology Broker", 3),
         INTERSTELLAR("Interstellar Factors", 1),
         SEARCHRESCUE("Search and Rescue", 1),
@@ -100,6 +106,7 @@ object EDSMApi {
         PIRATE_ATTACK("Pirate Attack", 2),
         INFESTED("Infested", 2),
         RETREAT("Retreat", 2),
+        UNDREP("Under Repairs", 2),
         WAR("War", 2);
 
         companion object {
@@ -146,7 +153,7 @@ object EDSMApi {
 
     private suspend fun findSystems(
         type: FindType,
-        system: String = "",
+        system: String = "Sol",
         x: Double = 0.0,
         y: Double = 0.0,
         z: Double = 0.0,
@@ -356,24 +363,24 @@ object EDSMApi {
         }
         return onDefault {
             json?.let {
-                Gson().fromJson(json, System::class.java)
+                Gson().fromJson(json, System::class.java).apply {
+                    stations!!.forEach { station ->
+                        station.otherServices?.let {
+                            if (it.contains("Material Trader")) {
+                                getMatTraderType(station, this)
+                            }
+                            if (it.contains("Technology Broker")) {
+                                getTechBrokerType(station, this)
+                            }
+                        }
+                    }
+                }
             } ?: System()
         }
     }
 
     private suspend fun getStations(system: System) {
-        val compSys = getStations(system.name!!)
-        compSys.stations!!.forEach { station ->
-            station.otherServices?.let {
-                if (it.contains("Material Trader")) {
-                    getMatTraderType(station, compSys)
-                }
-                if (it.contains("Technology Broker")) {
-                    getTechBrokerType(station, compSys)
-                }
-            }
-        }
-        System.updateSystem(system, compSys)
+        System.updateSystem(system, getStations(system.name!!))
     }
 
     suspend fun getSystemComplete(name: String): System {
@@ -384,7 +391,7 @@ object EDSMApi {
         return system
     }
 
-    private suspend fun getShipyard(marketId: Long): Station {
+    suspend fun getShipyard(marketId: Long): Station {
         val json = onIO {
             val connection = URL(
                 BASE_URL + STATIONS + SHIPYARD +
@@ -421,7 +428,7 @@ object EDSMApi {
         Station.updateStation(station, getMarket(station.marketId))
     }
 
-    private suspend fun getOutfitting(marketId: Long): Station {
+    suspend fun getOutfitting(marketId: Long): Station {
         val json = onIO {
             val connection = URL(
                 BASE_URL + STATIONS + OUTFITTING +
@@ -447,13 +454,16 @@ object EDSMApi {
         getOutfitting(station)
     }
 
-    private suspend fun filteredNearbySystems(system: String): ArrayList<System> {
+    private suspend fun filteredNearbySystems(
+        system: String = "Sol",
+        size: Int = 50
+    ): ArrayList<System> {
         return onIO {
             val systems =
                 findSystems(
                     FindType.CUBE,
                     system,
-                    size = 50,
+                    size = size,
                     showInformation = true
                 )
 
@@ -471,7 +481,6 @@ object EDSMApi {
         }
     }
 
-    @FlowPreview
     private suspend fun filterBySystem(
         system: String,
         max: Int = 20,
@@ -493,17 +502,16 @@ object EDSMApi {
         }.flowOn(Dispatchers.Default)
     }
 
-    @FlowPreview
     private suspend fun filterByStation(
         system: String,
         max: Int = 20,
-        filter: (stations: ArrayList<Station>) -> Unit
+        filter: suspend (station: Station) -> Boolean
     ): Flow<System> {
         return flow {
             val systems = filteredNearbySystems(system)
             var systemsFound = 0
             var i = 0
-            while (systemsFound < max && i < systems.size) {
+            while (systemsFound <= max && i < systems.size) {
                 val sys = systems[i]
 
                 onIO {
@@ -511,8 +519,14 @@ object EDSMApi {
                 }
 
                 onDefault {
-                    sys.stations?.let { stations ->
-                        filter(stations)
+                    if (!sys.stations.isNullOrEmpty()) {
+                        val stationsToRemove = arrayListOf<Station>()
+                        for (station in sys.stations!!) {
+                            if (!filter(station)) {
+                                stationsToRemove.add(station)
+                            }
+                        }
+                        sys.stations!!.removeAll(stationsToRemove)
                     }
                 }
 
@@ -525,8 +539,7 @@ object EDSMApi {
         }.flowOn(Dispatchers.Default)
     }
 
-    @FlowPreview
-    suspend fun search(
+    suspend fun searchNearest(
         search: SearchType,
         system: String = "Sol"
     ): Flow<System> {
@@ -553,23 +566,23 @@ object EDSMApi {
                 }
             }
             SearchType.MARKET -> {
-                filterByStation(system) { stations ->
-                    stations.removeIf { !it.haveMarket }
+                filterByStation(system) {
+                    it.haveMarket
                 }
             }
             SearchType.SHIPYARD -> {
-                filterByStation(system) { stations ->
-                    stations.removeIf { !it.haveShipyard }
+                filterByStation(system) {
+                    it.haveShipyard
                 }
             }
             SearchType.OUTFITTING -> {
-                filterByStation(system) { stations ->
-                    stations.removeIf { !it.haveOutfitting }
+                filterByStation(system) {
+                    it.haveOutfitting
                 }
             }
             BLACK_MARKET,
             CONTACTS,
-            MAT_TRADER,
+            TRADER,
             BROKER,
             INTERSTELLAR,
             SEARCHRESCUE,
@@ -581,11 +594,10 @@ object EDSMApi {
             MISSIONS,
             CREW_LOUNGE,
             TUNING -> {
-                filterByStation(system, 30) { stations ->
-                    stations.removeIf {
-                        it.otherServices.isNullOrEmpty()
-                                || !it.otherServices!!.contains(search.type)
-                    }
+                filterByStation(system, 30) {
+                    !it.otherServices.isNullOrEmpty()
+                            && it.otherServices!!.contains(search.type)
+
                 }
             }
             BOOM,
@@ -604,6 +616,7 @@ object EDSMApi {
             PIRATE_ATTACK,
             INFESTED,
             RETREAT,
+            UNDREP,
             WAR -> {
                 filterBySystem(system) {
                     getFactions(it)
@@ -612,6 +625,186 @@ object EDSMApi {
             }
         }
     }
+
+    suspend fun searchSystem(data: SearchData): Flow<System> {
+        val sysName = data.systemName
+        val refName = data.refSystem
+        val allegiance = data.allegiance
+        val government = data.government
+        val economy = data.economy
+        val security = data.security
+        val state = data.factionState
+
+        return flow {
+            if (!sysName.isBlank()) {
+                val systems = findSystemsByName(sysName)
+                systems.forEach {
+                    emit(it)
+                }
+            } else {
+                val systems = filteredNearbySystems(if (refName.isBlank()) "Sol" else refName, 50)
+                systems.forEach {
+                    var all = false
+                    var gov = false
+                    var eco = false
+                    var sec = false
+                    var sta = false
+                    if (!allegiance.isBlank()) {
+                        if (it.information!!.allegiance == allegiance) {
+                            all = true
+                        }
+                    } else {
+                        all = true
+                    }
+
+                    if (!government.isBlank()) {
+                        if (it.information!!.government == government) {
+                            gov = true
+                        }
+                    } else {
+                        gov = true
+                    }
+                    if (!economy.isBlank()) {
+                        if (it.information!!.economy == economy) {
+                            eco = true
+                        }
+                    } else {
+                        eco = true
+                    }
+                    if (!security.isBlank()) {
+                        if (it.information!!.security == security) {
+                            sec = true
+                        }
+                    } else {
+                        sec = true
+                    }
+                    if (!state.isBlank()) {
+                        if (it.information!!.factionState == state) {
+                            sta = true
+                        }
+                    } else {
+                        sta = true
+                    }
+                    if (all && gov && eco && sec && sta) {
+                        emit(it)
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun searchStation(data: SearchData, max: Int = 20): Flow<System> {
+        val refName = data.refSystem
+        val allegiance = data.allegiance
+        val government = data.government
+        val economy = data.economy
+        val ships: ArrayList<String> = kotlin.run {
+            onDefault {
+                val arr = data.ships.split(",")
+                if (arr.size == 1) {
+                    if (!arr.first().isBlank()) {
+                        arrayListOf(arr.first())
+                    }else{
+                        arrayListOf()
+                    }
+                } else {
+                    (arr as ArrayList<String>).apply { removeIf { it.isBlank() } }
+                }
+            }
+        }.map { it.trim() }  as ArrayList<String>
+        val modules = onDefault {
+            data.modules.split(",").map {
+                if (it.contains("Alloy") || it.contains("Composite")) {
+                    it.split(" - ").first()
+                } else {
+                    it
+                }
+            }.apply {
+                (this as ArrayList).removeIf { it.isBlank() }
+            }
+        }.map { it.trim() }  as ArrayList<String>
+        val commodities: ArrayList<String> = kotlin.run {
+            onDefault {
+                val arr = data.commodities.split(",")
+                if (arr.size == 1) {
+                    if (!arr.first().isBlank()) {
+                        arrayListOf(arr.first())
+                    }else{
+                        arrayListOf()
+                    }
+                } else {
+                    (arr as ArrayList<String>).apply { removeIf { it.isBlank() } }
+                }
+            }
+        }.map { it.trim() }  as ArrayList<String>
+
+        return filterByStation(if (refName.isBlank()) "Sol" else refName) {
+            var all = false
+            var gov = false
+            var eco = false
+            var shi = false
+            var mod = false
+            var com = false
+
+            if (!allegiance.isBlank()) {
+                if (it.allegiance == allegiance) {
+                    all = true
+                }
+            } else {
+                all = true
+            }
+            if (!government.isBlank()) {
+                if (it.government == government) {
+                    gov = true
+                }
+            } else {
+                gov = true
+            }
+            if (!economy.isBlank()) {
+                if (it.economy == economy) {
+                    eco = true
+                }
+            } else {
+                eco = true
+            }
+
+            if (!ships.isNullOrEmpty()) {
+                if (it.haveShipyard) {
+                    getShipyard(it)
+                    if (it.ships!!.map { it.name!! }.containsAll(ships)) {
+                        shi = true
+                    }
+                }
+            } else {
+                shi = true
+            }
+
+            if (!modules.isNullOrEmpty()) {
+                if (it.haveOutfitting) {
+                    getOutfitting(it)
+                    if (it.outfitting!!.map { it.name!! }.containsAll(modules)) {
+                        mod = true
+                    }
+                }
+            } else {
+                mod = true
+            }
+
+            if (!commodities.isNullOrEmpty()) {
+                if (it.haveMarket) {
+                    getMarket(it)
+                    if (it.commodities!!.map { it.name }.containsAll(commodities)) {
+                        com = true
+                    }
+                }
+            } else {
+                com = true
+            }
+
+            all && gov && eco && shi && mod && com
+        }
+    }
+
 
     suspend fun checkApiKey(): Boolean {
         val json = onIO {
@@ -629,7 +822,7 @@ object EDSMApi {
 
     //I have to do this, i am forced
 
-    suspend fun getMatTraderType(station: Station, system: System) {
+    private suspend fun getMatTraderType(station: Station, system: System) {
         val page = getEDSMPage(station, system)
 
         station.traderType = onDefault {
@@ -642,7 +835,7 @@ object EDSMApi {
         }
     }
 
-    suspend fun getTechBrokerType(station: Station, system: System) {
+    private suspend fun getTechBrokerType(station: Station, system: System) {
         val page = getEDSMPage(station, system)
         station.brokerType = onDefault {
             when {

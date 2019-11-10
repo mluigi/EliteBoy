@@ -51,6 +51,4 @@ class StationPageFragment(var station: Station) :
             }
         }
     }
-
-
 }

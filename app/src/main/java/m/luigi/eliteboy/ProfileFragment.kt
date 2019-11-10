@@ -169,18 +169,6 @@ class ProfileFragment : Fragment() {
                             }
                         }
                     }
-
-                    creditsView.setOnClickListener {
-                        Navigation.findNavController(it).navigate(
-                            R.id.action_profileFragment_to_creditsFragment,
-                            bundleOf(
-                                Pair(
-                                    "creds",
-                                    commander!!.credits!!
-                                )
-                            )
-                        )
-                    }
                 }
             }
             profileSpinKit.visibility = View.GONE

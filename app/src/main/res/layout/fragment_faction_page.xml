@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".pages.BodyPageFragment">
+    android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -20,11 +20,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bodyList"
+            android:id="@+id/factionList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
+            tools:itemCount="4"
             tools:listitem="@layout/system_information_item" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

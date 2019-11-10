@@ -8,9 +8,9 @@ A companion app to Elite Dangerous.
 - Show last visited system with stations e bodies
 - Show station with informations, market prices, ships and modules sold.
 - Search nearest service
+- Search for a station or a system with filters
 
 ### Todo
-- Search for a station or a system with filters
 - Show news from Galnet
 - Add Engineers assistant
 - Integration with Google Assistant
@@ -25,4 +25,4 @@ the api key create a gradle.properties file in root folder with a line
 
 Also you'd need to open a firebase project because I'm using crashlytics.
 If you don't want to, you can always remove the dependencies lines in 
-`app\build.gradle`. Don't forget to not commit these changes.
+`app\build.gradle`, without committing the changes, or execute a gradle build without the Crashlytics tasks `gradlew build -x processDebugGoogleServices -x fabricGenerateResourcesDebug -x processReleaseGoogleServices -x fabricGenerateResourcesRelease`.

@@ -8,10 +8,10 @@ buildscript {
         jcenter()
         maven {
             url 'https://maven.fabric.io/public'
-        }
+            }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.2'
         classpath 'io.fabric.tools:gradle:1.31.2'
@@ -49,5 +49,5 @@ task updateCoriolisData(type: NpmTask) {
 
 task coriolisDataPull(type: Exec) {
     workingDir = file("coriolis-data")
-    commandLine "git", "pull","origin","master"
+    commandLine "git", "pull", "origin", "master"
 }

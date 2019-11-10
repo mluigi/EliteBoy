@@ -5,7 +5,10 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -129,5 +132,73 @@ suspend fun runWhile(block: suspend CoroutineScope.(stop: () -> Unit) -> Unit) {
             block { isRunning = false }
         }
     }
+}
 
+/* Function to add a simple onPageListener to a ViewPager
+ * that will run the function at every onPageChange.
+ * nPage accepts an Int, the position of the page
+ */
+
+fun ViewPager.setOnPageListenerWhere(function: (page: Int) -> Unit) {
+    this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {}
+
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            function(position)
+        }
+    })
+}
+
+fun Fragment.makeAlertDialog(
+    items: Array<String>,
+    title: String,
+    textViewToUpdate: TextView
+): AlertDialog {
+    return AlertDialog.Builder(this.requireContext()).apply {
+        setTitle(title)
+        var updateF: () -> Unit = { textViewToUpdate.text = items[0] }
+        setSingleChoiceItems(items, 0) { _, which ->
+            updateF = { textViewToUpdate.text = items[which] }
+        }
+        setPositiveButton("OK") { _, _ ->
+            updateF()
+        }
+
+        setNegativeButton("None") { _, _ ->
+            textViewToUpdate.text = ""
+        }
+    }.create()
+}
+
+fun Fragment.makeMultiChoiceAlertDialog(
+    items: Array<String>,
+    title: String,
+    textViewToUpdate: TextView
+): AlertDialog {
+    return AlertDialog.Builder(this.requireContext()).apply {
+        setTitle(title)
+        val chosenShips = arrayListOf<String>()
+        setMultiChoiceItems(items, BooleanArray(items.size){false}) { _, which, isChecked ->
+            if (isChecked) {
+                chosenShips.add(items[which])
+            } else {
+                chosenShips.remove(items[which])
+            }
+        }
+        setPositiveButton("OK") { _, _ ->
+            textViewToUpdate.text = chosenShips.joinToString(separator = ", ")
+        }
+
+        setNegativeButton("None") { _, _ ->
+            textViewToUpdate.text = ""
+
+        }
+    }.create()
 }

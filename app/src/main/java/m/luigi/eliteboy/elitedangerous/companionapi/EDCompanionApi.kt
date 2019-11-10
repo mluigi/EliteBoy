@@ -88,7 +88,7 @@ object EDCompanionApi {
 
     fun login() {
         if (currentState != State.LOGGED_OUT) {
-            throw Exception("Wrong state")
+            throw IllegalStateException("Wrong state")
         }
 
         currentState = State.AWAITING_CALLBACK
