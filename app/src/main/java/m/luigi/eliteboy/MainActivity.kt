@@ -13,6 +13,8 @@ import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.profile.profile
 import co.zsmb.materialdrawerkt.draweritems.sectionHeader
+import com.mikepenz.materialdrawer.AccountHeader
+import com.mikepenz.materialdrawer.Drawer
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache
 import com.nostra13.universalimageloader.core.DisplayImageOptions
@@ -20,7 +22,8 @@ import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
 import com.nostra13.universalimageloader.utils.StorageUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
@@ -30,13 +33,17 @@ import m.luigi.eliteboy.util.modulesList
 import m.luigi.eliteboy.util.onIO
 import m.luigi.eliteboy.util.onMain
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     lateinit var imageLoader: ImageLoader
     var initjob: Job = Job()
+    lateinit var drawer: Drawer
+    lateinit var header: AccountHeader
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-    init {
-        initjob = GlobalScope.launch {
+        initjob = launch {
             onIO {
                 //initialize modulesList here because it would slow SearchStationFragment
                 modulesList
@@ -70,19 +77,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
-        GlobalScope.launch {
+        launch {
             onMain {
-                drawer {
+                drawer = drawer {
                     toolbar = mainToolbar
                     
-                    accountHeader {
+                    header = accountHeader {
                         profile {
                             name = "CMDR"
                         }
@@ -140,8 +140,6 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-
-
                 }
             }
         }
