@@ -56,17 +56,40 @@ class SettingsActivity : AppCompatActivity() {
             val prefs = PreferenceManager.getDefaultSharedPreferences(this.context)
             val loginEDAPI = findPreference<Preference>("loginEDApi")
             val loginEDSM = findPreference<Preference>("loginEDSM")
-            if (EDCompanionApi.currentState == EDCompanionApi.State.LOGGED_OUT) {
-                loginEDAPI!!.setOnPreferenceClickListener {
-                    EDCompanionApi.login()
 
-                    true
+            when (EDCompanionApi.currentState) {
+                EDCompanionApi.State.LOGGED_OUT -> {
+                    loginEDAPI!!.setOnPreferenceClickListener {
+                        try {
+                            loginEDAPI.title = "Awaiting callback"
+                            loginEDAPI.summary = "Click to try again"
+                            EDCompanionApi.login()
+                        } catch (e: IllegalStateException) {
+                            snackBarMessage { "Couldn't login. Try Again." }
+                        }
+
+                        true
+                    }
                 }
-            } else {
-                loginEDAPI!!.title = "Logged in"
-                loginEDAPI.summary = ""
-            }
+                EDCompanionApi.State.AUTHORIZED -> {
+                    loginEDAPI!!.title = "Logged in"
+                    loginEDAPI.summary = ""
+                }
+                EDCompanionApi.State.AWAITING_CALLBACK -> {
+                    loginEDAPI!!.title = "Awaiting callback"
+                    loginEDAPI.summary = "Click to try again"
+                    loginEDAPI.setOnPreferenceClickListener {
+                        try {
+                            EDCompanionApi.currentState = EDCompanionApi.State.LOGGED_OUT
+                            EDCompanionApi.login()
+                        } catch (e: IllegalStateException) {
+                            snackBarMessage { "Couldn't login. Try Again." }
+                        }
 
+                        true
+                    }
+                }
+            }
             GlobalScope.launch {
                 val loggedin = onIO { EDSMApi.checkApiKey() }
                 if (loggedin) {
