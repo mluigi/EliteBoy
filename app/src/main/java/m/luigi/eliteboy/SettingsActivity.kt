@@ -63,6 +63,7 @@ class SettingsActivity : AppCompatActivity() {
                         try {
                             loginEDAPI.title = "Awaiting callback"
                             loginEDAPI.summary = "Click to try again"
+                            EDCompanionApi.currentState = EDCompanionApi.State.LOGGED_OUT
                             EDCompanionApi.login()
                         } catch (e: IllegalStateException) {
                             snackBarMessage { "Couldn't login. Try Again." }
