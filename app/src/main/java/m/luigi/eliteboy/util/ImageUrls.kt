@@ -63,4 +63,6 @@ fun stationImage(type: String): String {
     return stationsImages[type] ?: "https://edassets.org/static/img/stations/Coriolis.png"
 }
 
-
+fun getNewsImageUrl(id: String): String {
+    return "https://hosting.zaonce.net/elite-dangerous/galnet/$id.png"
+}
