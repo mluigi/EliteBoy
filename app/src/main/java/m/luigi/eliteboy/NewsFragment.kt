@@ -39,7 +39,12 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
                         newsList.add(
                             News(
                                 it["title"].asString,
-                                it["body"].asString.removePrefix("<p>").removeSuffix("</p>\n").replace("<br />",""),
+                                it["body"].asString
+                                    .removePrefix("<p>")
+                                    .removeSuffix("</p>\n")
+                                    .replace("<br />","")
+                                    .replace("<p>","")
+                                    .replace("</p>",""),
                                 it["image"].asString,
                                 it["date"].asString
                             )
@@ -58,9 +63,9 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         launch {
             newsSpinKit.visibility = View.VISIBLE
+            (activity as MainActivity).initjob.join()
             getNewsJob.join()
             newsSpinKit.visibility = View.GONE
             newsPager.adapter = NewsPageAdapter(newsList, childFragmentManager)
