@@ -64,5 +64,6 @@ fun stationImage(type: String): String {
 }
 
 fun getNewsImageUrl(id: String): String {
+    println(id)
     return "https://hosting.zaonce.net/elite-dangerous/galnet/$id.png"
 }

@@ -15,6 +15,7 @@ import m.luigi.eliteboy.MainActivity
 import m.luigi.eliteboy.R
 import m.luigi.eliteboy.data.News
 import m.luigi.eliteboy.util.getNewsImageUrl
+import m.luigi.eliteboy.util.onIO
 
 class NewsPageFragment(var news: News) : Fragment(),
     CoroutineScope by CoroutineScope(
@@ -36,14 +37,17 @@ class NewsPageFragment(var news: News) : Fragment(),
             titleTextView.text = news.title
             bodyTextView.text = news.body
             dateTextView.text = news.date
+            val drawable = onIO {
+                (activity as MainActivity).imageLoader
+                    .loadImageSync(getNewsImageUrl("NewsImageSidewinderExploring")).toDrawable(
+                        resources
+                    )
+            }
             (activity as MainActivity).imageLoader.displayImage(
                 getNewsImageUrl(news.image),
                 newsImage,
                 DisplayImageOptions.Builder().showImageOnFail(
-                    (activity as MainActivity).imageLoader
-                        .loadImageSync(getNewsImageUrl("NewsImageSidewinderExploring")).toDrawable(
-                        resources
-                    )
+                    drawable
                 ).build()
             )
         }
