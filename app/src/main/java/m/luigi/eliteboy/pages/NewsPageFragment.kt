@@ -15,9 +15,8 @@ import m.luigi.eliteboy.MainActivity
 import m.luigi.eliteboy.R
 import m.luigi.eliteboy.data.News
 import m.luigi.eliteboy.util.getNewsImageUrl
-import m.luigi.eliteboy.util.onIO
 
-class NewsPageFragment(var news: News) : Fragment(),
+class NewsPageFragment(private var news: News) : Fragment(),
     CoroutineScope by CoroutineScope(
         Dispatchers.Main
     ) {
@@ -37,19 +36,26 @@ class NewsPageFragment(var news: News) : Fragment(),
             titleTextView.text = news.title
             bodyTextView.text = news.body
             dateTextView.text = news.date
-            val drawable = onIO {
-                (activity as MainActivity).imageLoader
-                    .loadImageSync(getNewsImageUrl("NewsImageSidewinderExploring")).toDrawable(
-                        resources
-                    )
+            (activity as MainActivity).initjob.join()
+
+            // It should work without the try-catch, but it crashes on running the first time
+            // like this it works
+            try {
+                (activity as MainActivity).imageLoader.displayImage(
+                    getNewsImageUrl(news.image),
+                    newsImage,
+                    DisplayImageOptions.Builder().showImageOnFail(
+                        (activity as MainActivity).imageLoader.loadImageSync(
+                            getNewsImageUrl("NewsImageSidewinderExploring")
+                        ).toDrawable(resources)
+                    ).build()
+                )
+            } catch (e: Exception) {
+                (activity as MainActivity).imageLoader.displayImage(
+                    getNewsImageUrl("NewsImageSidewinderExploring"),
+                    newsImage
+                )
             }
-            (activity as MainActivity).imageLoader.displayImage(
-                getNewsImageUrl(news.image),
-                newsImage,
-                DisplayImageOptions.Builder().showImageOnFail(
-                    drawable
-                ).build()
-            )
         }
     }
 }
