@@ -18,9 +18,7 @@ import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.adapters.StationPageAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
-import m.luigi.eliteboy.util.setAnimateOnClickListener
-import m.luigi.eliteboy.util.setOnPageListenerWhere
-import m.luigi.eliteboy.util.snackBarMessage
+import m.luigi.eliteboy.util.*
 
 class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
@@ -38,10 +36,12 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
         getSystemJob = launch {
             arguments?.let {
                 name = it.getString("system", "")
-                systemLayout.visibility = View.GONE
+                //systemLayout.visibility = View.GONE
                 systemSpinKit.visibility = View.VISIBLE
                 name?.let {
-                    this@SystemFragment.system = EDSMApi.getSystemComplete(name!!)
+                    runWhenOnline {
+                        this@SystemFragment.system = EDSMApi.getSystemComplete(name!!)
+                    }
                 }
             }
         }
@@ -74,8 +74,8 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
 
         initLayoutJob = launch {
             getSystemJob.join()
-            systemSpinKit.visibility = View.GONE
-            systemLayout.visibility = View.VISIBLE
+            systemSpinKit.hideWithAnimation()
+            //systemLayout.visibility = View.VISIBLE
             system?.let {
                 setSystemLayout()
             } ?: snackBarMessage { "Couldn't find System $name" }

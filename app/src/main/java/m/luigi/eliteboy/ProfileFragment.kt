@@ -172,7 +172,7 @@ class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                     }
                 }
             }
-            profileSpinKit?.visibility = View.GONE
+            profileSpinKit?.hideWithAnimation()
         }
     }
 }

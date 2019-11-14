@@ -1,5 +1,6 @@
 package m.luigi.eliteboy.util
 
+import android.animation.Animator
 import android.app.Activity
 import android.util.Log
 import android.view.View
@@ -65,7 +66,7 @@ fun View.expand() {
         }
     }
 
-    a.duration = 500.toLong()
+    a.duration = 800.toLong()
     this.startAnimation(a)
 }
 
@@ -88,7 +89,7 @@ fun View.collapse() {
         }
     }
 
-    a.duration = 500.toLong()
+    a.duration = 800.toLong()
     this.startAnimation(a)
 }
 
@@ -240,4 +241,46 @@ suspend fun Activity.runWhenOnline(block: suspend () -> Unit) {
     } else {
         findNavController(R.id.navHost).navigate(R.id.noConnectivityFragment)
     }
+}
+
+fun View.hideWithAnimation() {
+    animate()
+        .scaleY(layoutParams.height * 1.1f)
+        .scaleX(layoutParams.width * 1.1f)
+        .setDuration(500)
+        .setListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                animate()
+                    .scaleY(0f)
+                    .scaleX(0f)
+                    .setDuration(500)
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            visibility = View.GONE
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                        }
+
+                    })
+                    .start()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        .start()
 }

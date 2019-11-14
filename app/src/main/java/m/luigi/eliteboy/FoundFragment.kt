@@ -16,6 +16,7 @@ import m.luigi.eliteboy.adapters.FoundAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.SearchData
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
+import m.luigi.eliteboy.util.hideWithAnimation
 import m.luigi.eliteboy.util.onMain
 import m.luigi.eliteboy.util.snackBarMessage
 
@@ -166,7 +167,7 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
         super.onResume()
         launch {
             initJob.join()
-            systemsSpinKit?.let { it.visibility = View.GONE }
+            systemsSpinKit?.hideWithAnimation()
 
         }
     }

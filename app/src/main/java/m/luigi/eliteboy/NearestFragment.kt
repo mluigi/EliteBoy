@@ -21,6 +21,7 @@ import m.luigi.eliteboy.adapters.PropertyAdapter
 import m.luigi.eliteboy.adapters.SystemsSuggestionsAdapter
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import m.luigi.eliteboy.util.hideWithAnimation
 import m.luigi.eliteboy.util.onDefault
 import m.luigi.eliteboy.util.onIO
 
@@ -68,7 +69,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
             with(refSystem) {
                 threshold = 3
                 addTextChangedListener {
-                    nearestSpinKit.visibility = View.GONE
+                    nearestSpinKit.hideWithAnimation()
                     searchJob.cancel()
                     searchJob = this@NearestFragment.launch {
                         refSystem.clearListSelection()
@@ -90,7 +91,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                                 )
                             }
                             arrayAdapter.notifyDataSetChanged()
-                            nearestSpinKit.visibility = View.GONE
+                            nearestSpinKit.hideWithAnimation()
                             if (refSystem.hasFocus()) {
                                 refSystem.showDropDown()
                             }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.adapters.NewsPageAdapter
 import m.luigi.eliteboy.data.News
+import m.luigi.eliteboy.util.hideWithAnimation
 import m.luigi.eliteboy.util.onDefault
 import m.luigi.eliteboy.util.onIO
 import java.net.URL
@@ -67,7 +68,7 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
             newsSpinKit.visibility = View.VISIBLE
             (activity as MainActivity).initJob.join()
             getNewsJob.join()
-            newsSpinKit.visibility = View.GONE
+            newsSpinKit.hideWithAnimation()
             newsPager.adapter = NewsPageAdapter(newsList, childFragmentManager)
             newsDots.attachToViewPager(newsPager)
         }
