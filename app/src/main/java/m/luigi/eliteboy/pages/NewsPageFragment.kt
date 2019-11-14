@@ -36,7 +36,7 @@ class NewsPageFragment(private var news: News) : Fragment(),
             titleTextView.text = news.title
             bodyTextView.text = news.body
             dateTextView.text = news.date
-            (activity as MainActivity).initjob.join()
+            (activity as MainActivity).initJob.join()
 
             // It should work without the try-catch, but it crashes on running the first time
             // like this it works

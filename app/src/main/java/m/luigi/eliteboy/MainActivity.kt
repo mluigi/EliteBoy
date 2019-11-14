@@ -28,30 +28,28 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
-import m.luigi.eliteboy.util.CoriolisDataHelper
-import m.luigi.eliteboy.util.modulesList
-import m.luigi.eliteboy.util.onIO
-import m.luigi.eliteboy.util.onMain
+import m.luigi.eliteboy.util.*
 
-class MainActivity : AppCompatActivity(),CoroutineScope by CoroutineScope(Dispatchers.Main) {
+class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     lateinit var imageLoader: ImageLoader
-    var initjob: Job = Job()
+    var initJob: Job = Job()
     lateinit var drawer: Drawer
     lateinit var header: AccountHeader
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initjob = launch {
+        initJob = launch {
             onIO {
                 //initialize modulesList here because it would slow SearchStationFragment
-                modulesList
+                runWhenOnline {
+                    modulesList
+                }
                 CoriolisDataHelper.init(assets)
                 val prefs = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
                 EDSMApi.commander = prefs.getString("pref_edsm_cmdr", "")!!
                 EDSMApi.apiKey = prefs.getString("pref_edsm_api_key", "")!!
-
                 EDCompanionApi.initApi(
                     getSharedPreferences(
                         "Main",

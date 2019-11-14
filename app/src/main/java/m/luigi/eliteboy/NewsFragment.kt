@@ -65,7 +65,7 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
 
         launch {
             newsSpinKit.visibility = View.VISIBLE
-            (activity as MainActivity).initjob.join()
+            (activity as MainActivity).initJob.join()
             getNewsJob.join()
             newsSpinKit.visibility = View.GONE
             newsPager.adapter = NewsPageAdapter(newsList, childFragmentManager)

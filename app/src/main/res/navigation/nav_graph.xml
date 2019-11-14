@@ -96,4 +96,9 @@
             app:destination="@id/foundFragment"
             app:popUpTo="@+id/searchSystemsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/noConnectivityFragment"
+        android:name="m.luigi.eliteboy.NoConnectivityFragment"
+        android:label="fragment_no_connectivity"
+        tools:layout="@layout/fragment_no_connectivity" />
 </navigation>

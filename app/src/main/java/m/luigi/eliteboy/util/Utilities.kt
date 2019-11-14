@@ -1,5 +1,6 @@
 package m.luigi.eliteboy.util
 
+import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -8,11 +9,18 @@ import android.view.animation.Transformation
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import m.luigi.eliteboy.R
+import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Socket
+
 
 fun Fragment.snackBarMessage(message: () -> String) {
     Snackbar.make(this.view!!, message(), Snackbar.LENGTH_LONG).show()
@@ -185,7 +193,7 @@ fun Fragment.makeMultiChoiceAlertDialog(
     return AlertDialog.Builder(this.requireContext()).apply {
         setTitle(title)
         val chosenShips = arrayListOf<String>()
-        setMultiChoiceItems(items, BooleanArray(items.size){false}) { _, which, isChecked ->
+        setMultiChoiceItems(items, BooleanArray(items.size) { false }) { _, which, isChecked ->
             if (isChecked) {
                 chosenShips.add(items[which])
             } else {
@@ -201,4 +209,35 @@ fun Fragment.makeMultiChoiceAlertDialog(
 
         }
     }.create()
+}
+
+suspend fun isOnline(): Boolean {
+    return onIO {
+        try {
+            val timeoutMs = 1500
+            val sock = Socket()
+            val sockaddr = InetSocketAddress("8.8.8.8", 53)
+            sock.connect(sockaddr, timeoutMs)
+            sock.close()
+            true
+        } catch (e: IOException) {
+            false
+        }
+    }
+}
+
+suspend fun Fragment.runWhenOnline(block: suspend () -> Unit) {
+    if (isOnline()) {
+        block()
+    } else {
+        findNavController().navigate(R.id.noConnectivityFragment)
+    }
+}
+
+suspend fun Activity.runWhenOnline(block: suspend () -> Unit) {
+    if (isOnline()) {
+        block()
+    } else {
+        findNavController(R.id.navHost).navigate(R.id.noConnectivityFragment)
+    }
 }
