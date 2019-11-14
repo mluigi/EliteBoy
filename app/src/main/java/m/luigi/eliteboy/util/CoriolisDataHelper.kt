@@ -85,8 +85,10 @@ object CoriolisDataHelper {
                 if (modules.keys.any { it.split("_armour_").first() == getEDSMShipId(shipId) }) {
                     val shipName = value.asJsonObject["properties"].asJsonObject["name"].asString
                     getShipBulkheadsPriceMap(shipId).forEach { (bulkId, price) ->
-                        map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] =
-                            price
+                        if (modules.keys.contains(bulkId)) {
+                            map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] =
+                                price
+                        }
                     }
                 }
             }
