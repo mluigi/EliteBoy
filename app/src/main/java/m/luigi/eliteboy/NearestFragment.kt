@@ -6,23 +6,17 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_nearest.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import m.luigi.eliteboy.adapters.PropertyAdapter
 import m.luigi.eliteboy.adapters.SystemsSuggestionsAdapter
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
-import m.luigi.eliteboy.util.onDefault
-import m.luigi.eliteboy.util.onIO
+import m.luigi.eliteboy.util.*
 
 class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
@@ -47,6 +41,8 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
         return inflater.inflate(R.layout.fragment_nearest, container, false)
     }
 
+    @ExperimentalCoroutinesApi
+    @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         launch {
@@ -68,7 +64,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
             with(refSystem) {
                 threshold = 3
                 addTextChangedListener {
-                    nearestSpinKit.visibility = View.GONE
+                    nearestSpinKit.hideWithAnimation()
                     searchJob.cancel()
                     searchJob = this@NearestFragment.launch {
                         refSystem.clearListSelection()
@@ -80,17 +76,19 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                             arrayAdapter.notifyDataSetInvalidated()
                             onDefault {
                                 systemsSuggestions.clear()
-                                systemsSuggestions.addAll(
-                                    EDSMApi.findSystemsByName(
-                                        currentSystem,
-                                        showInformation = false,
-                                        showCoordinates = false,
-                                        limit = 5
-                                    ).map { it.name!! }
-                                )
+                                runWhenOnline {
+                                    systemsSuggestions.addAll(
+                                        EDSMApi.findSystemsByName(
+                                            currentSystem,
+                                            showInformation = false,
+                                            showCoordinates = false,
+                                            limit = 5
+                                        ).map { it.name!! }
+                                    )
+                                }
                             }
                             arrayAdapter.notifyDataSetChanged()
-                            nearestSpinKit.visibility = View.GONE
+                            nearestSpinKit.hideWithAnimation()
                             if (refSystem.hasFocus()) {
                                 refSystem.showDropDown()
                             }
@@ -104,10 +102,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                         if (systemsSuggestions.isNotEmpty()) {
                             setText(systemsSuggestions[0])
                         }
-                        view.let { v ->
-                            val imm = getSystemService(view.context, InputMethodManager::class.java)
-                            imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                        }
+                        view.hideKeyboard()
                     }
                     true
                 }
@@ -115,10 +110,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                 setOnItemClickListener { _, _, position, _ ->
                     clearFocus()
                     setText(systemsSuggestions[position])
-                    view.let { v ->
-                        val imm = getSystemService(view.context, InputMethodManager::class.java)
-                        imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                    }
+                    view.hideKeyboard()
                 }
             }
         }

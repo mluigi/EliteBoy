@@ -8,19 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_system.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import m.luigi.eliteboy.adapters.BodyPageAdapter
 import m.luigi.eliteboy.adapters.FactionPageAdapter
 import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.adapters.StationPageAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.System
-import m.luigi.eliteboy.util.setAnimateOnClickListener
-import m.luigi.eliteboy.util.setOnPageListenerWhere
-import m.luigi.eliteboy.util.snackBarMessage
+import m.luigi.eliteboy.util.*
 
 class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
@@ -35,22 +30,29 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getSystemJob = launch {
+        launch {
             arguments?.let {
                 name = it.getString("system", "")
-                systemLayout.visibility = View.GONE
-                systemSpinKit.visibility = View.VISIBLE
-                name?.let {
-                    this@SystemFragment.system = EDSMApi.getSystemComplete(name!!)
-                }
+                //systemLayout.visibility = View.GONE
+
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
+    @FlowPreview
     override fun onResume() {
         super.onResume()
-        launch {
+        getSystemJob = launch {
             (activity as MainActivity).mainToolbar.title = name
+            if (system == null) {
+                name?.let {
+                    systemSpinKit.visibility = View.VISIBLE
+                    runWhenOnline {
+                        this@SystemFragment.system = EDSMApi.getSystemComplete(name!!)
+                    }
+                }
+            }
             system?.let {
                 setSystemLayout()
             }
@@ -74,8 +76,7 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
 
         initLayoutJob = launch {
             getSystemJob.join()
-            systemSpinKit.visibility = View.GONE
-            systemLayout.visibility = View.VISIBLE
+            //systemLayout.visibility = View.VISIBLE
             system?.let {
                 setSystemLayout()
             } ?: snackBarMessage { "Couldn't find System $name" }
@@ -105,7 +106,7 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
 
         bodiesViewPager.adapter = BodyPageAdapter(
             system!!.bodies!!.apply { sortBy { it.distanceToArrival } },
-            this@SystemFragment.requireFragmentManager()
+            childFragmentManager
         )
         bodiesViewPager.setOnPageListenerWhere { lastBodyPage = it }
         bodiesDots.attachToViewPager(bodiesViewPager)
@@ -113,12 +114,14 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
         if (!system!!.factions.isNullOrEmpty()) {
             factionsViewPager.adapter = FactionPageAdapter(
                 system!!.factions!!.apply { sortByDescending { it.influence } },
-                this@SystemFragment.requireFragmentManager()
+                childFragmentManager
             )
             factionsViewPager.setOnPageListenerWhere { lastFactionPage = it }
             factionsDots.attachToViewPager(factionsViewPager)
         } else {
             factionsCard.visibility = View.GONE
         }
+
+        systemSpinKit.hideWithAnimation()
     }
 }

@@ -13,9 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nostra13.universalimageloader.core.ImageLoader
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Profile
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
@@ -23,7 +21,7 @@ import m.luigi.eliteboy.elitedangerous.edsm.data.Station
 import m.luigi.eliteboy.util.*
 import java.text.NumberFormat
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
     private lateinit var imageLoader: ImageLoader
     private var initJob: Job = Job()
@@ -32,8 +30,8 @@ class ProfileFragment : Fragment() {
     private var profile: Profile? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initJob = GlobalScope.launch {
-            (activity as MainActivity).initjob.join()
+        initJob = launch {
+            (activity as MainActivity).initJob.join()
             imageLoader = (activity as MainActivity).imageLoader
         }
     }
@@ -42,58 +40,60 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        GlobalScope.launch {
-            onMain {
-                (activity as MainActivity).mainToolbar.title = "Profile"
-
-                initJob.join()
-                updateProfile()
-
-                rankLayout.setAnimateOnClickListener(
-                    rankBars,
-                    rankView,
-                    { isRanksOpened }) { isRanksOpened = !isRanksOpened }
-
-                swipeRefresh.setColorSchemeResources(
-                    R.color.md_amber_800
-                )
-
-                swipeRefresh.setOnRefreshListener {
-                    GlobalScope.launch {
-                        swipeRefresh.isRefreshing = false
-                        updateProfile(true)
-                        setProfileLayout()
-                    }
-                }
-            }
-            setProfileLayout()
-        }
-
+        (activity as MainActivity).mainToolbar.title = "Profile"
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        launch {
+            initJob.join()
+            updateProfile()
+
+            rankLayout?.setAnimateOnClickListener(
+                rankBars,
+                rankView,
+                { isRanksOpened }) { isRanksOpened = !isRanksOpened }
+
+            swipeRefresh?.setColorSchemeResources(
+                R.color.md_amber_800
+            )
+
+            swipeRefresh?.setOnRefreshListener {
+                GlobalScope.launch {
+                    swipeRefresh.isRefreshing = false
+                    updateProfile(true)
+                    setProfileLayout()
+                }
+            }
+            setProfileLayout()
+        }
+    }
+
     private suspend fun updateProfile(forced: Boolean = false) {
         onIO {
-            profile = if (EDCompanionApi.currentState == EDCompanionApi.State.AUTHORIZED) {
-                onMain { profileSpinKit?.let { it.visibility = View.VISIBLE } }
-                EDCompanionApi.getProfile(forced)
-            } else {
-                Snackbar.make(
-                    this@ProfileFragment.activity!!
-                        .findViewById(android.R.id.content),
-                    "Login to EDApi or EDSM",
-                    Snackbar.LENGTH_LONG
-                ).setAction("Login") {
-                    startActivity(
-                        Intent(
-                            this@ProfileFragment.activity,
-                            SettingsActivity::class.java
+            runWhenOnline {
+                profile = if (EDCompanionApi.currentState == EDCompanionApi.State.AUTHORIZED) {
+                    onMain { profileSpinKit?.let { it.visibility = View.VISIBLE } }
+                    EDCompanionApi.getProfile(forced)
+                } else {
+                    Snackbar.make(
+                        this@ProfileFragment.activity!!
+                            .findViewById(android.R.id.content),
+                        "Login to EDApi or EDSM",
+                        Snackbar.LENGTH_LONG
+                    ).setAction("Login") {
+                        startActivity(
+                            Intent(
+                                this@ProfileFragment.activity,
+                                SettingsActivity::class.java
+                            )
                         )
-                    )
-                }.show()
-                null
+                    }.show()
+                    null
+                }
             }
         }
     }
@@ -102,46 +102,46 @@ class ProfileFragment : Fragment() {
         onMain {
             profile?.let {
                 with(it) {
-                    cmdrName.text = commander!!.name
-                    credits.text = String.format(
+                    cmdrName?.text = commander!!.name
+                    credits?.text = String.format(
                         resources.getString(R.string.credits),
                         NumberFormat.getIntegerInstance().format(commander!!.credits!!)
                     )
                     this@ProfileFragment.lastSystem.text = this.lastSystem!!.name
-                    lastStation.text =
+                    lastStation?.text =
                         if (lastStarport!!.name != "") lastStarport!!.name else "-"
-                    combatRank.text = commander!!.rank!!.combat!!.name
+                    combatRank?.text = commander!!.rank!!.combat!!.name
                     val combatRank = commander!!.rank!!.combat!!.ordinal
                     imageLoader.displayImage(
                         combatRankImages[combatRank],
                         combatImg
                     )
 
-                    tradeRank.text = commander!!.rank!!.trade!!.name
+                    tradeRank?.text = commander!!.rank!!.trade!!.name
                     val tradeRank = commander!!.rank!!.trade!!.ordinal
                     imageLoader.displayImage(
                         tradingRankImages[tradeRank],
                         tradeImg
                     )
 
-                    explorRank.text = commander!!.rank!!.explore!!.name
+                    explorRank?.text = commander!!.rank!!.explore!!.name
                     val expRank = commander!!.rank!!.explore!!.ordinal
                     imageLoader.displayImage(
                         explorationRankImages[expRank],
                         expImg
                     )
 
-                    cqcRank.text = commander!!.rank!!.cqc!!.name
+                    cqcRank?.text = commander!!.rank!!.cqc!!.name
                     val cqcRank = commander!!.rank!!.cqc!!.ordinal
                     imageLoader.displayImage(cqcRankImages[cqcRank], cqcImg)
 
-                    impNavyRank.text = commander!!.rank!!.empire!!.name
+                    impNavyRank?.text = commander!!.rank!!.empire!!.name
                     imageLoader.displayImage(empireIcon, impNavyImg)
 
-                    fedNavyRank.text = commander!!.rank!!.federation!!.name
+                    fedNavyRank?.text = commander!!.rank!!.federation!!.name
                     imageLoader.displayImage(federationIcon, fedNavyImg)
 
-                    lastSystemLayout.setOnClickListener {
+                    lastSystemLayout?.setOnClickListener {
                         Navigation.findNavController(it).navigate(
                             R.id.action_profileFragment_to_systemFragment,
                             bundleOf(
@@ -154,12 +154,13 @@ class ProfileFragment : Fragment() {
                     }
 
                     if (lastStarport!!.name != "") {
-                        val station: Station? = onIO {
-                            EDSMApi.getStations(lastSystem!!.name!!).stations!!
-                                .firstOrNull { it.name == lastStarport!!.name }
+                        var station: Station? = null
 
+                        runWhenOnline {
+                            station =
+                                EDSMApi.getStations(lastSystem!!.name!!).stations!!
+                                    .firstOrNull { it.name == lastStarport!!.name }
                         }
-
                         station?.let {
                             lastStationLayout.setOnClickListener {
                                 Navigation.findNavController(it).navigate(
@@ -171,7 +172,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-            profileSpinKit.visibility = View.GONE
+            profileSpinKit?.hideWithAnimation()
         }
     }
 }

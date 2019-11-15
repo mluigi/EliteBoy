@@ -8,55 +8,61 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_station.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import m.luigi.eliteboy.adapters.CommodityAdapter
 import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
 import m.luigi.eliteboy.util.CoriolisDataHelper
-import m.luigi.eliteboy.util.onIO
-import m.luigi.eliteboy.util.onMain
+import m.luigi.eliteboy.util.hideWithAnimation
+import m.luigi.eliteboy.util.runWhenOnline
 import m.luigi.eliteboy.util.setAnimateOnClickListener
 
 
-class StationFragment : Fragment() {
+class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
     lateinit var station: Station
+    private lateinit var initJob :Job
     private lateinit var getStationJob: Job
 
     private var isInfoOpened = true
     private var isMarketOpened = false
-    var isShipyardOpened = false
-    var isOutfittingOpened = false
+    private var isShipyardOpened = false
+    private var isOutfittingOpened = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getStationJob = GlobalScope.launch {
+        initJob = launch {
             arguments?.let {
                 station = it.getParcelable("station")!!
-                onMain {
-                    stationLayout.visibility = View.GONE
-                    stationSpinKit.visibility = View.VISIBLE
-                    (activity as MainActivity).mainToolbar.title = station.name
 
-                    if (station.haveMarket) {
-                        onIO {
-                            EDSMApi.getMarket(station)
-                        }
-                    }
+                //stationLayout.visibility = View.GONE
+                stationSpinKit.visibility = View.VISIBLE
+                (activity as MainActivity).mainToolbar.title = station.name
+            }
+        }
+    }
 
-                    if (station.haveShipyard) {
-                        onIO {
-                            EDSMApi.getShipyard(station)
-                        }
-                    }
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    override fun onResume() {
+        super.onResume()
+        getStationJob = launch {
+            initJob.join()
+            if (station.haveMarket) {
+                runWhenOnline {
+                    EDSMApi.getMarket(station)
+                }
+            }
 
-                    if (station.haveMarket) {
-                        onIO {
-                            EDSMApi.getOutfitting(station)
-                        }
-                    }
+            if (station.haveShipyard) {
+                runWhenOnline {
+                    EDSMApi.getShipyard(station)
+                }
+            }
+
+            if (station.haveMarket) {
+                runWhenOnline {
+                    EDSMApi.getOutfitting(station)
                 }
             }
         }
@@ -73,71 +79,69 @@ class StationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        GlobalScope.launch {
+        launch {
             getStationJob.join()
 
-            onMain {
-                infoList.layoutManager =
+            infoList?.layoutManager =
+                LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+            infoList?.adapter = InformationAdapter(station.asMap(), view.context)
+
+            infoLayout?.setAnimateOnClickListener(
+                infoList,
+                infoImg,
+                { isInfoOpened }) { isInfoOpened = !isInfoOpened }
+
+            if (station.haveMarket && station.commodities != null) {
+                marketLayout?.setAnimateOnClickListener(
+                    marketList,
+                    marketImg,
+                    { isMarketOpened }) { isMarketOpened = !isMarketOpened }
+
+                marketList?.layoutManager =
                     LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                infoList.adapter = InformationAdapter(station.asMap(), view.context)
-
-                infoLayout.setAnimateOnClickListener(
-                    infoList,
-                    infoImg,
-                    { isInfoOpened }) { isInfoOpened = !isInfoOpened }
-
-                if (station.haveMarket && station.commodities != null) {
-                    marketLayout.setAnimateOnClickListener(
-                        marketList,
-                        marketImg,
-                        { isMarketOpened }) { isMarketOpened = !isMarketOpened }
-
-                    marketList.layoutManager =
-                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                    marketList.adapter = CommodityAdapter(station.commodities!!, view.context)
-                } else {
-                    marketCardView.visibility = View.GONE
-                }
-
-                if (station.haveShipyard && station.ships != null) {
-                    shipsLayout.setAnimateOnClickListener(
-                        shipList,
-                        shipImg,
-                        { isShipyardOpened }) { isShipyardOpened = !isShipyardOpened }
-                    shipList.layoutManager =
-                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                    shipList.adapter = InformationAdapter(
-                        CoriolisDataHelper.getShipPriceMapFiltered(station.ships!!),
-                        view.context
-                    )
-                } else {
-                    shipsCardView.visibility = View.GONE
-                }
-
-                if (station.haveOutfitting && station.outfitting != null) {
-                    outfittingLayout.setAnimateOnClickListener(
-                        outfittingList,
-                        outfittingImg,
-                        { isOutfittingOpened }) { isOutfittingOpened = !isOutfittingOpened }
-
-                    outfittingList.layoutManager =
-                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                    val mapSIDtoName = mutableMapOf<String, String>()
-                    station.outfitting!!.forEach {
-                        mapSIDtoName[it.sId!!] = it.name!!
-                    }
-                    val modulePriceMap = CoriolisDataHelper.getModulePriceMapFiltered(mapSIDtoName)
-                    outfittingList.adapter = InformationAdapter(
-                        modulePriceMap,
-                        view.context
-                    )
-                } else {
-                    outfittingCardView.visibility = View.GONE
-                }
-
-                stationLayout.visibility = View.VISIBLE
-                stationSpinKit.visibility = View.GONE
+                marketList?.adapter = CommodityAdapter(station.commodities!!, view.context)
+            } else {
+                marketCardView?.visibility = View.GONE
             }
+
+            if (station.haveShipyard && station.ships != null) {
+                shipsLayout?.setAnimateOnClickListener(
+                    shipList,
+                    shipImg,
+                    { isShipyardOpened }) { isShipyardOpened = !isShipyardOpened }
+                shipList?.layoutManager =
+                    LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+                shipList?.adapter = InformationAdapter(
+                    CoriolisDataHelper.getShipPriceMapFiltered(station.ships!!),
+                    view.context
+                )
+            } else {
+                shipsCardView?.visibility = View.GONE
+            }
+
+            if (station.haveOutfitting && station.outfitting != null) {
+                outfittingLayout?.setAnimateOnClickListener(
+                    outfittingList,
+                    outfittingImg,
+                    { isOutfittingOpened }) { isOutfittingOpened = !isOutfittingOpened }
+
+                outfittingList?.layoutManager =
+                    LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+                val mapSIDtoName = mutableMapOf<String, String>()
+                station.outfitting!!.forEach {
+                    mapSIDtoName[it.sId!!] = it.name!!
+                }
+                val modulePriceMap = CoriolisDataHelper.getModulePriceMapFiltered(mapSIDtoName)
+                outfittingList?.adapter = InformationAdapter(
+                    modulePriceMap,
+                    view.context
+                )
+            } else {
+                outfittingCardView?.visibility = View.GONE
+            }
+
+            //stationLayout?.visibility = View.VISIBLE
+            stationSpinKit?.hideWithAnimation()
         }
     }
 }

@@ -1,18 +1,29 @@
 package m.luigi.eliteboy.util
 
+import android.animation.Animator
+import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import m.luigi.eliteboy.R
+import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Socket
+
 
 fun Fragment.snackBarMessage(message: () -> String) {
     Snackbar.make(this.view!!, message(), Snackbar.LENGTH_LONG).show()
@@ -57,7 +68,7 @@ fun View.expand() {
         }
     }
 
-    a.duration = 500.toLong()
+    a.duration = 800.toLong()
     this.startAnimation(a)
 }
 
@@ -80,7 +91,7 @@ fun View.collapse() {
         }
     }
 
-    a.duration = 500.toLong()
+    a.duration = 800.toLong()
     this.startAnimation(a)
 }
 
@@ -185,7 +196,7 @@ fun Fragment.makeMultiChoiceAlertDialog(
     return AlertDialog.Builder(this.requireContext()).apply {
         setTitle(title)
         val chosenShips = arrayListOf<String>()
-        setMultiChoiceItems(items, BooleanArray(items.size){false}) { _, which, isChecked ->
+        setMultiChoiceItems(items, BooleanArray(items.size) { false }) { _, which, isChecked ->
             if (isChecked) {
                 chosenShips.add(items[which])
             } else {
@@ -201,4 +212,83 @@ fun Fragment.makeMultiChoiceAlertDialog(
 
         }
     }.create()
+}
+
+suspend fun isOnline(): Boolean {
+    return onIO {
+        try {
+            val timeoutMs = 1500
+            val sock = Socket()
+            val sockaddr = InetSocketAddress("8.8.8.8", 53)
+            sock.connect(sockaddr, timeoutMs)
+            sock.close()
+            true
+        } catch (e: IOException) {
+            false
+        }
+    }
+}
+
+suspend fun <T> Fragment.runWhenOnline(block: suspend () -> T): T? {
+    return if (isOnline()) {
+        block()
+    } else {
+        findNavController().navigate(R.id.noConnectivityFragment)
+        null
+    }
+}
+
+suspend fun Activity.runWhenOnline(block: suspend () -> Unit) {
+    if (isOnline()) {
+        block()
+    } else {
+        findNavController(R.id.navHost).navigate(R.id.noConnectivityFragment)
+    }
+}
+
+fun View.hideWithAnimation() {
+    animate()
+        .scaleY(layoutParams.height * 1.1f)
+        .scaleX(layoutParams.width * 1.1f)
+        .setDuration(500)
+        .setListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                animate()
+                    .scaleY(0f)
+                    .scaleX(0f)
+                    .setDuration(500)
+                    .setListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            visibility = View.GONE
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                        }
+
+                    })
+                    .start()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        .start()
+}
+
+fun View.hideKeyboard(){
+    val imm = ContextCompat.getSystemService(context, InputMethodManager::class.java)
+    imm?.hideSoftInputFromWindow(windowToken, 0)
 }

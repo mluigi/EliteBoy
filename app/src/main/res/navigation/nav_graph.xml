@@ -84,7 +84,8 @@
         tools:layout="@layout/fragment_search_stations" >
         <action
             android:id="@+id/action_searchStationsFragment_to_foundFragment"
-            app:destination="@id/foundFragment" />
+            app:destination="@id/foundFragment"
+            app:popUpTo="@+id/nearestFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchSystemsFragment"
@@ -96,4 +97,9 @@
             app:destination="@id/foundFragment"
             app:popUpTo="@+id/searchSystemsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/noConnectivityFragment"
+        android:name="m.luigi.eliteboy.NoConnectivityFragment"
+        android:label="fragment_no_connectivity"
+        tools:layout="@layout/fragment_no_connectivity" />
 </navigation>
