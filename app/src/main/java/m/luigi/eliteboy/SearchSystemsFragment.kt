@@ -6,8 +6,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -65,14 +63,16 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                             arrayAdapter.notifyDataSetInvalidated()
                             onDefault {
                                 systemsSuggestions.clear()
-                                systemsSuggestions.addAll(
-                                    EDSMApi.findSystemsByName(
-                                        referenceSystem,
-                                        showInformation = false,
-                                        showCoordinates = false,
-                                        limit = 5
-                                    ).map { it.name!! }
-                                )
+                                runWhenOnline {
+                                    systemsSuggestions.addAll(
+                                        EDSMApi.findSystemsByName(
+                                            referenceSystem,
+                                            showInformation = false,
+                                            showCoordinates = false,
+                                            limit = 5
+                                        ).map { it.name!! }
+                                    )
+                                }
                             }
                             arrayAdapter.notifyDataSetChanged()
                             if (this@with.hasFocus()) {
@@ -88,13 +88,7 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                         if (systemsSuggestions.isNotEmpty()) {
                             setText(systemsSuggestions[0])
                         }
-                        view.let { v ->
-                            val imm = ContextCompat.getSystemService(
-                                view.context,
-                                InputMethodManager::class.java
-                            )
-                            imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                        }
+                        view.hideKeyboard()
                     }
                     true
                 }
@@ -102,13 +96,7 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                 setOnItemClickListener { _, _, position, _ ->
                     clearFocus()
                     setText(systemsSuggestions[position])
-                    view.let { v ->
-                        val imm = ContextCompat.getSystemService(
-                            view.context,
-                            InputMethodManager::class.java
-                        )
-                        imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                    }
+                    view.hideKeyboard()
                 }
             }
             with(systemName) {
@@ -116,26 +104,28 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                 addTextChangedListener {
                     searchJob.cancel()
                     searchJob = this@SearchSystemsFragment.launch {
-                        this@with.clearListSelection()
-                        this@with.dismissDropDown()
+                        clearListSelection()
+                        dismissDropDown()
                         sysName = it.toString()
                         if (sysName.length > 2) {
                             arrayAdapter.clear()
                             arrayAdapter.notifyDataSetInvalidated()
                             onDefault {
                                 systemsSuggestions.clear()
-                                systemsSuggestions.addAll(
-                                    EDSMApi.findSystemsByName(
-                                        sysName,
-                                        showInformation = false,
-                                        showCoordinates = false,
-                                        limit = 5
-                                    ).map { it.name!! }
-                                )
+                                runWhenOnline {
+                                    systemsSuggestions.addAll(
+                                        EDSMApi.findSystemsByName(
+                                            referenceSystem,
+                                            showInformation = false,
+                                            showCoordinates = false,
+                                            limit = 5
+                                        ).map { it.name!! }
+                                    )
+                                }
                             }
                             arrayAdapter.notifyDataSetChanged()
-                            if (this@with.hasFocus()) {
-                                this@with.showDropDown()
+                            if (hasFocus()) {
+                                showDropDown()
                             }
                         }
                     }
@@ -147,13 +137,8 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                         if (systemsSuggestions.isNotEmpty()) {
                             setText(systemsSuggestions[0])
                         }
-                        view.let { v ->
-                            val imm = ContextCompat.getSystemService(
-                                view.context,
-                                InputMethodManager::class.java
-                            )
-                            imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                        }
+                        view.hideKeyboard()
+
                     }
                     true
                 }
@@ -161,13 +146,7 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                 setOnItemClickListener { _, _, position, _ ->
                     clearFocus()
                     setText(systemsSuggestions[position])
-                    view.let { v ->
-                        val imm = ContextCompat.getSystemService(
-                            view.context,
-                            InputMethodManager::class.java
-                        )
-                        imm?.hideSoftInputFromWindow(v.windowToken, 0)
-                    }
+                    view.hideKeyboard()
                 }
             }
 

@@ -64,14 +64,16 @@ class SearchStationsFragment : Fragment(), CoroutineScope by CoroutineScope(Disp
                             arrayAdapter.notifyDataSetInvalidated()
                             onDefault {
                                 systemsSuggestions.clear()
-                                systemsSuggestions.addAll(
-                                    EDSMApi.findSystemsByName(
-                                        referenceSystem,
-                                        showInformation = false,
-                                        showCoordinates = false,
-                                        limit = 5
-                                    ).map { it.name!! }
-                                )
+                                runWhenOnline {
+                                    systemsSuggestions.addAll(
+                                        EDSMApi.findSystemsByName(
+                                            referenceSystem,
+                                            showInformation = false,
+                                            showCoordinates = false,
+                                            limit = 5
+                                        ).map { it.name!! }
+                                    )
+                                }
                             }
                             arrayAdapter.notifyDataSetChanged()
                             if (this@with.hasFocus()) {

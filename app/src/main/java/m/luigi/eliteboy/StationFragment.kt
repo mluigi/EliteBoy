@@ -8,10 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_station.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import m.luigi.eliteboy.adapters.CommodityAdapter
 import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
@@ -24,39 +21,48 @@ import m.luigi.eliteboy.util.setAnimateOnClickListener
 
 class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
     lateinit var station: Station
+    private lateinit var initJob :Job
     private lateinit var getStationJob: Job
 
     private var isInfoOpened = true
     private var isMarketOpened = false
-    var isShipyardOpened = false
-    var isOutfittingOpened = false
+    private var isShipyardOpened = false
+    private var isOutfittingOpened = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getStationJob = launch {
+        initJob = launch {
             arguments?.let {
                 station = it.getParcelable("station")!!
 
                 //stationLayout.visibility = View.GONE
                 stationSpinKit.visibility = View.VISIBLE
                 (activity as MainActivity).mainToolbar.title = station.name
+            }
+        }
+    }
 
-                if (station.haveMarket) {
-                    runWhenOnline {
-                        EDSMApi.getMarket(station)
-                    }
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    override fun onResume() {
+        super.onResume()
+        getStationJob = launch {
+            initJob.join()
+            if (station.haveMarket) {
+                runWhenOnline {
+                    EDSMApi.getMarket(station)
                 }
+            }
 
-                if (station.haveShipyard) {
-                    runWhenOnline {
-                        EDSMApi.getShipyard(station)
-                    }
+            if (station.haveShipyard) {
+                runWhenOnline {
+                    EDSMApi.getShipyard(station)
                 }
+            }
 
-                if (station.haveMarket) {
-                    runWhenOnline {
-                        EDSMApi.getOutfitting(station)
-                    }
+            if (station.haveMarket) {
+                runWhenOnline {
+                    EDSMApi.getOutfitting(station)
                 }
             }
         }

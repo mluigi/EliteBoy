@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_no_connectivity.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
+import m.luigi.eliteboy.util.isOnline
 
-/**
- * A simple [Fragment] subclass.
- */
 class NoConnectivityFragment : Fragment() {
 
     override fun onCreateView(
@@ -25,8 +26,12 @@ class NoConnectivityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tryAgainButton.setOnClickListener {
-            findNavController().navigateUp()
+            GlobalScope.launch {
+                if (isOnline()) {
+                    EDCompanionApi.refreshToken()
+                    findNavController().navigateUp()
+                }
+            }
         }
     }
-
 }

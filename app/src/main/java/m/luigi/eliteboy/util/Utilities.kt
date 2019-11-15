@@ -7,8 +7,10 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -227,11 +229,12 @@ suspend fun isOnline(): Boolean {
     }
 }
 
-suspend fun Fragment.runWhenOnline(block: suspend () -> Unit) {
-    if (isOnline()) {
+suspend fun <T> Fragment.runWhenOnline(block: suspend () -> T): T? {
+    return if (isOnline()) {
         block()
     } else {
         findNavController().navigate(R.id.noConnectivityFragment)
+        null
     }
 }
 
@@ -283,4 +286,9 @@ fun View.hideWithAnimation() {
 
         })
         .start()
+}
+
+fun View.hideKeyboard(){
+    val imm = ContextCompat.getSystemService(context, InputMethodManager::class.java)
+    imm?.hideSoftInputFromWindow(windowToken, 0)
 }

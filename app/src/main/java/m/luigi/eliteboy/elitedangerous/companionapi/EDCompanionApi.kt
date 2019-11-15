@@ -87,9 +87,7 @@ object EDCompanionApi {
         .create()!!
 
     fun login() {
-        if (currentState != State.LOGGED_OUT) {
-            throw IllegalStateException("Wrong state")
-        }
+        check(currentState == State.LOGGED_OUT) { "Wrong state" }
 
         currentState = State.AWAITING_CALLBACK
         val codeChallenge = createCodeChallenge()
@@ -155,7 +153,7 @@ object EDCompanionApi {
         }
     }
 
-    private fun refreshToken() {
+    fun refreshToken() {
         currentState = State.AWAITING_CALLBACK
         val urlConnection = getRequest("$AUTH_SERVER$TOKEN_URL")
         urlConnection.requestMethod = "POST"
