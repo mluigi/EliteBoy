@@ -219,4 +219,13 @@ object CoriolisDataHelper {
     }
 
     private val EDSMShipIdToCoriolisId = coriolisToEDSMShipIdMap.mapValues { it.key }
+
+    fun shipIdtoShipNameMap() = kotlin.run {
+        val map = mutableMapOf<String, String>()
+        ships().entrySet().forEach {
+            map[getEDSMShipId(it.key)] =
+                it.value.asJsonObject["properties"].asJsonObject["name"].asString
+        }
+        map as Map<String, String>
+    }
 }

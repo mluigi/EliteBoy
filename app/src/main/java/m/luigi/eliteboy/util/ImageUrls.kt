@@ -1,5 +1,6 @@
 package m.luigi.eliteboy.util
 
+
 const val federationIcon = "https://edassets.org/static/img/factions/Federation.png"
 const val empireIcon = "https://edassets.org/static/img/factions/Empire.png"
 const val allianceIcon = "https://edassets.org/static/img/factions/Alliance.png"
@@ -65,4 +66,49 @@ fun stationImage(type: String): String {
 
 fun getNewsImageUrl(id: String): String {
     return "https://hosting.zaonce.net/elite-dangerous/galnet/$id.png"
+}
+
+val shipIdToImgId = mapOf(
+    "adder" to "adder",
+    "typex_3" to "alliance-challenger",
+    "typex" to "alliance-chieftain",
+    "typex_2" to "alliance-crusader",
+    "anaconda" to "anaconda",
+    "asp" to "asp-explorer",
+    "asp_scout" to "asp-scout",
+    "belugaliner" to "beluga-liner",
+    "cobramkiii" to "cobra-mk-iii",
+    "cobramkiv" to "cobra-mk-iv",
+    "diamondbackxl" to "diamondback-explorer",
+    "diamondback" to "diamondback-scout",
+    "dolphin" to "dolphin",
+    "eagle" to "eagle-mk-ii",
+    "federation_dropship_mkii" to "federal-assault-ship",
+    "federation_corvette" to "federal-corvette",
+    "federation_dropship" to "federal-dropship",
+    "federation_gunship" to "federal-gunship",
+    "ferdelance" to "fer-de-lance",
+    "hauler" to "hauler",
+    "empire_trader" to "imperial-clipper",
+    "empire_courier" to "imperial-courier",
+    "cutter" to "imperial-cutter",
+    "empire_eagle" to "imperial-eagle",
+    "independant_trader" to "keelback",
+    "krait_mkii" to "krait-mk-ii",
+    "krait_light" to "krait-phantom",
+    "orca" to "orca",
+    "mamba" to "mamba",
+    "python" to "python",
+    "sidewinder" to "sidewinder",
+    "type6" to "type-6-transporter",
+    "type7" to "type-7",
+    "type9" to "type-9-heavy",
+    "type9_military" to "type-10-defender",
+    "viper" to "viper-mk-iii",
+    "viper_mkiv" to "viper-mk-iv",
+    "vulture" to "vulture"
+)
+
+fun getShipImageUrl(id: String): String {
+    return "https://edassets.org/static/img/ship-schematics/qohen-leth/${shipIdToImgId[id]}.png"
 }

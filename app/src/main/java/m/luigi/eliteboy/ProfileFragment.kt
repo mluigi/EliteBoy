@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.nostra13.universalimageloader.core.ImageLoader
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.*
 import m.luigi.eliteboy.elitedangerous.companionapi.EDCompanionApi
 import m.luigi.eliteboy.elitedangerous.companionapi.data.Profile
+import m.luigi.eliteboy.elitedangerous.companionapi.data.Ship
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
 import m.luigi.eliteboy.util.*
@@ -169,6 +171,16 @@ class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                                 )
                             }
                         }
+                    }
+
+                    shipLayout.setOnClickListener {
+                        findNavController().navigate(
+                            R.id.action_profileFragment_to_shipsFragment,
+                            bundleOf(
+                                "ship" to ship!!,
+                                "ships" to arrayListOf<Ship>().apply { addAll(ships!!.values) }
+                            )
+                        )
                     }
                 }
             }
