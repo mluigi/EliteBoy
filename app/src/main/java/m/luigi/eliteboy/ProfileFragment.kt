@@ -84,7 +84,7 @@ class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                     Snackbar.make(
                         this@ProfileFragment.activity!!
                             .findViewById(android.R.id.content),
-                        "Login to EDApi or EDSM",
+                        "Login to EDApi",
                         Snackbar.LENGTH_LONG
                     ).setAction("Login") {
                         startActivity(

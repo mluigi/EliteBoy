@@ -15,6 +15,7 @@ import m.luigi.eliteboy.MainActivity
 import m.luigi.eliteboy.R
 import m.luigi.eliteboy.data.News
 import m.luigi.eliteboy.util.getNewsImageUrl
+import m.luigi.eliteboy.util.onIO
 
 class NewsPageFragment(private var news: News) : Fragment(),
     CoroutineScope by CoroutineScope(
@@ -44,10 +45,11 @@ class NewsPageFragment(private var news: News) : Fragment(),
                 (activity as MainActivity).imageLoader.displayImage(
                     getNewsImageUrl(news.image),
                     newsImage,
-                    DisplayImageOptions.Builder().showImageOnFail(
+                    DisplayImageOptions.Builder().showImageOnFail(onIO {
                         (activity as MainActivity).imageLoader.loadImageSync(
                             getNewsImageUrl("NewsImageSidewinderExploring")
                         ).toDrawable(resources)
+                    }
                     ).build()
                 )
             } catch (e: Exception) {

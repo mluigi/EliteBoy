@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import co.zsmb.materialdrawerkt.builders.accountHeader
 import co.zsmb.materialdrawerkt.builders.drawer
@@ -56,7 +57,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by CoroutineScope(Dispa
                         Context.MODE_PRIVATE
                     )
                 ) { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it))) }
+                if (EDCompanionApi.currentState == EDCompanionApi.State.LOGGED_OUT){
 
+                    findNavController(R.id.navHost).navigate(R.id.newsFragment)
+                }
                 imageLoader = ImageLoader.getInstance().apply {
                     init(
                         ImageLoaderConfiguration.Builder(this@MainActivity)
