@@ -1,3 +1,4 @@
+
 # EliteBoy [![Build Status](https://travis-ci.com/mluigi/EliteBoy.svg?branch=develop)](https://travis-ci.com/mluigi/EliteBoy)
 
 A companion app to Elite Dangerous.
@@ -11,7 +12,24 @@ A companion app to Elite Dangerous.
 - Search for a station or a system with filters
 - Show news from Galnet
 
-### Todo
+## Screenshots
+### System
+
+<img src="/imgs/system.png" width="250" /> 
+
+### Station
+<img src="/imgs/station.png" width="250" /> 
+
+### Search system
+<img src="/imgs/searchsystem.png" width="250" /> 
+
+### Search station
+<img src="/imgs/searchstation.png" width="250" /> 
+
+### Nearest
+<img src="/imgs/nearest.png" width="250" /> 
+
+## Todo
 - Add Engineers assistant
 - Integration with Google Assistant
 
