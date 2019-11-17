@@ -24,7 +24,7 @@
             android:key="loginEDApi"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="Login with your Elite account" />
+            android:title="@string/loginText" />
     </PreferenceCategory>
     <PreferenceCategory android:title="EDSM">
 

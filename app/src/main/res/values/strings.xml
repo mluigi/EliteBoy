@@ -5,6 +5,7 @@
     <string name="title_activity_settings">Settings</string>
     <!-- Strings related to login -->
     <string name="credits">%s cr</string>
+    <string name="loginText">Login with your Elite account</string>
 
     <!-- Preference Titles -->
 
