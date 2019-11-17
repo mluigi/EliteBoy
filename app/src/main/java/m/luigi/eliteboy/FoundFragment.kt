@@ -185,5 +185,6 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
         super.onPause()
         initJob.cancel()
         initLayoutJob.cancel()
+        searchJob.cancel()
     }
 }

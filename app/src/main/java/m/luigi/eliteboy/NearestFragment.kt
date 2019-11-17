@@ -100,6 +100,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                     if (keyCode == KeyEvent.KEYCODE_ENTER) {
                         clearFocus()
                         if (systemsSuggestions.isNotEmpty()) {
+                            currentSystem=systemsSuggestions[0]
                             setText(systemsSuggestions[0])
                         }
                         view.hideKeyboard()
