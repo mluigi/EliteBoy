@@ -33,7 +33,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                 currentSystem = EDCompanionApi.getLastPosition()
             }
             refSystem.setText(currentSystem)
-            (activity as MainActivity).mainToolbar.title = "Nearest (50 ly)"
+            (activity as MainActivity).mainToolbar.title = "Nearest (100 ly)"
         }
 
 
@@ -100,6 +100,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                     if (keyCode == KeyEvent.KEYCODE_ENTER) {
                         clearFocus()
                         if (systemsSuggestions.isNotEmpty()) {
+                            currentSystem=systemsSuggestions[0]
                             setText(systemsSuggestions[0])
                         }
                         view.hideKeyboard()

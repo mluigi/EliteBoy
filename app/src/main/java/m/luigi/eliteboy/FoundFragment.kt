@@ -147,7 +147,7 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
 
                 initLayoutJob.join()
                 systemsSpinKit.visibility = View.VISIBLE
-                withTimeoutOrNull(10000) {
+                withTimeoutOrNull(30000) {
                     var i = 0
                     flow.collect {
                         systems.add(it)
@@ -185,5 +185,6 @@ class FoundFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
         super.onPause()
         initJob.cancel()
         initLayoutJob.cancel()
+        searchJob.cancel()
     }
 }

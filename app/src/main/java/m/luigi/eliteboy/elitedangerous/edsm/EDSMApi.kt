@@ -158,6 +158,7 @@ object EDSMApi {
         y: Double = 0.0,
         z: Double = 0.0,
         size: Int = 0,
+        minRadius: Int = 0,
         showId: Boolean = false,
         showCoordinates: Boolean = true,
         showPermit: Boolean = false,
@@ -202,7 +203,8 @@ object EDSMApi {
                                 showInformation,
                                 showPrimaryStar
                             ) +
-                            if (size in 1..100) "&radius=$size" else ""
+                            (if (size in 1..100) "&radius=$size" else "") +
+                            "&minRadius=$minRadius"
                 }
             }
             FindType.CUBE -> {
@@ -241,12 +243,13 @@ object EDSMApi {
         onDefault {
             try {
                 val jsonArray = JsonParser.parseString(json).asJsonArray
-                if (limit == 0) {
+                if (limit <= 0) {
                     jsonArray.forEach {
                         systems.add(Gson().fromJson<System>(it.asJsonObject, System::class.java))
                     }
                 } else if (jsonArray.size() > 0) {
-                    for (i in 0 until if (limit < jsonArray.size()) limit else jsonArray.size()) {
+                    val n = if (limit < jsonArray.size()) limit else jsonArray.size()
+                    for (i in 0 until n) {
                         systems.add(
                             Gson().fromJson<System>(
                                 jsonArray[i].asJsonObject,
@@ -288,9 +291,24 @@ object EDSMApi {
         x: Double = 0.0,
         y: Double = 0.0,
         z: Double = 0.0,
-        radius: Int = 0
+        radius: Int = 0,
+        minRadius: Int = 0,
+        showId: Boolean = false,
+        showCoordinates: Boolean = true,
+        showPermit: Boolean = false,
+        showInformation: Boolean = true,
+        showPrimaryStar: Boolean = false,
+        limit: Int = 0
     ): ArrayList<System> {
-        return findSystems(FindType.SPHERE, initialSystem, x, y, z, radius)
+        return findSystems(
+            FindType.SPHERE, initialSystem, x, y, z, radius, minRadius,
+            showId = showId,
+            showCoordinates = showCoordinates,
+            showPermit = showPermit,
+            showInformation = showInformation,
+            showPrimaryStar = showPrimaryStar,
+            limit = limit
+        )
     }
 
     suspend fun findSystemsInCube(
@@ -456,15 +474,17 @@ object EDSMApi {
 
     private suspend fun filteredNearbySystems(
         system: String = "Sol",
-        size: Int = 50
+        radius: Int = 50,
+        minRadius: Int = 0
     ): ArrayList<System> {
         return onIO {
             val systems =
-                findSystems(
-                    FindType.CUBE,
+                findSystemsInSphere(
                     system,
-                    size = size,
-                    showInformation = true
+                    radius = radius,
+                    minRadius = minRadius,
+                    showInformation = true,
+                    showCoordinates = false
                 )
 
             onDefault {
@@ -487,17 +507,52 @@ object EDSMApi {
         filter: suspend (system: System) -> Boolean
     ): Flow<System> {
         return flow {
-            val systems = filteredNearbySystems(system)
+            /**
+             * I got these numbers looking for a way to search starting from a sphere, and then
+             * continue in hollow spheres with the same volume of the sphere.
+             * So the first sphere has a volume V=4/3 π r_1^3, then the next hollow sphere has
+             * the internal radius r=r_1 and the external radius r_2 needs to be calculated so that
+             * the two volumes are equal: 4/3 π r_1^3 = 4/3 π (r_2^3 - r_1^3) -> r_2 = 2^(1/3) r_1.
+             * continuing this for bigger hollow spheres turns out that for the nth hollow sphere
+             * (where n counts also the initial sphere, so n>=2 ) the external radius is
+             * r_n = n^(1/3) r_1.
+             * For r_1 = 50 and n = 8, r_8 = 100 which is pretty convenient because that's the
+             * maximum limit for the radius when using the API endpoint
+             * https://www.edsm.net/api-v1/sphere-systems
+             */
+            val radii =
+                intArrayOf(0, 50, 63, 72, 79, 85, 91, 96, 100)
+            var searchLevel = 1
+            fun radius() = radii[searchLevel]
+            fun minRadius() = radii[searchLevel - 1]
+
+            var systems = filteredNearbySystems(system, radius(), minRadius())
+
             var i = 0
             var systemsFound = 0
-            while (systemsFound < max && i < systems.size) {
-                val sys = systems[i]
-                if (filter(sys)) {
-                    emit(sys)
-                    systemsFound++
-                }
 
-                i++
+            onDefault {
+                loop@ while (systemsFound < max) {
+
+                    if (i >= systems.size) {
+                        searchLevel++
+                        if (searchLevel > 8) {
+                            break@loop
+                        }
+                        systems = filteredNearbySystems(system, radius(), minRadius())
+                        i = 0
+
+                    }
+
+                    val sys = systems[i]
+                    if (filter(sys)) {
+                        emit(sys)
+                        systemsFound++
+                    }
+
+                    i++
+
+                }
             }
         }.flowOn(Dispatchers.Default)
     }
@@ -508,10 +563,27 @@ object EDSMApi {
         filter: suspend (station: Station) -> Boolean
     ): Flow<System> {
         return flow {
-            val systems = filteredNearbySystems(system)
+            val radii =
+                intArrayOf(0, 50, 63, 72, 79, 85, 91, 96, 100)
+            var searchLevel = 1
+            fun radius() = radii[searchLevel]
+            fun minRadius() = radii[searchLevel - 1]
+
+            var systems = filteredNearbySystems(system)
             var systemsFound = 0
             var i = 0
-            while (systemsFound <= max && i < systems.size) {
+            loop@ while (systemsFound < max) {
+
+                if (i >= systems.size) {
+                    searchLevel++
+                    if (searchLevel > 8) {
+                        break@loop
+                    }
+                    systems = filteredNearbySystems(system, radius(), minRadius())
+                    i = 0
+
+                }
+
                 val sys = systems[i]
 
                 onIO {
@@ -704,14 +776,14 @@ object EDSMApi {
                 if (arr.size == 1) {
                     if (!arr.first().isBlank()) {
                         arrayListOf(arr.first())
-                    }else{
+                    } else {
                         arrayListOf()
                     }
                 } else {
                     (arr as ArrayList<String>).apply { removeIf { it.isBlank() } }
                 }
             }
-        }.map { it.trim() }  as ArrayList<String>
+        }.map { it.trim() } as ArrayList<String>
         val modules = onDefault {
             data.modules.split(",").map {
                 if (it.contains("Alloy") || it.contains("Composite")) {
@@ -722,21 +794,21 @@ object EDSMApi {
             }.apply {
                 (this as ArrayList).removeIf { it.isBlank() }
             }
-        }.map { it.trim() }  as ArrayList<String>
+        }.map { it.trim() } as ArrayList<String>
         val commodities: ArrayList<String> = kotlin.run {
             onDefault {
                 val arr = data.commodities.split(",")
                 if (arr.size == 1) {
                     if (!arr.first().isBlank()) {
                         arrayListOf(arr.first())
-                    }else{
+                    } else {
                         arrayListOf()
                     }
                 } else {
                     (arr as ArrayList<String>).apply { removeIf { it.isBlank() } }
                 }
             }
-        }.map { it.trim() }  as ArrayList<String>
+        }.map { it.trim() } as ArrayList<String>
 
         return filterByStation(if (refName.isBlank()) "Sol" else refName) {
             var all = false
