@@ -115,7 +115,7 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                                 runWhenOnline {
                                     systemsSuggestions.addAll(
                                         EDSMApi.findSystemsByName(
-                                            referenceSystem,
+                                            sysName,
                                             showInformation = false,
                                             showCoordinates = false,
                                             limit = 5

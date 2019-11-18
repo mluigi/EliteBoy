@@ -738,7 +738,7 @@ object EDSMApi {
             }
         }.map { it.trim() }  as ArrayList<String>
 
-        return filterByStation(if (refName.isBlank()) "Sol" else refName) {
+        return filterByStation(if (refName.isBlank()) "Sol" else refName, max) {
             var all = false
             var gov = false
             var eco = false
