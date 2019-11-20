@@ -22,7 +22,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
     var currentSystem = ""
     private var systemsSuggestions = ArrayList<String>()
-    private var searchJob: Job = Job()
+    var searchJob: Job = Job()
     private var initJob: Job = Job()
     private var initLayoutJob: Job = Job()
 
