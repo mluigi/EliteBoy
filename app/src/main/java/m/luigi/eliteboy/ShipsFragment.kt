@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_ships.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,10 @@ class ShipsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
         return inflater.inflate(R.layout.fragment_ships, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).mainToolbar.title = "Ships"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
