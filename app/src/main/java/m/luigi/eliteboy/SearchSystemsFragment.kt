@@ -26,16 +26,13 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
     private var systemsSuggestions = ArrayList<String>()
     private var referenceSystem = ""
     private var sysName = ""
-    var searchJob: Job = Job()
+    private var searchJob: Job = Job()
+    private var initLayoutJob: Job = Job()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
-        launch {
-            (activity as MainActivity).mainToolbar.title = "Search systems (50 ly)"
-        }
+        (activity as MainActivity).mainToolbar.title = "Search systems (50 ly)"
 
         return inflater.inflate(R.layout.fragment_search_systems, container, false)
     }
@@ -43,7 +40,7 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
     //TODO: Save and restore search parameters onResume
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launch {
+        initLayoutJob = launch {
             val arrayAdapter = SystemsSuggestionsAdapter(
                 view.context,
                 R.layout.support_simple_spinner_dropdown_item,
@@ -184,5 +181,11 @@ class SearchSystemsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispa
                 )
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        initLayoutJob.cancel()
+        searchJob.cancel()
     }
 }

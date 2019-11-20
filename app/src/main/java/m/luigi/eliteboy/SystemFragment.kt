@@ -22,6 +22,7 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
     var name: String? = null
     private var system: System? = null
     private var isInfoOpened = false
+    private lateinit var initJob: Job
     private lateinit var getSystemJob: Job
     private lateinit var initLayoutJob: Job
     private var lastBodyPage = 0
@@ -30,7 +31,7 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        launch {
+        initJob = launch {
             arguments?.let {
                 name = it.getString("system", "")
                 //systemLayout.visibility = View.GONE
@@ -61,6 +62,12 @@ class SystemFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.
             stationsPager.currentItem = lastStationPage
             factionsViewPager.currentItem = lastFactionPage
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        getSystemJob.cancel()
+        initLayoutJob.cancel()
     }
 
     override fun onCreateView(

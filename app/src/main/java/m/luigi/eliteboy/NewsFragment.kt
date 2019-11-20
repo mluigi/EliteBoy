@@ -25,6 +25,8 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
 
     private var newsList = ArrayList<News>()
     private var getNewsJob: Job = Job()
+    private var initLayoutJob: Job = Job()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,7 +74,7 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launch {
+        initLayoutJob = launch {
             newsSpinKit.visibility = View.VISIBLE
             (activity as MainActivity).initJob.join()
             getNewsJob.join()
@@ -80,5 +82,11 @@ class NewsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Ma
             newsPager.adapter = NewsPageAdapter(newsList, childFragmentManager)
             newsDots.attachToViewPager(newsPager)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        getNewsJob.cancel()
+        initLayoutJob.cancel()
     }
 }

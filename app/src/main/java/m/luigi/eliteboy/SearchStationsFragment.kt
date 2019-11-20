@@ -28,22 +28,21 @@ import m.luigi.eliteboy.util.*
 class SearchStationsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
     private var systemsSuggestions = ArrayList<String>()
     private var referenceSystem = ""
-    var searchJob: Job = Job()
+    private var searchJob: Job = Job()
+    private var initLayoutJob: Job = Job()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        launch {
-            (activity as MainActivity).mainToolbar.title = "Search stations (50 ly)"
-        }
+        (activity as MainActivity).mainToolbar.title = "Search stations (50 ly)"
+
         return inflater.inflate(R.layout.fragment_search_stations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launch {
+        initLayoutJob = launch {
 
             val arrayAdapter = SystemsSuggestionsAdapter(
                 view.context,
@@ -204,5 +203,11 @@ class SearchStationsFragment : Fragment(), CoroutineScope by CoroutineScope(Disp
                 )
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        initLayoutJob.cancel()
+        searchJob.cancel()
     }
 }

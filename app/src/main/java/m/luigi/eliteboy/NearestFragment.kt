@@ -22,13 +22,15 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
     var currentSystem = ""
     private var systemsSuggestions = ArrayList<String>()
-    var searchJob: Job = Job()
+    private var searchJob: Job = Job()
+    private var initJob: Job = Job()
+    private var initLayoutJob: Job = Job()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        launch {
+        initJob = launch {
             onIO {
                 currentSystem = EDCompanionApi.getLastPosition()
             }
@@ -45,7 +47,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
     @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launch {
+        initLayoutJob = launch {
 
             searchTypes.layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
@@ -100,7 +102,7 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                     if (keyCode == KeyEvent.KEYCODE_ENTER) {
                         clearFocus()
                         if (systemsSuggestions.isNotEmpty()) {
-                            currentSystem=systemsSuggestions[0]
+                            currentSystem = systemsSuggestions[0]
                             setText(systemsSuggestions[0])
                         }
                         view.hideKeyboard()
@@ -115,5 +117,12 @@ class NearestFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        initJob.cancel()
+        initLayoutJob.cancel()
+        searchJob.cancel()
     }
 }

@@ -21,8 +21,9 @@ import m.luigi.eliteboy.util.setAnimateOnClickListener
 
 class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
     lateinit var station: Station
-    private lateinit var initJob :Job
+    private lateinit var initJob: Job
     private lateinit var getStationJob: Job
+    private var initLayoutJob: Job = Job()
 
     private var isInfoOpened = true
     private var isMarketOpened = false
@@ -68,6 +69,13 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        initJob.cancel()
+        getStationJob.cancel()
+        initLayoutJob.cancel()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,7 +87,7 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launch {
+        initLayoutJob = launch {
             getStationJob.join()
 
             infoList?.layoutManager =

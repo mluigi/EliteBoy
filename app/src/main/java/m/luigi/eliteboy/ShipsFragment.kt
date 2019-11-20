@@ -20,7 +20,8 @@ import m.luigi.eliteboy.util.snackBarMessageIf
 
 class ShipsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
-    lateinit var initJob: Job
+    private lateinit var initJob: Job
+    private lateinit var initLayoutJob: Job
     private var ships: ArrayList<Ship>? = null
 
     override fun onCreateView(
@@ -55,10 +56,16 @@ class ShipsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
         (activity as MainActivity).mainToolbar.title = "Ships"
     }
 
+    override fun onPause() {
+        super.onPause()
+        initJob.cancel()
+        initLayoutJob.cancel()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launch {
+        initLayoutJob = launch {
             initJob.join()
             shipList?.layoutManager = GridLayoutManager(view.context, 2)
             shipList?.adapter =
