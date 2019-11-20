@@ -27,6 +27,7 @@ class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
     private lateinit var imageLoader: ImageLoader
     private var initJob: Job = Job()
+    private var initLayoutJob: Job = Job()
 
     private var isRanksOpened = false
     private var profile: Profile? = null
@@ -50,7 +51,7 @@ class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        launch {
+        initLayoutJob = launch {
             initJob.join()
             updateProfile()
 
@@ -72,6 +73,12 @@ class ProfileFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
             }
             setProfileLayout()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        initJob.cancel()
+        initLayoutJob.cancel()
     }
 
     private suspend fun updateProfile(forced: Boolean = false) {
