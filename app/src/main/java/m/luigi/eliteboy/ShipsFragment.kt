@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_ships.*
@@ -23,6 +22,7 @@ class ShipsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
     private lateinit var initJob: Job
     private lateinit var initLayoutJob: Job
     private var ships: ArrayList<Ship>? = null
+    private var origin: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,15 +33,18 @@ class ShipsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
             arguments?.let {
                 val ship: Ship? = it.getParcelable("ship")
                 val ships = it.getParcelableArrayList<Ship>("ships")
+                origin = it.getString("origin")
 
-                snackBarMessageIf(ship == null || ships == null) {
-                    findNavController().navigateUp()
+                snackBarMessageIf(ships == null) {
+                    //findNavController().navigateUp()
                     "Couldn't find any ship"
                 }
 
                 onDefault {
-                    ships?.removeIf { it.id!! == ship!!.id }
-                    ships?.add(0, ship!!)
+                    ship?.let {
+                        ships?.removeIf { it.id!! == ship.id }
+                        ships?.add(0, ship)
+                    }
                 }
 
                 this@ShipsFragment.ships = ships
@@ -69,7 +72,13 @@ class ShipsFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.M
             initJob.join()
             shipList?.layoutManager = GridLayoutManager(view.context, 2)
             shipList?.adapter =
-                ShipAdapter(ships!!, view.context)
+                ShipAdapter(
+                    if (ships.isNullOrEmpty()) {
+                        ArrayList()
+                    } else {
+                        ships!!
+                    }, view.context, origin ?: "shipsFragment"
+                )
         }
 
     }

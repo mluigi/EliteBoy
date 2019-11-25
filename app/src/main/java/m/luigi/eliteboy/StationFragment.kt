@@ -4,19 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_station.*
 import kotlinx.coroutines.*
-import m.luigi.eliteboy.adapters.CommodityAdapter
-import m.luigi.eliteboy.adapters.InformationAdapter
 import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
-import m.luigi.eliteboy.util.CoriolisDataHelper
 import m.luigi.eliteboy.util.hideWithAnimation
 import m.luigi.eliteboy.util.runWhenOnline
-import m.luigi.eliteboy.util.setAnimateOnClickListener
 
 
 class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
@@ -89,65 +87,21 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
 
         initLayoutJob = launch {
             getStationJob.join()
-
-            infoList?.layoutManager =
-                LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-            infoList?.adapter = InformationAdapter(station.asMap(), view.context)
-
-            infoLayout?.setAnimateOnClickListener(
-                infoList,
-                infoImg,
-                { isInfoOpened }) { isInfoOpened = !isInfoOpened }
-
-            if (station.haveMarket && station.commodities != null) {
-                marketLayout?.setAnimateOnClickListener(
-                    marketList,
-                    marketImg,
-                    { isMarketOpened }) { isMarketOpened = !isMarketOpened }
-
-                marketList?.layoutManager =
-                    LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                marketList?.adapter = CommodityAdapter(station.commodities!!, view.context)
-            } else {
-                marketCardView?.visibility = View.GONE
-            }
-
-            if (station.haveShipyard && station.ships != null) {
-                shipsLayout?.setAnimateOnClickListener(
-                    shipList,
-                    shipImg,
-                    { isShipyardOpened }) { isShipyardOpened = !isShipyardOpened }
-                shipList?.layoutManager =
-                    LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                shipList?.adapter = InformationAdapter(
-                    CoriolisDataHelper.getShipPriceMapFiltered(station.ships!!),
-                    view.context
-                )
-            } else {
-                shipsCardView?.visibility = View.GONE
-            }
-
-            if (station.haveOutfitting && station.outfitting != null) {
-                outfittingLayout?.setAnimateOnClickListener(
-                    outfittingList,
-                    outfittingImg,
-                    { isOutfittingOpened }) { isOutfittingOpened = !isOutfittingOpened }
-
-                outfittingList?.layoutManager =
-                    LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-                val mapSIDtoName = mutableMapOf<String, String>()
-                station.outfitting!!.forEach {
-                    mapSIDtoName[it.sId!!] = it.name!!
-                }
-                val modulePriceMap = CoriolisDataHelper.getModulePriceMapFiltered(mapSIDtoName)
-                outfittingList?.adapter = InformationAdapter(
-                    modulePriceMap,
-                    view.context
-                )
-            } else {
-                outfittingCardView?.visibility = View.GONE
-            }
-
+            val adapter = FragmentPagerItemAdapter(
+                childFragmentManager,
+                FragmentPagerItems.with(view.context)
+                    .add("Info", ShipsFragment::class.java)
+                    .add("Market", ShipsFragment::class.java)
+                    .add(
+                        "Shipyard",
+                        ShipsFragment::class.java,
+                        bundleOf("ships" to station.ships, "origin" to "stationFragment")
+                    )
+                    .add("Outfitting", ShipsFragment::class.java)
+                    .create()
+            )
+            viewpager.adapter = adapter
+            viewpagertab.setViewPager(viewpager)
             //stationLayout?.visibility = View.VISIBLE
             stationSpinKit?.hideWithAnimation()
         }

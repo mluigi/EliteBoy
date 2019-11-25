@@ -7,6 +7,7 @@ import m.luigi.eliteboy.elitedangerous.companionapi.data.Ship
 import java.text.NumberFormat
 import java.util.*
 
+//TODO: maybe rethink how this all should work, instead of all maps
 object CoriolisDataHelper {
 
     private var data = JsonObject()
@@ -24,21 +25,90 @@ object CoriolisDataHelper {
         }
     }
 
-    private suspend fun getShipPriceMap(): Map<String, String> {
-        return onDefault {
-            val map = mutableMapOf<String, String>()
+    private var edIDtoPriceMap: Map<Long, String>? = null
 
-            ships().entrySet().sortedBy { it.value.asJsonObject["retailCost"].asLong }.forEach {
-                with(it.value.asJsonObject) {
-                    val coriolisName = this["properties"].asJsonObject["name"].asString
-                    map[getEDSMShipName(coriolisName)] = String.format(
-                        "%s cr",
-                        NumberFormat.getIntegerInstance().format(this["retailCost"].asLong)
-                    )
+    suspend fun getEDIDtoPriceMap(): Map<Long, String> {
+        if (edIDtoPriceMap == null) {
+            edIDtoPriceMap = onDefault {
+                val map = mutableMapOf<Long, String>()
+
+                ships().entrySet().sortedBy { it.value.asJsonObject["retailCost"].asLong }.forEach {
+                    with(it.value.asJsonObject) {
+                        val id = this["edID"].asLong
+                        map[id] = String.format(
+                            "%s cr",
+                            NumberFormat.getIntegerInstance().format(this["retailCost"].asLong)
+                        )
+                    }
                 }
+                map
             }
-            map
         }
+
+        return edIDtoPriceMap!!
+    }
+
+    private var edIDtoShipNameMap: Map<Long, String>? = null
+
+    suspend fun getEDIDToShipNameMap(): Map<Long, String> {
+        if (edIDtoShipNameMap == null) {
+            edIDtoShipNameMap = onDefault {
+                val map = mutableMapOf<Long, String>()
+
+                ships().entrySet().sortedBy { it.value.asJsonObject["retailCost"].asLong }.forEach {
+                    with(it.value.asJsonObject) {
+                        val id = this["edID"].asLong
+                        val coriolisName = this["properties"].asJsonObject["name"].asString
+                        map[id] = getEDSMShipName(coriolisName)
+                    }
+                }
+                map
+            }
+        }
+
+        return edIDtoShipNameMap!!
+    }
+
+    private var edIDtoShipIDMap: Map<Long, String>? = null
+
+    suspend fun getEDIDToShipIDMap(): Map<Long, String> {
+        if (edIDtoShipIDMap == null) {
+            edIDtoShipIDMap = onDefault {
+                val map = mutableMapOf<Long, String>()
+
+                ships().entrySet().sortedBy { it.value.asJsonObject["retailCost"].asLong }.forEach {
+                    with(it.value.asJsonObject) {
+                        val id = this["edID"].asLong
+                        map[id] = getEDSMShipId(it.key)
+                    }
+                }
+                map
+            }
+        }
+
+        return edIDtoShipIDMap!!
+    }
+
+    private var shipPriceMap: Map<String, String>? = null
+
+    private suspend fun getShipPriceMap(): Map<String, String> {
+        if (shipPriceMap == null) {
+            shipPriceMap = onDefault {
+                val map = mutableMapOf<String, String>()
+
+                ships().entrySet().sortedBy { it.value.asJsonObject["retailCost"].asLong }.forEach {
+                    with(it.value.asJsonObject) {
+                        val coriolisName = this["properties"].asJsonObject["name"].asString
+                        map[getEDSMShipName(coriolisName)] = String.format(
+                            "%s cr",
+                            NumberFormat.getIntegerInstance().format(this["retailCost"].asLong)
+                        )
+                    }
+                }
+                map
+            }
+        }
+        return shipPriceMap!!
     }
 
     suspend fun getShipPriceMapFiltered(shipArray: ArrayList<Ship>): Map<String, String> {
@@ -51,103 +121,129 @@ object CoriolisDataHelper {
         }
     }
 
+    private var shipBulkheadsPriceMap: Map<String, String>? = null
+
     private suspend fun getShipBulkheadsPriceMap(ship: String): Map<String, String> {
-        return onDefault {
-            val map = mutableMapOf<String, String>()
-            with(ships()[ship].asJsonObject) {
-                val bulkheads = this["bulkheads"].asJsonArray
-                val bulkheadsPrices = bulkheads
-                    .map { it.asJsonObject["cost"].asLong }
-                    .sorted()
-                    .map {
-                        String.format(
-                            "%s cr",
-                            NumberFormat.getIntegerInstance().format(it)
-                        )
-                    }
-                val shipId = getEDSMShipId(ship)
-                map["${shipId}_armour_grade1"] = bulkheadsPrices[0]
-                map["${shipId}_armour_grade2"] = bulkheadsPrices[1]
-                map["${shipId}_armour_grade3"] = bulkheadsPrices[2]
-                map["${shipId}_armour_mirrored"] = bulkheadsPrices[3]
-                map["${shipId}_armour_reactive"] = bulkheadsPrices[4]
+        if (shipBulkheadsPriceMap == null) {
+            shipBulkheadsPriceMap = onDefault {
+                val map = mutableMapOf<String, String>()
+                with(ships()[ship].asJsonObject) {
+                    val bulkheads = this["bulkheads"].asJsonArray
+                    val bulkheadsPrices = bulkheads
+                        .map { it.asJsonObject["cost"].asLong }
+                        .sorted()
+                        .map {
+                            String.format(
+                                "%s cr",
+                                NumberFormat.getIntegerInstance().format(it)
+                            )
+                        }
+                    val shipId = getEDSMShipId(ship)
+                    map["${shipId}_armour_grade1"] = bulkheadsPrices[0]
+                    map["${shipId}_armour_grade2"] = bulkheadsPrices[1]
+                    map["${shipId}_armour_grade3"] = bulkheadsPrices[2]
+                    map["${shipId}_armour_mirrored"] = bulkheadsPrices[3]
+                    map["${shipId}_armour_reactive"] = bulkheadsPrices[4]
 
+                }
+
+                map
             }
-
-            map
         }
+
+        return shipBulkheadsPriceMap!!
     }
 
+    private var bulkheadsPriceMap: Map<String, String>? = null
     private suspend fun getBulkheadsPriceMap(modules: Map<String, String>): Map<String, String> {
-        return onDefault {
-            val map = mutableMapOf<String, String>()
-            ships().entrySet().forEach { (shipId, value) ->
-                if (modules.keys.any { it.split("_armour_").first() == getEDSMShipId(shipId) }) {
-                    val shipName = value.asJsonObject["properties"].asJsonObject["name"].asString
-                    getShipBulkheadsPriceMap(shipId).forEach { (bulkId, price) ->
-                        if (modules.keys.contains(bulkId)) {
-                            map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] =
-                                price
+        if (bulkheadsPriceMap == null) {
+            bulkheadsPriceMap = onDefault {
+                val map = mutableMapOf<String, String>()
+                ships().entrySet().forEach { (shipId, value) ->
+                    if (modules.keys.any { it.split("_armour_").first() == getEDSMShipId(shipId) }) {
+                        val shipName =
+                            value.asJsonObject["properties"].asJsonObject["name"].asString
+                        getShipBulkheadsPriceMap(shipId).forEach { (bulkId, price) ->
+                            if (modules.keys.contains(bulkId)) {
+                                map[modules.getValue(bulkId) + " - ${getEDSMShipName(shipName)}"] =
+                                    price
+                            }
                         }
                     }
                 }
+                map
             }
-            map
         }
+        return bulkheadsPriceMap!!
     }
 
+    private var standardModulePriceMap: Map<String, String>? = null
     private suspend fun getStandardModulePriceMap(): Map<String, String> {
-        return onDefault {
-            val map = mutableMapOf<String, String>()
-            standardModules().entrySet().forEach {
-                it.value.asJsonArray.sortedBy { it.asJsonObject["cost"].asLong }.forEach {
-                    val module = it.asJsonObject
-                    map[module["symbol"].asString.toLowerCase(Locale.getDefault())] = String.format(
-                        "%s cr",
-                        NumberFormat.getIntegerInstance().format(
-                            module["cost"].asLong
-                        )
-                    )
+        if (standardModulePriceMap == null) {
+            standardModulePriceMap = onDefault {
+                val map = mutableMapOf<String, String>()
+                standardModules().entrySet().forEach {
+                    it.value.asJsonArray.sortedBy { it.asJsonObject["cost"].asLong }.forEach {
+                        val module = it.asJsonObject
+                        map[module["symbol"].asString.toLowerCase(Locale.getDefault())] =
+                            String.format(
+                                "%s cr",
+                                NumberFormat.getIntegerInstance().format(
+                                    module["cost"].asLong
+                                )
+                            )
+                    }
                 }
+                map
             }
-            map
         }
+        return standardModulePriceMap!!
     }
 
+    private var hardpointModulePriceMap: Map<String, String>? = null
     private suspend fun getHardpointModulePriceMap(): Map<String, String> {
-        return onDefault {
-            val map = mutableMapOf<String, String>()
-            hardpointModules().entrySet().forEach {
-                it.value.asJsonArray.sortedBy { it.asJsonObject["cost"].asLong }.forEach {
-                    val module = it.asJsonObject
-                    map[module["symbol"].asString.toLowerCase(Locale.getDefault())] = String.format(
-                        "%s cr",
-                        NumberFormat.getIntegerInstance().format(
-                            module["cost"].asLong
-                        )
-                    )
+        if (hardpointModulePriceMap == null) {
+            hardpointModulePriceMap = onDefault {
+                val map = mutableMapOf<String, String>()
+                hardpointModules().entrySet().forEach {
+                    it.value.asJsonArray.sortedBy { it.asJsonObject["cost"].asLong }.forEach {
+                        val module = it.asJsonObject
+                        map[module["symbol"].asString.toLowerCase(Locale.getDefault())] =
+                            String.format(
+                                "%s cr",
+                                NumberFormat.getIntegerInstance().format(
+                                    module["cost"].asLong
+                                )
+                            )
+                    }
                 }
+                map
             }
-            map
         }
+        return hardpointModulePriceMap!!
     }
 
+    private var internalModulePriceMap: Map<String, String>? = null
     private suspend fun getInternalModulePriceMap(): Map<String, String> {
-        return onDefault {
-            val map = mutableMapOf<String, String>()
-            internalModules().entrySet().forEach {
-                it.value.asJsonArray.sortedBy { it.asJsonObject["cost"].asLong }.forEach {
-                    val module = it.asJsonObject
-                    map[module["symbol"].asString.toLowerCase(Locale.getDefault())] = String.format(
-                        "%s cr",
-                        NumberFormat.getIntegerInstance().format(
-                            module["cost"].asLong
-                        )
-                    )
+        if (internalModulePriceMap == null) {
+            internalModulePriceMap = onDefault {
+                val map = mutableMapOf<String, String>()
+                internalModules().entrySet().forEach {
+                    it.value.asJsonArray.sortedBy { it.asJsonObject["cost"].asLong }.forEach {
+                        val module = it.asJsonObject
+                        map[module["symbol"].asString.toLowerCase(Locale.getDefault())] =
+                            String.format(
+                                "%s cr",
+                                NumberFormat.getIntegerInstance().format(
+                                    module["cost"].asLong
+                                )
+                            )
+                    }
                 }
+                map
             }
-            map
         }
+        return internalModulePriceMap!!
     }
 
     suspend fun getModulePriceMapFiltered(modules: Map<String, String>): Map<String, String> {
