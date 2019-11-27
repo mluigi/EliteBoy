@@ -90,7 +90,11 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
             val adapter = FragmentPagerItemAdapter(
                 childFragmentManager,
                 FragmentPagerItems.with(view.context)
-                    .add("Info", ShipsFragment::class.java)
+                    .add(
+                        "Info",
+                        InformationFragment::class.java,
+                        bundleOf("station" to station)
+                    )
                     .add("Market", ShipsFragment::class.java)
                     .add(
                         "Shipyard",
