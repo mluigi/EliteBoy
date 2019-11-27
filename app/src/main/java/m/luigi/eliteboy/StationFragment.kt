@@ -10,23 +10,17 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_station.*
-import kotlinx.coroutines.*
-import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
-import m.luigi.eliteboy.util.hideWithAnimation
-import m.luigi.eliteboy.util.runWhenOnline
 
 
 class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
     lateinit var station: Station
     private lateinit var initJob: Job
-    private lateinit var getStationJob: Job
     private var initLayoutJob: Job = Job()
-
-    private var isInfoOpened = true
-    private var isMarketOpened = false
-    private var isShipyardOpened = false
-    private var isOutfittingOpened = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,35 +28,7 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
             arguments?.let {
                 station = it.getParcelable("station")!!
 
-                //stationLayout.visibility = View.GONE
-                stationSpinKit.visibility = View.VISIBLE
                 (activity as MainActivity).mainToolbar.title = station.name
-            }
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    override fun onResume() {
-        super.onResume()
-        getStationJob = launch {
-            initJob.join()
-            if (station.haveMarket) {
-                runWhenOnline {
-                    EDSMApi.getMarket(station)
-                }
-            }
-
-            if (station.haveShipyard) {
-                runWhenOnline {
-                    EDSMApi.getShipyard(station)
-                }
-            }
-
-            if (station.haveMarket) {
-                runWhenOnline {
-                    EDSMApi.getOutfitting(station)
-                }
             }
         }
     }
@@ -70,7 +36,6 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
     override fun onPause() {
         super.onPause()
         initJob.cancel()
-        getStationJob.cancel()
         initLayoutJob.cancel()
     }
 
@@ -86,28 +51,29 @@ class StationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers
         super.onViewCreated(view, savedInstanceState)
 
         initLayoutJob = launch {
-            getStationJob.join()
             val adapter = FragmentPagerItemAdapter(
                 childFragmentManager,
                 FragmentPagerItems.with(view.context)
                     .add(
-                        "Info",
-                        InformationFragment::class.java,
+                        "Info", InformationFragment::class.java,
                         bundleOf("station" to station)
                     )
-                    .add("Market", ShipsFragment::class.java)
                     .add(
-                        "Shipyard",
-                        ShipsFragment::class.java,
-                        bundleOf("ships" to station.ships, "origin" to "stationFragment")
+                        "Market", CommoditiesFragment::class.java,
+                        bundleOf("station" to station)
                     )
-                    .add("Outfitting", ShipsFragment::class.java)
+                    .add(
+                        "Shipyard", ShipsFragment::class.java,
+                        bundleOf("station" to station, "origin" to "stationFragment")
+                    )
+                    .add(
+                        "Outfitting", OutfittingFragment::class.java,
+                        bundleOf("station" to station)
+                    )
                     .create()
             )
             viewpager.adapter = adapter
             viewpagertab.setViewPager(viewpager)
-            //stationLayout?.visibility = View.VISIBLE
-            stationSpinKit?.hideWithAnimation()
         }
     }
 }

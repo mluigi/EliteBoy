@@ -11,21 +11,30 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import m.luigi.eliteboy.adapters.InformationAdapter
+import m.luigi.eliteboy.adapters.CommodityAdapter
+import m.luigi.eliteboy.elitedangerous.edsm.EDSMApi
 import m.luigi.eliteboy.elitedangerous.edsm.data.Station
+import m.luigi.eliteboy.util.runWhenOnline
 import m.luigi.eliteboy.util.snackBarMessage
 
-class InformationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
+class CommoditiesFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatchers.Main) {
 
-    private var info: Map<String, String>? = null
+    private var station: Station? = null
     private lateinit var initJob: Job
     private var initLayoutJob: Job = Job()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initJob = launch {
             arguments?.let {
-                info = it.getParcelable<Station>("station")!!.asMap()
-            } ?: snackBarMessage { "No info found" }
+                station = it.getParcelable("station")!!
+                station?.let {
+                    if (it.haveMarket) {
+                        runWhenOnline {
+                            EDSMApi.getMarket(it)
+                        }
+                    }
+                }
+            } ?: snackBarMessage { "No Station found" }
         }
     }
 
@@ -48,10 +57,16 @@ class InformationFragment : Fragment(), CoroutineScope by CoroutineScope(Dispatc
         super.onViewCreated(view, savedInstanceState)
         initLayoutJob = launch {
             initJob.join()
-
-            infoList?.layoutManager =
-                LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-            infoList?.adapter = InformationAdapter(info!!, view.context)
+            station?.let {
+                if (it.haveMarket && it.commodities != null) {
+                    infoList?.layoutManager =
+                        LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+                    infoList?.adapter = CommodityAdapter(it.commodities!!, view.context)
+                } else {
+                    noFoundText.text = "This station doesn't have a market."
+                    noFoundText.visibility =View.VISIBLE
+                }
+            } ?: snackBarMessage { "Error passing station to market" }
         }
     }
 }
