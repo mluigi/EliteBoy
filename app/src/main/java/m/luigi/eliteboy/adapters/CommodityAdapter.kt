@@ -78,7 +78,12 @@ class CommodityAdapter(private val commodities: ArrayList<Commodity>, val contex
                         SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     holder.buySell.text = buy
-                    holder.demandStock.text = nFormat.format(stock)
+                    val stock = SpannableString(nFormat.format(stock))
+                    stock.setSpan(ForegroundColorSpan(Color.GREEN),
+                        0,
+                        stock.length,
+                        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    holder.demandStock.text = stock
                 } else {
                     val sell = SpannableString(nFormat.format(sellPrice))
                     sell.setSpan(
@@ -87,8 +92,15 @@ class CommodityAdapter(private val commodities: ArrayList<Commodity>, val contex
                         sell.length,
                         SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
+                    val demand = SpannableString(nFormat.format(demand))
+                    demand.setSpan(
+                        ForegroundColorSpan(Color.RED),
+                        0,
+                        demand.length,
+                        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                     holder.buySell.text = sell
-                    holder.demandStock.text = nFormat.format(demand)
+                    holder.demandStock.text = demand
                 }
 
 
