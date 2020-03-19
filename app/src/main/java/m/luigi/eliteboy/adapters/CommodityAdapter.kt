@@ -59,7 +59,23 @@ class CommodityAdapter(private val commodities: ArrayList<Commodity>, val contex
                 append("/")
                 append(sell)
             }
-            holder.demandStock.text = "Demand/Stock"
+            with(holder.demandStock){
+                val demand = SpannableString("Demand")
+                val stock = SpannableString("Stock")
+                demand.setSpan(
+                    ForegroundColorSpan(Color.RED),
+                    0,
+                    demand.length,
+                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                stock.setSpan(ForegroundColorSpan(Color.GREEN),
+                    0,
+                    stock.length,
+                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                text= stock
+                append("/")
+                append(demand)
+            }
             holder.buySell.setTypeface(holder.buySell.typeface, Typeface.BOLD)
             holder.name.setTypeface(holder.name.typeface, Typeface.BOLD)
             holder.demandStock.setTypeface(holder.demandStock.typeface, Typeface.BOLD)
